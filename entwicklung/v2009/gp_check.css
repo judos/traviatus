@@ -1,0 +1,9 @@
+/*
+Check for valid Graphic pack
+This CSS File is necessary to activate the Graphic pack
+*/
+#show_gp_test_button {display:none;}
+#show_gp_activate_button {display:inline;}
+#show_gp_logo {background-image:url(img/gp_preview.gif);}
+#show_gp_ok_message {display:inline;}
+#show_gp_error_message {display:none;}

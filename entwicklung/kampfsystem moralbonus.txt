@@ -1,0 +1,39 @@
+Also ich wollte für meine Ally eine Formel zur berechnung des Moralbonus aufstellen für alle nicht Golduser.
+
+Ich bin von der Kampfsimulatorformel
+
+100 * (pp/pw)^(3/2) = Verlust in % des Gewinners [pw= Gewinnerpunkte, pp= Verliererp.]
+
+ausgegangen.
+
+Und habe dann im Pluskasim Verlustberechnungen mit verschiedenen Einwohnerverhältnissen von Angreifer und Verteidiger durchgeführt
+
+100 Keulenschwinger gg 100 Keulenschwinger
+4000 ANG gg 2000 VER
+
+Verhältniss: 1:1
+Verlust: 36 Keulenschwinger
+
+Verhältniss: 2:1
+Verlust: 44 K.
+
+...
+
+Verhältniss: 8:1
+Verlust: 65 K.
+
+Dann Punkte in ein Koordinatensystem eingetragen mit x Achse Verhältniss und Y Moralbonus und herrausgefunden, dass es eine logafunktion ist. Also der Form f(x)=m*log(x)+1
+
+Dann noch m ausgerechnet indem ich die Formel umstellte.
+
+f(x)/log(x)-1=m
+
+m ist ca. 0,54
+
+
+Ich komme somit auf die Formel
+
+Moralbonuswert = 0,54 * log (x) + 1 ; EinwohnerAngreifer/EwVerteidiger = x ; 0<x=<8
+
+
+Weiß jmd, wie nah es an der Wirklichkeit ist?

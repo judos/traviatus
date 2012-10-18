@@ -1,0 +1,13 @@
+@CHARSET "UTF-8";
+
+/*
+ *------------------------------------------------------------------------------
+ * TRAVIAN_IMAGES-TEA is used to define the image of the teahouse.
+ *
+ * Contains:
+ * background-image
+ *------------------------------------------------------------------------------
+ */
+ 
+img.g35 {background-image:url(../img/g/g35_tea.gif);}
+img.g35b {background-image:url(../img/g/g35b_tea.gif);}

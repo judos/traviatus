@@ -1,0 +1,101 @@
+So, nachdem sich das ganze für T3 etwas geändert hat, kann ich das ja hier mal Posten. Ist ja eigentlich auch kein Geheimnis mehr...
+
+Ich mir mal die Mühe gemacht eine Erklärung zu schreiben. Das Layout ist Überarbeitungswürdig, aber in so einem Forum ist das nicht wiklich einfach etwas übersichtlich zu Gliedern. Aber beist euch Trotzdem Durch denn es Lohnt sich! Das Travian Kampfsystem ist eines der letzten "Geheimnisse" die nicht jeder entschlüsselt hat. Ich hab das ganze auch nicht selber rausgefunden sondern wie zuvor erwähnt auf einer Spanischen Seite entdeckt. Also wer besser Spanisch kann als ich darf mich gerne hier korrigieren wenn ich irgendwas falsch verstanden habe! 
+
+Der Grundkampf
+Also ohne Berücksichtigung von irgendwelchen Boni (Mauern / Artefakte / Moral / Palast ...)
+Normaler Angriff
+
+Angreifer
+Es wird ein Gesamt-Off-Wert nach folgender Formel ermittelt: Anzahl-Soldaten * Ihr Offwert
+z.B. 100 Imperianer und 50 Legionäre: (100*70)+(50*40) = 9000
+
+Verteidiger
+Angenommen der Verteidiger hat 150 Phalanxen. Da der Angreifer nur mit Infanterie angreift zählt hier nur der Deff-Wert gg. Inf. Also 150 * 40 = 6000
+
+Bei einem Normalen Angriff verliert die Partei alle Truppen, welche beim Vergleich zw. Off und Deff Wert die Wenigsten Punkte hat, bei unserem Beispiel also der Verteidiger (9000>6000). Um jetzt die Verluste des Angreifers auszurechnen muss man folgende Formel anwenden: 100 * sqrt [(pp/pg)^3]
+
+pp = Kampfpunkte des Verlierers
+pg = Kampfpunkte des Gewinners
+
+Im Beispiel heißt das: sqrt [(6000/9000)³] = 0,5443 (D.h. 54,43% Verluste bei jeder Einheit)
+Also von den 100 Imprianern sterben 54 (100*0,5443) und von den Legionären sterben 27 (50*0,5443)
+
+Raubzug
+
+Beim Raubzug wird die o.g. Formel noch erweitert. Die Verluste des Gewinners (in Prozent) errechnen sich wie folgt: 
+100 * x/(100+x); 
+x ist das Ergebniss der Formel vom Normalen Angriff. Und die Verluste des Verlierers sind dann 100% - Ergebnis vom Gewinner%
+
+Beispiel: 1000 Imperianer gg. 1000 Prätorianer = 70000 > 65000 (Also die Imperianer Gewinnen)
+
+Also zuerst wieder der Normale Angriff -> x = 100 * sqrt[(65/70)³]= 89,479%
+Dann Erweitert für den Raubzug: 100 * 89,479 / 189,479 = 47,22%
+Also die Gewinnerseite verliert 47,22% der Truppen. Im Beispiel sterben 472 Imperianer.
+Die Verlierer Partei erleidet: 100 - 47,22% der Verluste also 52,78%. Das sind dann 528 Prätorianer.
+
+Gemischte Kämpfe
+Was geschieht nun wenn man die Einheiten mischt? Also nicht nur Infanterie sondern Angriff mit Kavallerie und Infanterie. In diesem Fall werden die Angriffspunkte Proportional aufgeteilt.
+
+z.B. Angriff mit 100 Theutates Blitz und 50 Schwertis gg. 100 Prätorianer
+
+Also 100*90 + 50 *65 = 9000 + 3250 = 12250 Offpunkte
+
+Proportional:
+9000 / 12250 = 0,7346 (Kavallerie)
+3250 / 12250 = 0,2654 (Infanterie)
+
+Der Verteidiger hat dann folgende Deffpunkte. Prätorianer haben 65 gg. Infanterie und 35 gg. Kavalerie. Also bei 100 Prätos = 6500 Def gg. Inf und 3500 Def gg. Kav.
+
+Um jetzt die Gesamten DeffPunkte zu errechnen müssen wir die Deff-Werte Proportional aufteilen:
+
+0,7346*3500 + 0,2654 * 6500 = 2571,1 + 1725,1 = 4296,2
+
+Der Rest geht dann wie bereits beim Grundkampf beschrieben:
+
+12250 ist größer als 4296,2 Also sterben alle 100 Prätorianer
+Und die Verluste des Angreifer: 100 * sqrt[(4296,2/12250)³] = 20,77%
+Also von 100 Blitzen sterben 21, und von den 50 Schwertis sterben 10
+
+Kampfboni
+Die Grundformeln des Kampfsystems sind offensichtlich und lassen sich leicht herausfinden, bei den Boni war es Schwieriger. Trotzdem sind die Werte hier annähernd die korrekten Werte! Der einzige Bonus der 100% Stimmt sind die Mauern, da hier exakte Werte angegeben sind.
+
+Mauern
+Germanen: 1,020%^Stufe
+Gallier: 1,025%^Stufe
+Römer: 1,030%^Stufe
+
+Also Römer mit Stadtmauer Stufe 20 = 80% Bonus im Deffwert
+
+Palast
+Der Palast gibt nicht soviel Deff Bonus wie eine Mauer Da er immer einen Fixen-Deffwert gibt. Dieser errechnet sich wie folgt:
+2*(Stufe²)
+
+Also: 
+Stufe 1 = 2 Deffpunkte Bonus
+Stufe 2 = 8 Deffpunkte Bonus
+...
+Stufe 20 = 800 Deffpunkte Bonus
+
+Truppenverbesserungen
+Wurde hier schon beschrieben, man kann als Richtwert sagen das jede Verbesserungsstufe ca. 1,5% Verbesserung in den Off, oder Deffwerten bringt. Also bei Stufe 20 ca. 30%.
+
+Wer es genau haben will nimmt die bekannte Formel: OffWert * 1,015^Stufe (Analog bei den Deffwerten!)
+
+Moral
+Der Moralbonus kommt dann ins Spiel wenn ein Spieler mit mehr Einwohnern einen Spieler mit weniger Einwohnern angreift. Ich hab die genauen Werte irgendwo gelesen aber wieder vergessen wo... Aber werde ich auch noch hier einbringen. Aber der Autor des Spanischen Artikels "Andres Age" gibt folgendes an:
+
+- Wenn der Angreifer 7.5 mal mehr Einwohner hat als der Verteidiger dann ist der Deff-Bonus 50%
+- Hat der Angreifer 7.5 mal weniger Einwohner dann geht der Bonus bei 0% los...
+- Liegt das Verhältniss der Einwohner irgendwo dazwischen dann verhält sich der Bonus wie eine Logarithmische Funktion mit einer Horizontalen Asymptote mit x groesser 7,5 und y gleich 50
+
+Es hat sich auch gezeigt das wenn die Verteidigung nur knapp unter der Anzahl der Angreifer liegt dann waechst der Bonus zusaetzlich zu der Einwohnerzahl Proportional und erreicht die 50% erst beim 15 Fachen!
+
+Grundverteidigung der Doerfer
+Ist ein Spieler inaktiv oder hat keine Soldaten dann wehrt sich das Dorf nur noch mit seiner Grundverteidigung.
+
+Die Grundverteidigung liegt ca. bei 80 im Deffwert und wird auch durch die anderen Boni beeinflusst.
+
+Kampf zwischen Spaehern
+
+... Erklaerung folgt!

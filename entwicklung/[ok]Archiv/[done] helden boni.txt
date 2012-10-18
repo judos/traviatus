@@ -1,0 +1,7 @@
+held lvl4 prätorianer
+
+verteidigung: bei +14 = 1150/725
+		  +15 = 1225/775
+
+deffwert: pro erhöhung steigt dies u 0.2%
+ebenso bei offwert

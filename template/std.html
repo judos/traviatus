@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>++TITLE++</title>
+<link rel=stylesheet type="text/css" href="++REL_PATH++unx.css">
+<script src="++REL_PATH++js/unx.js" type=text/javascript></script>
+<script src="++REL_PATH++js/ajax.js" type=text/javascript></script>
+<link rel="SHORTCUT ICON" href="++REL_PATH++img/favicon.ico" type="image/x-icon">
+<meta http-equiv="cache-control" content="max-age=0" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+</head>
+
+<body ++BODY_ON_LOAD++>
+<script type="text/javascript" src="++REL_PATH++js/wz_tooltip.js"></script>
+
+<div id="ltop1" >
+<!--block:menu-->
+<div id="ltop3">
+++MENU++
+</div>
+<!--/menu-->
+</div>
+<div id="lmidall">
+<div id="lmidlc">
+<div id="lleft">
+	<!--<a href="http://www.travian.de/">-->
+	<img class="logo" src="++REL_PATH++img/de/a/travian0.gif">
+	<!--</a>-->
+
+    <table id="navi_table" cellspacing="0" cellpadding="0">
+    <tr>
+    <td class="menu">
+    ++LINKS++
+    </td>
+    </tr>
+    </table>
+
+</div>
+<div id="lmid1">
+<div id="lmid2">
+	++CONTENT++
+	<div id="ce"></div>
+</div></div></div>
+<div id="lright1"></div>
+</div>
+<!--block:footer-->
+<div id="lfooter1"><div id="lfooter2">
+	++FOOTER++
+</div></div>
+<!--/footer-->
+
+<!--block:error-->
+<div id="lfooter1"><div id="lfooter2">++ERROR++</a>
+</div></div>
+<!--/error-->
+
+<!--block:servertime-->
+<div id="ltime">
+<table width=350 style="margin:0px; padding:0px;">
+	<tr height=5><td>Berechnung in <b>++CALC_MS++</b> ms<br>
+	Serverzeit: <span id="tp1" class="b">++CALC_TIME++</span></td>
+    <td>Rundenlaufzeit: <span class="b">++CALC_RUNDAYS++Tag</span>,
+    <span id="tp2" class="b">++CALC_RUNTIME++</span><br>
+    &nbsp;</td></tr>
+    </tr>
+</table>
+</div>
+<!--/servertime-->
+
+</body>
+</html>
