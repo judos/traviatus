@@ -73,7 +73,7 @@ if (isset($_GET['do'])) {
 		unset($var1,$var2,$var3,$var4);
 		require('actions/'.$page.'.php');
 		unset($_GET['do']);
-		//gotoP($page);
+		gotoP($page);
 	}
 }
 
