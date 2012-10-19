@@ -14,8 +14,8 @@ include "includes/arrayobjects functions.php";
 include "includes/vector4.php";
 include "includes/configs.php";
 include "includes/links.php";
-include "includes/footer.php";
 include "includes/classes.php";
+include "includes/backup_db.php";
 connect();
 
 //Alle Fehler und PHP Notizen abfangen und selber auf der Seite ausgeben
@@ -52,6 +52,7 @@ unset($var1,$var2,$var3,$var4);
 global $classes;
 init_classes_var();
 include_classes();
+include "includes/footer.php";
 
 //Aufgerufene Seite auslesen
 if(!isset($_GET['page'])) {

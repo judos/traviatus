@@ -291,7 +291,7 @@ class Outputer {
 	}
 
 	public static function blocks() {
-		hideblock('footer');
+		showblock('footer');
 		showblock('servertime');
 		showblock('menu');
 	}

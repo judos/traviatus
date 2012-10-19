@@ -7,7 +7,7 @@ class Diverses {
 	protected static $dataChanged = array();
 
 	public static function get($att) {
-		if (!isset($data[$att])) {
+		if (!isset(self::$data[$att])) {
 			self::load($att);
 		}
 		return self::$data[$att];
@@ -22,7 +22,8 @@ class Diverses {
 		foreach(self::$data as $id => $value) {
 			if (self::$dataChanged[$id]) {
 				$sql="UPDATE tr".ROUND_ID."_diverses SET value='".$value."' WHERE id='".$id."';";
-				mysql_query($sql);
+				if (!mysql_query($sql))
+					x(mysql_error());
 			}
 		}
 	}

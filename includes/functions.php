@@ -374,12 +374,28 @@ function serverzeit($load_time) {
 
 
 function connect() {
+	$co='req';
 	//zur Datenbank verbinden
-	$link = mysql_pconnect('localhost','root','localsqlpw');
+	if ($co=='online') {
+		$host='however.ch:3306';
+		$user='web375';
+		$pw='';
+		$db='usr_web375_7';
+	}
+	elseif ($co=='local'){
+		$host='localhost';
+		$user='root';
+		$pw='localsqlpw';
+		$db='traviatus';
+	}
+	elseif ($co=='req'){
+		require('db_config.php');
+	}
+	$link = mysql_connect($host,$user,$pw);
 	if (!$link)
-			{die('Verbindung nicht möglich : ' . mysql_error());}
-	if(!mysql_select_db('traviatus'))
-			{die('Fehler Datenbank konnte nicht ausgewählt werden.');}
+		die('Verbindung nicht m�glich : ' . mysql_error());
+	if(!mysql_select_db($db))
+		die('Fehler Datenbank konnte nicht ausgewählt werden.');
 }
 
 function curPageUrl() {
