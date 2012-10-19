@@ -5,7 +5,7 @@ outgame_links();
 outgame_blocks();
 
 echo'<h2>Stammindex:</h2><br>'.
-	'Der Stammindex organisiert die ganze Software in folgender Reihenfolge:';
+	'Der Stammindex (index.php im traviatus Ordner) organisiert die ganze Software in folgender Reihenfolge:';
 
 $does=array(
 	'Error reporting für PHP wird festgelegt.',

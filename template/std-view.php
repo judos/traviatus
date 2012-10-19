@@ -6,9 +6,13 @@ Outputer::links();
 Outputer::blocks();
 Outputer::menu();
 
-?>
-++PAGE++
 
+?>
+
+++PAGE++
+<?php
+//Diese divs werden irgendwo im template.html geöffnet und werden hier geschlossen
+?>
 </div></div></div></div>
 
 <!-- Dörfer -->

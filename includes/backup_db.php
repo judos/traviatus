@@ -20,9 +20,10 @@ function sql_multiQuery($sql) {
 }
 
 function db_getVersion() {
+	global $path;
 	$ver=array();
 	$ver['used']=Diverses::get('db_version');
-	$arr=scandir('db/');
+	$arr=scandir($path.'db/');
 	$cur=$arr[sizeof($arr)-1];
 	$ver['current']=(int)substr($cur,10,2);
 	return $ver;

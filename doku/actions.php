@@ -23,7 +23,7 @@ TEXT;
 $table=<<<TABLE
 <table class="tbg" cellpadding="2" cellspacing="1">
 <tr class="cbg1"><td colspan="2">Übertragung der Variabeln</td></tr>
-<tr class="s7"><td>\$_GET[\$x]</td><td>Via URL</td></tr>
+<tr class="s7"><td>\$_GET[\$x]<br />Ausnahme: \$_GET['do']</td><td>Via URL</td></tr>
 <tr class="s7"><td>\$msg</td><td>Via URL</td></tr>
 <tr class="s7"><td>\$var1 - \$var4</td><td>Via Datenbank</td></tr>
 </table><br>
