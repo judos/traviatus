@@ -13,13 +13,15 @@ $dorfer=$login_user->dorfer();
 ?>
 <p class="txt_menue">
 <?php
-$seiten=array(''=>'Übersicht','2'=>'Rohstoffe','3'=>'Lager','4'=>'KP','5'=>'Truppen');
-foreach($seiten as $s=>$name) {
-	$c='';
-	if ($_GET['s']==$s) $c=' class="selected"';
-	echo'<a href="?page=dorf3&s='.$s.'"'.$c.'>'.$name.'</a> ';
-	if ($name!=end($seiten)) echo'| ';
 
+$s=saveGet('s',1);
+
+$seiten=array('1'=>'Übersicht','2'=>'Rohstoffe','3'=>'Lager','4'=>'KP','5'=>'Truppen');
+foreach($seiten as $index=>$name) {
+	$c='';
+	if ($s==$index) $c=' class="selected"';
+	echo'<a href="?page=dorf3&s='.$index.'"'.$c.'>'.$name.'</a> ';
+	if ($name!=end($seiten)) echo'| ';
 }
 
 echo'</p>';
@@ -27,7 +29,7 @@ echo'</p>';
 
 
 
-if ($_GET['s']==5) {	//Truppen
+if ($s==5) {	//Truppen
   ?>
   <table class="tbg" cellpadding="2" cellspacing="1">
   <tbody><tr class="rbg">
@@ -73,7 +75,7 @@ if ($_GET['s']==5) {	//Truppen
 }
 
 
-if ($_GET['s']==4) {	//Kulturpunkte KP
+if ($s==4) {	//Kulturpunkte KP
 	?>
   <table class="tbg" cellpadding="2" cellspacing="1">
   <tbody><tr class="rbg"><td colspan="6">Kulturpunkte</td></tr>
@@ -109,7 +111,7 @@ if ($_GET['s']==4) {	//Kulturpunkte KP
         $auftrag=$auftrage[0];
         $dauer=strtotime($auftrag->get('zeit'))-time();
         $fest=Fest::getById($auftrag->get('id'));
-        $totkp+=$fest->get('kp');
+        $totkp+=$fest->kp($dorf);
         echo'<span id="timer'.$timerNr.'">'.zeit_dauer($dauer).'</span>';
         $timerNr++;
       }
@@ -153,7 +155,7 @@ if ($_GET['s']==4) {	//Kulturpunkte KP
 
 
 
-if ($_GET['s']==3) {	//Lager
+if ($s==3) {	//Lager
 	?>
   <table class="tbg" cellpadding="2" cellspacing="1">
   <tbody><tr class="rbg"><td colspan="7">Lager</td></tr>
@@ -214,7 +216,7 @@ if ($_GET['s']==3) {	//Lager
 
 
 
-if ($_GET['s']==2) {	//Rohstoffe
+if ($s==2) {	//Rohstoffe
   ?>
   <table class="tbg" cellpadding="2" cellspacing="1">
   <tbody><tr class="rbg"><td colspan="6">Rohstoffe</td></tr>
@@ -252,7 +254,7 @@ if ($_GET['s']==2) {	//Rohstoffe
 }
 
 
-if ($_GET['s']=='') { 	//Übersicht
+if ($s==1) { 	//Übersicht
 
   echo'<table class="tbg" cellpadding="2" cellspacing="1">
     <tbody><tr class="rbg"><td colspan="6">Übersicht</td></tr>

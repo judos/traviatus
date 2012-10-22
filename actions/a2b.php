@@ -1,8 +1,7 @@
 <?php
 if ($_GET['do']=='sendtroops') {
-	$einheiten=$login_user->TruppenTypen();
-	foreach($einheiten as $einheit) {
-		$id=$einheit->get('id');
+	$einheiten=$login_user->truppenTypen();
+	foreach($einheiten as $id => $einheit) {
 		$soldaten[$id]=$_POST['t'.$id];
 	}
 	

@@ -3,6 +3,9 @@ if (!isset($form)) {
 	$form='recrut_kaserne';
 	$typ=1;
 }
+if (!isset($showtyp))
+	$showtyp=$typ;
+
 ?>
 
 <script type="text/javascript">
@@ -74,7 +77,7 @@ echo'</tbody></table><p>';
 Outputer::button('ok','b');
 
 //Bestehende Produktion anzeigen
-$auftrage=$login_dorf->auftrage($typ);
+$auftrage=$login_dorf->auftrage($showtyp);
 if (!empty($auftrage)) {
 	echo'<table class="tbg" cellpadding="2" cellspacing="1">
 		<tbody><tr class="cbg1">

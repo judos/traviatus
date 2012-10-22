@@ -72,7 +72,7 @@ if (!isset($_GET['mdo'])) {
 <p align="center">
 
 <?php
-if (Diverses::get('register')=='yes') {
+if (Diverses::get('register')==1) {
 	Outputer::button('s1','anm');
 }
 else
@@ -96,7 +96,7 @@ $email=$_POST['email'];
 $volk=$_POST['vid'];
 
 
-if (Diverses::get('register')=='yes')
+if (Diverses::get('register')==1)
 {
 	if (Spieler::exists($name)>0 or $pw=='' or $email=='')
 	{
@@ -109,30 +109,34 @@ if (Diverses::get('register')=='yes')
 		if ($email=='')
 			echo'<p align="center" class="f10 e">
 				Keine Email Adresse angegeben.</p>';
-		echo'<br><a href="anmelden.php">zurÃ¼ck</a></p>';
+		echo'<br><a href="?page=anmelden">zurück</a></p>';
 	}
 	else
 	{
 		$fehler=0;
 		$spieler=Spieler::create($name,md5($pw),$email,$volk);
-		if ($spieler===NULL) $fehler=1;
+		if ($spieler===NULL)
+			$fehler='Spieler konnte nicht erstellt werden.';
 		if ($fehler==0) {
 			$pos=Land::findFree();
-			if ($pos===NULL) $fehler=2;
+			if ($pos===NULL)
+				$fehler='Kein freies Land gefunden.';
 		}
 		if ($fehler==0) {
 			$dorf=Dorf::create($pos['x'],$pos['y'],
 								$spieler->get('id'),1);
-			if ($dorf===NULL) $fehler=3;
+			if ($dorf===NULL)
+				$fehler='Startdorf konnte nicht erstellt werden.';
 		}
 		if ($fehler==0) {
 			echo'<p align="center" class="f10 e">
-				Du wurdest erfolgreich angemeldet.</p>';
+				Du wurdest erfolgreich angemeldet.</p>
+				<a href="?page=login">Zum login</a>';
 		}
 		else {
 			$spieler->delete();
 			echo'<p align="center" class="f10 e">
-				Ein Fehler ist aufgetreten. Code :'.$fehler.'</p>';
+				Ein Fehler ist aufgetreten. '.$fehler.'</p>';
 		}
 	}
 }

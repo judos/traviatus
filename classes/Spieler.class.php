@@ -27,18 +27,14 @@ class Spieler {
 		$this->changed=false;
 		foreach($this->data as $key=>$value)
 			$this->attChanged[$key]=false;
-		if (self::$objekte[$id]!==NULL)
+		if (isset(self::$objekte[$id]))
 			new Errorlog('new Spieler, Spieler existierte bereits.');
 		self::$objekte[$id]=$this;
 		self::$objekte[$data['name']]=$this;
 	}
 
 	public function held() {
-		$helden=Held::getByUser($this);
-		$helden_lebend=ArrayObjectsContaining($helden,'lebt',true);
-		if (empty($helden_lebend)) return NULL;
-		$held=$helden_lebend[0];
-		return $held;
+		return Held::getAliveOrNonByUser($this);
 	}
 
 	public function loscheEinladung($id) {
@@ -111,6 +107,9 @@ class Spieler {
 			$typ=TruppenTyp::getById($id);
 			$typen[$id]=$typ;
 		}
+		$held=Held::getAliveOrNonByUser($this);
+		if ($held!=null)
+			$typen['hero']=$held;
 		return $typen;
 	}
 
@@ -227,7 +226,7 @@ class Spieler {
 
 	private static $konfigHashMap=array('berichte'=>0,'geb_16'=>1,'geb_19'=>2,'geb_20'=>3,
 		'geb_21'=>4,'geb_17'=>5,'geb_37'=>6,'geb_25'=>7,'geb_26'=>7,'geb_24'=>8,
-		'dorf2_stufen_anzeige'=>9);
+		'geb_29'=>9,'geb_30'=>10,'dorf2_stufen_anzeige'=>11);
 
 	public function getKonfig($att) {
 		
@@ -280,6 +279,8 @@ class Spieler {
 		$sql="DELETE FROM tr".ROUND_ID."_".self::$db_table."
 			WHERE id='".$this->id."';";
 		$result=mysql_query($sql);
+		unset(self::$objekte[$this->id]);
+		unset(self::$objekte[$this->get('name')]);
 	}
 
 	public function save() {
@@ -298,6 +299,7 @@ class Spieler {
 		
 		$sql=substr($sql,0,-4);
 		mysql_query($sql);
+		$this->changed=false;
 	}
 
 	public static function saveAll() {
@@ -390,29 +392,21 @@ class Spieler {
 	}
 
 	public static function create($name,$pw,$email,$volk) {
-		$id=self::getFreeId();
 
 		$std_konfig=self::getStdKonfig();
 
 
 		$sql="INSERT INTO tr".ROUND_ID."_user
-				(id,name,pw,email,volk, research,weapons, arms,ally,ally_rang,konfig,lastupdate)
+				(name,pw,email,volk, research,weapons, 
+				arms,ally,ally_rang,konfig,last_update)
 			VALUES
-				('$id','$name','$pw','$email','$volk',
+				('$name','$pw','$email','$volk',
 			 	'1:0:0:0:0:0:0:0:0:0','0:0:0:0:0:0:0:0:0:0',
 				'0:0:0:0:0:0:0:0:0:0', 0,0, '$std_konfig', '".now()."');";
 		$result=mysql_query($sql);
-		return self::getById($id);
+		return self::getById(mysql_insert_id());
 	}
 
-	public static function getFreeId() {
-		$sql="SELECT id FROM tr".ROUND_ID."_user
-			ORDER BY id DESC LIMIT 1;";
-		$result=mysql_query($sql);
-		if (mysql_num_rows($result)==0) return 1;
-		$data=mysql_fetch_assoc($result);
-		return $data['id']+1;
-	}
 }
 
 ?>

@@ -10,16 +10,18 @@ $rang=$ally->getRang($login_user->get('ally_rang'));
 echo'<h1>'.$ally->get('name').'</h1>';
 Outputer::allianzMenu();
 
-if (@$_GET['s']==='leave') {
+$s=saveGet('s','');
+
+if ($s==='leave') {
 	echo'<p>Bist du sicher, dass du die Allianz verlassen möchtest?</p>
 		<a href="?page=allianz-options&do=leave" style="color:red;">
 			Verlassen</a>&nbsp;
 		<a href="?page=allianz-options">Abbrechen</a>
 		';
 }
-elseif (isset($_GET['s'])) {
-	if ($rang===NULL or $rang->get($_GET['s'])==0) unset($_GET['s']);
-	if ($_GET['s']=='ally_auflosen') {
+elseif ($s!='') {
+	if ($rang===NULL or $rang->get($s)==0) $s='';
+	if ($s=='ally_auflosen') {
 		echo'<p>Bist du sicher, dass du die <u>Allianz auflösen</u> möchtest?
 			<br>Alle Mitglieder werden aus der Allianz entlassen und die
 			Allianz mitsamt Forum und allen Einstellungen gelöscht.</p>
@@ -28,7 +30,7 @@ elseif (isset($_GET['s'])) {
 		<a href="?page=allianz-options">Abbrechen</a>
 		';
 	}
-	if ($_GET['s']=='user_einladen') {
+	if ($s=='user_einladen') {
 		echo'<form method="post" action="?page=allianz-options&'.
 				'do=user_einladen&s=user_einladen">
 			<table cellpadding="2" cellspacing="1" class="tbg"
@@ -56,7 +58,7 @@ elseif (isset($_GET['s'])) {
 			echo'</table>';
 		}
 	}
-	if ($_GET['s']=='user_entlassen') {
+	if ($s=='user_entlassen') {
 		echo'<form method="post" action="?page=allianz-options&'.
 				'do=user_entlassen&s=user_entlassen">
 			<table cellpadding="2" cellspacing="1" class="tbg"
@@ -73,19 +75,22 @@ elseif (isset($_GET['s'])) {
 		echo'</select></td></tr></table><p>'.@$msg.'</p>';
 		Outputer::button('ok','ok');
 	}
-	if ($_GET['s']=='rundmail') {
+	if ($s=='rundmail') {
 		gotoP('nachrichten-send&name=@ally');
 	}
-	if ($_GET['s']=='beschreibung_andern') {
+	if ($s=='beschreibung_andern') {
 		require_once('ally/beschreibungAndern.php');
 	}
-	if ($_GET['s']==='rang_vergeben') {
+	if ($s=='rang_vergeben') {
 		require_once('ally/rangVergeben.php');
+	}
+	if ($s=='ally_forum') {
+		echo'Wird nicht implementiert werden.';
 	}
 }
 
 
-if (!isset($_GET['s'])) {
+if ($s=='') {
 	echo'<table cellpadding="2" cellspacing="1" class="tbg"
 		style="width:50%;"><tbody>
 		<tr class="rbg"><td colspan="3">Optionen</td></tr>';

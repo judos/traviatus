@@ -134,20 +134,20 @@ function needed_login() {
 
 //Zum debuggen verwendet
 //Call this function to get an error log with stacktrace in the bottom panel
+function xx() {
+	$array = func_get_args();
+	foreach($array as $var)
+		var_dump($var);
+}
 function x() {
 	global $error;
 	global $error_count;
-	global $x_full;
-	global $x_rec;
 	global $error_output_fatal;
 	
 	$tmp='';
-	if (!isset($x_rec)) $x_rec=0;
 	$nr=0;
 	$array = func_get_args();
-	if ($x_rec==0) $tmp.='<br>';
 	$c='DDD';
-	if ($x_rec>0) $c='FFF';
 	$tmp.='<div style="border:1px #999 solid; background-color:#'.$c.'; '.
 		'padding:5px 10px 5px 10px; margin:3px 30px 0px 10px;" align="center">';
 	foreach($array as $var) {
@@ -168,11 +168,9 @@ function x() {
 				$tmp.='ArrayObjects ('.sizeof($var).')';
 				if (!empty($var)) $tmp.=':';
 				foreach($var as $key=>$object) {
-					$x_rec++;
 					$tmp.='<br><table><tr><td valign="top"><p style="padding:5px; margin:3px 0px 0px 10px;">['.$key.'] =></p></td><td>';
-					x($object);
+					$tmp.=$object->toString();
 					$tmp.='</td></tr></table>';
-					$x_rec--;
 				}
 			}
 			else{

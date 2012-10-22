@@ -10,7 +10,6 @@ $dy=$login_dorf->get('y');
 
 Updater::spielerAllies();
 Outputer::statistikenMenu();
-$ally=Allianz::getById($login_user->get('ally'));
 
 if (isset($_GET['start']))
 	$start=$_GET['start'];

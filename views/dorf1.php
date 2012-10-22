@@ -57,7 +57,7 @@ if (!empty($x)) {
 	sortArray2($x,'first','asc');
 	foreach($x as $typ => $array) {
 		echo'<tr><td><a href="?page=build&gid=39">
-			<img src="img/un/a/'.$typ.'.gif" border="0"></a></td>
+			<img src="img/un/a/'.$typ.'.gif" title="'.$array['volltext'].'" border="0"></a></td>
 			<td><b class="c'.$array['farbe'].' f10"
 				align="right">» '.$array['anz'].'</b></td>
 			<td><b class="c'.$array['farbe'].' f10">'.$array['text'].'</b></td>

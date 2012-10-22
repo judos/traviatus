@@ -5,13 +5,16 @@ $helden=Held::getByUser($login_user);
 $helden_lebend=ArrayObjectsContaining($helden,'lebt',true);
 $helden_tot=ArrayObjectsContaining($helden,'lebt',false);
 
+$s=saveGet('s','');
+
 if (empty($helden_lebend)) {	//Neuen Held ausbilden oder wiederbeleben
 
 	$truppe=$login_dorf->eigeneTruppe();
 	$soldaten=$truppe->soldatenId();
 	$als_held_ausbildbar=array();
+	
 	foreach($soldaten as $tid => $anz) {
-		if ($anz>0) {
+		if ($anz>0 and $tid!='hero') {
 			$typ=TruppenTyp::getById($tid);
 			if ($typ!==NULL and $typ->get('typ')<3)
 				array_push($als_held_ausbildbar,$typ);
@@ -122,80 +125,83 @@ else {
 		$held=$helden_lebend[0];
 
 		//Punkteverteilung und Stärke des Helden anzeigen
-		if (!isset($_GET['s'])) {
-      $typ=TruppenTyp::getById($held->get('troop_id'));
+		if ($s=='') {
+			$typ=TruppenTyp::getById($held->get('troop_id'));
 
-      $text=array('Angriff','Verteidigung','Off-Bonus','Def-Bonus','Regeneration');
-      $funktion=array('angriff','verteidigung','offwert','deffwert','regeneration');
-      $anzeige=array('$0','$0/$1','$0%','$0%','$0/Tag');
-      $punkte=$held->punkteVerteilt();
-      $freie_punkte=$held->freiePunkte();
-      $max_moglich=$held->level()*5+5;
-      if (max($punkte)+$freie_punkte+5<$max_moglich) $max_moglich=max($punkte)+$freie_punkte+5;
+			$text=array('Angriff','Verteidigung','Off-Bonus','Def-Bonus','Regeneration');
+			$funktion=array('angriff','verteidigung','offwert','deffwert','regeneration');
+			$anzeige=array('$0','$0/$1','$0%','$0%','$0%/Tag');
+			$punkte=$held->punkteVerteilt();
+			$freie_punkte=$held->freiePunkte();
+			$max_moglich=$held->level()*5+5;
+			if (max($punkte)+$freie_punkte+5<$max_moglich)
+				$max_moglich=max($punkte)+$freie_punkte+5;
 
-      echo'<table class="tbg" cellpadding="2" cellspacing="1">
-        <tbody><tr>
-        <td colspan="5" class="rbg">
-          <a href="?page=build&gid='.$gid.'&s=rename">'.$held->get('name').'</a> Stufe '.$held->level().'
-          <span class="info">('.$typ->get('name').')</span></td>
-        </tr>';
+			echo'<table class="tbg" cellpadding="2" cellspacing="1">
+				<tbody><tr>
+				<td colspan="5" class="rbg">
+				<a href="?page=build&gid='.$gid.'&s=rename">'.$held->get('name').' Stufe '.$held->level().'
+				<span class="info">('.$typ->get('name').')</span></a></td>
+				</tr>';
 
-      foreach($text as $index=>$titel) {
-        $link='<span class="c">(<b>+</b>)</span>';
-        if ($freie_punkte>0) $link='<a href="?page=build&gid='.$gid.'&do=held_boni&p='.$index.'">(+)</a>';
-        $werte=$held->$funktion[$index]();
-        $anzeige_aktuell=$anzeige[$index];
-        if (!is_array($werte))
-          $werte=array($werte);
+			foreach($text as $index=>$titel) {
+				$link='<span class="c">(<b>+</b>)</span>';
+				if ($freie_punkte>0)
+					$link='<a href="?page=build&gid='.$gid.'&do=held_boni&p='.$index.'">(+)</a>';
+				$werte=$held->$funktion[$index]();
+				
+				$anzeige_aktuell=$anzeige[$index];
+				if (!is_array($werte))
+					$werte=array($werte);
 
-        $anzeige_aktuell=str_replace('$0',$werte[0],$anzeige_aktuell);
-        $anzeige_aktuell=str_replace('$1',$werte[1],$anzeige_aktuell);
+				$anzeige_aktuell=str_replace('$0',$werte[0],$anzeige_aktuell);
+				if (sizeof($werte)>1)
+					$anzeige_aktuell=str_replace('$1',$werte[1],$anzeige_aktuell);
 
-        echo'<tr>
-          <td class="s7">'.$titel.':</td>
-          <td class="s7" width="70">'.$anzeige_aktuell.'</td>
-          '.draw_balken($punkte[$index]/$max_moglich).'
-          <td width="35">'.$link.'</td>
-          <td width="35">'.$punkte[$index].'</td>
-        </tr>';
-      }
-      echo'<tr>
-        <td colspan="5" class="empty"></td>
-        </tr><tr>
-        <td class="s7" title="bis zur nächsten Stufe">Erfahrung:</td>
-        <td class="s7">'.$held->erfahrungProzent().'%</td>
-        '.draw_balken($held->erfahrungProzent()/100).'
-        <td></td>
-        <td><b>'.$freie_punkte.'</b></td>
-        </tr>
-        </tbody>
-        </table>';
-      if ($held->level()==0) {
-        echo'<p>Bei Stufe <b>0</b> kannst du die Punkteverteilung deines Helden noch ändern.<br>
-          <a href="?page=build&gid='.$gid.'&do=hero_reset_bonus">» Punkte neu verteilen</a></p>';
-      }
-      echo'<p>Dein Held besitzt <b>'.$held->get('hp').'</b>% seiner Lebenspunkte<br>
-        und hat für dieses Dorf bisher <b>0</b>
-        <a href="?page=build&gid='.$gid.'&s=lands">Ländereien</a> erobert.</p>';
-    }
-    if ($_GET['s']=='rename') {
-    	echo'<form method="post" action="?page=build&gid='.$gid.'&do=hero_rename">
-    		<table class="tbg" style="width:300px;" cellpadding="2" cellspacing="1" >
-        <tbody>
-        <tr class="rbg"><td colspan="2">Namen ändern</td></tr>
-        <tr>
-        <td class="s7">Name:</td>
-        <td class="s7"><input class="fm" style="width:93%" name="rename" value="'.$held->get('name').'" maxlength="24"></td>
-        </tr></tbody>
+				echo'<tr>
+					<td class="s7">'.$titel.':</td>
+					<td class="s7" width="70">'.$anzeige_aktuell.'</td>
+					'.draw_balken($punkte[$index]/$max_moglich).'
+					<td width="35">'.$link.'</td>
+					<td width="35">'.$punkte[$index].'</td>
+					</tr>';
+			}
+			echo'<tr>
+				<td colspan="5" class="empty"></td>
+				</tr><tr>
+				<td class="s7" title="bis zur nächsten Stufe">Erfahrung:</td>
+				<td class="s7">'.$held->erfahrungProzent().'%</td>
+				'.draw_balken($held->erfahrungProzent()/100).'
+				<td></td>
+				<td><b>'.$freie_punkte.'</b></td>
+				</tr>
+				</tbody>
+				</table>';
+			if ($held->level()==0) {
+				echo'<p>Bei Stufe <b>0</b> kannst du die Punkteverteilung deines Helden noch ändern.<br>
+					<a href="?page=build&gid='.$gid.'&do=hero_reset_bonus">» Punkte neu verteilen</a></p>';
+			}
+			echo'<p>Dein Held besitzt <b>'.$held->get('hp').'</b>% seiner Lebenspunkte<br>
+				und hat für dieses Dorf bisher <b>0</b>
+				<a href="?page=build&gid='.$gid.'&s=lands">Ländereien</a> erobert.</p>';
+		}
+		if ($s=='rename') {
+			echo'<form method="post" action="?page=build&gid='.$gid.'&do=hero_rename">
+				<table class="tbg" style="width:300px;" cellpadding="2" cellspacing="1" >
+				<tbody>
+				<tr class="rbg"><td colspan="2">Namen ändern</td></tr>
+				<tr>
+				<td class="s7">Name:</td>
+				<td class="s7"><input class="fm" style="width:93%" name="rename" value="'.$held->get('name').'" maxlength="24"></td>
+				</tr></tbody>
+				</table><p>';
+			Outputer::button('ok','ok');
+			echo'</p></form>';
+		}
 
-        </table><p>';
-      Outputer::button('ok','ok');
-      echo'</p></form>';
-    }
-
-    //Ländereien Infos anzeigen
-    if ($_GET['s']=='lands') {
-    	echo'<h2>Was sind Ländereien (Oasen)?</h2>
+		//Ländereien Infos anzeigen
+		if ($s=='lands') {
+			echo'<h2>Was sind Ländereien (Oasen)?</h2>
 				Auf der Karte um dein Dorf gibt es Wälder, Lehmgebiete,
 				Berge und Getreidefelder. Diese Rohstoffvorkommen kannst
 				du mit deinem Helden annektieren und damit die Rohstoffproduktion
@@ -211,8 +217,9 @@ else {
 				Pro Angriff im Intervall von min. 10 Minuten 10% der im Heimatdorf
 				befindlichen Rohstoffe. Daher kann es sinnvoll sein, eine Oase wieder zu
 				verlassen um dem Gegner weniger angriffsfläche zu geben. Sobald du mindestens
-				eine Oase hast, findest du diese Option anstatt der Hilfe an dieser Stelle.<br>';
-    }
+				eine Oase hast, findest du diese Option anstatt der Hilfe an dieser Stelle.<br>'.
+				'<a href="?page=build&highest=37">Zurück</a>';
+		}
 	}
 }
 

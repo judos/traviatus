@@ -378,7 +378,7 @@ class Outputer {
 		$highestG=$login_dorf->highestGid();
 		
 		$arr=array();
-		$gebeude=array(16,19,20,21,17,37,25,26,24);
+		$gebeude=array(16,19,29,20,30,21,17,37,25,26,24);
 		
 		//aktuell angewähltes gebäude gelb markieren
 		$gid=null;

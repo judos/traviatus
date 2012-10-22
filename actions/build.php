@@ -134,7 +134,8 @@ if ($do=='revive_hero') {
 
 //Truppen rekrutieren oder Held ausbilden
 if ($do=='recrut_kaserne' or $do=='recrut_stall' or $do=='recrut_werkstatt' or
-	$do=='recrut_pr' or $do=='recrut_fallen' or $do=='recrut_hero') {
+	$do=='recrut_pr' or $do=='recrut_fallen' or $do=='recrut_hero' or
+	$do=='recrut_gkaserne' or $do=='recrut_gstall') {
 	if ($do=='recrut_kaserne') $typ=1;
 	if ($do=='recrut_stall') $typ=2;
 	if ($do=='recrut_werkstatt') $typ=3;
@@ -145,6 +146,9 @@ if ($do=='recrut_kaserne' or $do=='recrut_stall' or $do=='recrut_werkstatt' or
 		$_POST['re']='hero';
 		$_POST['thero']=1;
 	}
+	if ($do=='recrut_gkaserne') $typ=14;
+	if ($do=='recrut_gstall') $typ=15;
+	
 	if (isset($_POST['re'])) {
 		$tid=$_POST['re'];
 		$anzahl=$_POST['t'.$tid];

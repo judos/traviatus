@@ -33,6 +33,9 @@ class Dorf {
 
 	public function truppenBewegungen() {
 		$result=array();
+		$typen=array('def1','att1','def2','att2');
+		foreach($typen as $typ)
+			$result[$typ]['anz']=0;
 		//Truppenbewegungen
 		$truppenmove1=TruppeMove::getByZiel($this->x,$this->y);
 		$truppenmove2=TruppeMove::getByStart($this->x,$this->y);
@@ -63,10 +66,10 @@ class Dorf {
 		if (!empty($truppenmove2)) {
 			foreach($truppenmove2 as $move) {
 				if ($move->get('user')==$this->get('user')) {
-				  $ak=$move->get('aktion');
-			  unset($typ);
-			  if ($ak==2) $typ='def2';
-			  if ($ak>2) $typ='att2';
+					$ak=$move->get('aktion');
+					unset($typ);
+					if ($ak==2) $typ='def2';
+					if ($ak>2) $typ='att2';
 					if (substr($typ,0,3)=='def') {
 						$result[$typ]['text']='Unterst.';
 						$result[$typ]['volltext']='Ausgehende Unterstützung';
@@ -75,18 +78,20 @@ class Dorf {
 						$result[$typ]['text']='Angriff';
 						$result[$typ]['volltext']='Ausgehender Angriff';
 					}
-			  if (isset($typ)) {
-				$result[$typ]['anz']++;
-				if (!isset($result[$typ]['first'])) $result[$typ]['first']=strtotime($move->get('ziel_zeit'));
-				if (strtotime($move->get('ziel_zeit'))<$result[$typ]['first'])
-				  $result[$typ]['first']=strtotime($move->get('ziel_zeit'));
-			  }
-			}
+					if (isset($typ)) {
+						$result[$typ]['anz']++;
+						if (!isset($result[$typ]['first'])) $result[$typ]['first']=strtotime($move->get('ziel_zeit'));
+						if (strtotime($move->get('ziel_zeit'))<$result[$typ]['first'])
+							$result[$typ]['first']=strtotime($move->get('ziel_zeit'));
+					}
+				}
 			}
 		}
 		$farben=array('def1'=>3,'def2'=>4,'att1'=>5,'att2'=>4);
 		foreach($result as $typ => &$arr) {
 				$arr['farbe']=$farben[$typ];
+				if ($result[$typ]['anz']==0)
+					unset($result[$typ]);
 		}
 		return $result;
 	}

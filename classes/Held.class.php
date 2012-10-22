@@ -114,6 +114,11 @@ class Held {
 		$exp=$this->get('erfahrung');
 		return floor((-50+sqrt(2500+$exp*200))/100);
 	}
+	
+	public function getTruppenTyp() {
+		$id=$this->get('troop_id');
+		return TruppenTyp::getById($id);
+	}
 
 	public function toString() {
 		return 'Held: keyId: '.$this->id.', Name: '.$this->get('name').', user: '.$this->get('user').
@@ -121,13 +126,15 @@ class Held {
 	}
 
 	public function get($att) {
+		//Anlehnung an id der TruppenTyp Klasse
+		if ($att=='id')
+			return 'hero';
 		return $this->data[$att];
 	}
 
 	public function set($att,$value) {
 		$this->data[$att]=$value;
 		$this->changed=true;
-
 	}
 
 	public function save() {
@@ -148,9 +155,9 @@ class Held {
 	public static function create($user,$tid) {
 		$helden=self::getByUser($user);
 		$helden_lebend=ArrayObjectsContaining($helden,'lebt',true);
-    if (!empty($helden_lebend)) return false;
+		if (!empty($helden_lebend)) return false;
 		$sql="INSERT INTO tr".ROUND_ID."_".self::$db_table." (user,name,lebt,troop_id,erfahrung,hp,bonus)
-			VALUES (".$user->get('id').",'',1,$tid,0,100,'0:0:0:0:0');";
+			VALUES (".$user->get('id').",'Unbekannter Held',1,$tid,0,100,'0:0:0:0:0');";
 		$result=mysql_query($sql);
 		unset(self::$loaded[mysql_insert_id()]);
 		self::loadById(mysql_insert_id());
@@ -164,6 +171,14 @@ class Held {
 				}
 			}
 		}
+	}
+	
+	public static function getAliveOrNonByUser($user) {
+		$arr=self::getByUser($user);
+		foreach($arr as $held)
+			if ($held->get('lebt')==1)
+				return $held;
+		return null;
 	}
 
 	public static function getByUser($user) {
@@ -193,7 +208,7 @@ class Held {
 					new Held($id,$data);
 				}
 			}
-			self::$loaded[$user]=true;
+			self::$loaded_user[$user]=true;
 		}
 	}
 
@@ -205,7 +220,7 @@ class Held {
 	}
 
 	protected static function loadByID($id) {
-		if (!self::$loaded[$id]) {
+		if (!isset(self::$loaded[$id])) {
 			self::$loaded[$id]=true;
 			$sql="SELECT * FROM tr".ROUND_ID."_".self::$db_table."
 				WHERE keyid=$id;";

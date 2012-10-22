@@ -12,7 +12,7 @@ if (isset($_GET['highest'])) {
 	$highest=$login_dorf->highestGid();
 	$gid=$highest[$_GET['highest']];
 
-	//Palast statt Residenz suchen
+	//Palast statt Residenz suchen und umgekehrt
 	if ($gid==0 and $_GET['highest']==25) $gid=$highest[26];
 	if ($gid==0 and $_GET['highest']==26) $gid=$highest[25];
 
@@ -265,6 +265,20 @@ if (($gid<19) or ($gid>18 AND $id>0)) {
 				<td><b>'.$ntragen.'</b> Einheiten</td></tr>
 				</tbody></table>';
 		}
+		//Grosse Kaserne
+		elseif( $id==29){
+			$form='recrut_gkaserne';
+			$typ=1;
+			$showtyp=14;
+			require('geb/kaserne.php');
+		}
+		//Grosser Stall
+		elseif ($id==30){
+			$form='recrut_gstall';
+			$typ=2;
+			$showtyp=15;
+			require('geb/kaserne.php');
+		}
 		//Mauern und Wälle
 		elseif ($id>=31 and $id<=33) {
 			$schutzbonus=$login_dorf->mauerSchutzbonus();
@@ -328,6 +342,7 @@ if (($gid<19) or ($gid>18 AND $id>0)) {
 
 	//Ausbau des Gebäudes
 	$kosten=$gebeude->baukosten($nachste_stufe);
+	
 	if ($stufe<$max_stufe) {
 		echo'<p style="margin-bottom:2px;margin-top:20px;"><b>Kosten</b> für Ausbau auf Stufe '.
 			$nachste_stufe.':</p><table class="f10"><tbody><tr><td>

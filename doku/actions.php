@@ -32,6 +32,12 @@ TABLE;
 $text2=<<<TEXT2
 Nachdem die Aktion abgearbeitet wurde, wird automatisch zur normalen View Seite weitergeleitet.
 D.h. dem Aktions-skript bleibt zur Erfolgs- oder Fehlermeldung einzig die Rückgabe via der Variabeln.
+
+Zu Debugging Zwecken sollte im Stammindex die automatische Weiterleitung verhindert werden.
+Ansonsten sieht man Fehlermeldungen die mit der Funktion x() erzeugt werden nicht.
+Dazu einfach die Variable \$action_forwarding im Stammindex auf false setzen.
+
+Falls in einer Actionsdatei ein Objekt einer beliebigen Klasse verändert wird, muss am Ende global_save() aufgerufen werden damit die Objekte ihre Änderungen auch in der DB sichern.
 TEXT2;
 
 echo t($text).$table.t($text2);

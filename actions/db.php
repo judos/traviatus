@@ -5,7 +5,6 @@ if (isset($_GET['do'])){
 		$ver=@db_getVersion();
 		Diverses::set('db_version',$ver['used']+1);
 		db_saveNewVersion();
-		global_save();
 		$msg='Die VersionNr. der DB wurde angepasst und ein dump File erstellt.';
 	}
 	if($_GET['do']=='update'){
@@ -34,7 +33,6 @@ if (isset($_GET['do'])){
 				x($arr['error'],$arr['sql']);
 		}
 		Diverses::set('db_version',$ver['current']);
-		global_save();
 		$msg='phpMyAdmin wird nach dieser Aktion erst '.
 			'nach einem Neustart wieder korrekt funktionieren!';
 	}

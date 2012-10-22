@@ -20,7 +20,7 @@ class Automessages {
 		$sql2="INSERT INTO `tr".ROUND_ID."_msg`
 			(`an`,`typ`,`neu`,`zeit`,`betreff`,`text`)
 			VALUES ('".$user->get('name')."','2','1','$zeit',
-				'$betreff','$msg');";
+				'$betreff','$text');";
 		$result2=mysql_query($sql2);
 	}
 

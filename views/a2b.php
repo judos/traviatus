@@ -8,8 +8,9 @@ Updater::dorf($login_dorf);
 $sx=$login_dorf->get('x');
 $sy=$login_dorf->get('y');
 
+$s=saveGet('s','');
 
-if (!isset($_GET['s'])) {
+if ($s=='') {
 	$dname=$_POST['dname'];
 	$x=$_POST['x'];
 	$y=$_POST['y'];
@@ -20,13 +21,24 @@ if (!isset($_GET['s'])) {
 	$y=$result['y'];
 	$dorf=$result['dorf'];
 
-	//Umleiten
+	//Umleiten wenn Dorf nicht gefunden wurde oder Ziel ungültig ist
 	$_GET['va']=implode(':',$_POST);
 	$_GET['keys']=implode(':',array_keys($_POST));
-	if ($msg!='') gotoP('build&gid=39&s=2');
-
-	$anzahl=0;
+	
 	$aktion=$_POST['c'];
+	
+	if ($msg==''){
+		if ($dorf->user() == $login_user){
+			if ($aktion==3 or $aktion==4){
+				$msg='Du kannst nicht dein eigenes Dorf angreiffen!';
+			}
+		}
+	}
+	
+	if ($msg!='') {
+		gotoP('build&gid=39&s=2');
+	}
+	
 	$spio=1;
 	//Aktionen:
 	//1=Dorf gründen 2=Unterstützung 3=Angriff 4=Raubzug 5=Spionieren
@@ -35,27 +47,26 @@ if (!isset($_GET['s'])) {
 	//Truppen anschauen
 	$eigeneTruppe=Truppe::getByXYU($sx,$sy,$login_user);
 	$eigeneSoldaten=$eigeneTruppe->soldatenId();
-
 	$einheiten=$login_user->truppenTypen();
-	foreach($einheiten as $einheit) {
-		$id=$einheit->get('id');
+	
+	//Truppen zählen, Spionage möglichkeit testen
+	
+	foreach($einheiten as $id=>$einheit) {
 		$soldaten[$id]=(int)$_POST['t'.$id];
+		if ($id=='hero')
+			$einheit=$einheit->getTruppenTyp();
 
 		if ($soldaten[$id]>0) {
-
 			if ($soldaten[$id]>$eigeneSoldaten[$id])
 				$soldaten[$id]=$eigeneSoldaten[$id];
-			$anzahl+=$soldaten[$id];
 
 			if ($spio==1 and $einheit->get('spio')==0)
 				$spio=0;
-
-			if (!isset($speed))
-				$speed=$einheit->get('speed');
-			elseif ($einheit->get('speed')<$speed)
-				$speed=$einheit->get('speed');
 		}
 	}
+	$anzahl=array_sum($soldaten);
+	$speed=TruppeMove::maxSpeed($soldaten,$login_user);
+	
 	if ($spio==1) $aktion=5;
 	if ($anzahl==0) {
 		$msg='Es wurden keine Truppen ausgewählt';
@@ -67,7 +78,7 @@ if (!isset($_GET['s'])) {
 	$user_n=$spieler->get('name');
 
 	$aktion_name=array(2=>'Unterstützung für',3=>'Angriff auf',
-										 4=>'Raubzug gegen',5=>'Ausspähen von');
+	                   4=>'Raubzug gegen',5=>'Ausspähen von');
 	//Weg berechnung
 	$weg=sqrt(pow($x-$sx,2)+pow($y-$sy,2));
 
@@ -89,7 +100,7 @@ if (!isset($_GET['s'])) {
 
 	//Ausgabe
 	echo'<h1>'.$aktion_name[$aktion].' '.$dorf->get('name').'</h1>
-		<form method="POST" action="?page=a2b&do=sendtroops">
+		<form method="post" action="?page=a2b&do=sendtroops">
 		<p><table><tr><td width="11%">Ziel:</td>
 		<td class="s7">
 		<a href="?page=karte-show&x='.$x.'&y='.$y.'">'.
@@ -106,23 +117,21 @@ if (!isset($_GET['s'])) {
 		<table  cellspacing="1" cellpadding="1" class="tbg">
 		<tr class="cbg1">
 		<td width="21%"><b>&nbsp;'.$login_dorf->get('name').'</b></td>
-		<td colspan="10"><b>'.$aktion_name[$aktion].
+		<td colspan="11"><b>'.$aktion_name[$aktion].
 		' '.$dorf->get('name').'</b></td></tr>
 		<tr class="unit"><td>&nbsp;</td>';
 	//Einheiten
-	foreach($einheiten as $einheit) {
-		$id=$einheit->get('id');
+	foreach($einheiten as $id=>$einheit) {
 		echo'<td><img src="img/un/u/'.$id.'.gif"
 			title="'.$einheit->get('name').'"></td>';
 	}
 	echo'</tr><tr><td>Einheiten</td>';
-	foreach($einheiten as $einheit) {
-		$id=$einheit->get('id');
+	foreach($einheiten as $id=>$einheit) {
 		if ($soldaten[$id]==0) echo'<td class="c">0</td>';
 		else echo'<td>'.$soldaten[$id].'</td>';
 	}
 	//Ankunft
-	echo'</tr><tr class="cbg1"><td>Ankunft</td><td colspan="10">
+	echo'</tr><tr class="cbg1"><td>Ankunft</td><td colspan="11">
 		<table cellspacing="0" cellpadding="0" class="tbg">
 		<tr><td width="50%">in '.zeit_dauer($dauer).' Std.</td>
 		<td width="50%">um <span id=tp2>'.
@@ -132,8 +141,7 @@ if (!isset($_GET['s'])) {
 		<input type="hidden" name="x" value="'.$x.'">
 		<input type="hidden" name="y" value="'.$y.'">
 		<input type="hidden" name="dauer" value="'.$dauer.'">';
-	foreach($einheiten as $einheit) {
-		$id=$einheit->get('id');
+	foreach($einheiten as $id=>$einheit) {
 		echo'<input type="hidden" name="t'.$id.'"
 			value="'.$soldaten[$id].'">';
 	}
@@ -149,7 +157,7 @@ if (!isset($_GET['s'])) {
 
 
 
-if ($_GET['s']=='newvillage') {
+if ($s=='newvillage') {
 	$x=$_GET['x'];
 	$y=$_GET['y'];
 

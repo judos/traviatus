@@ -3,7 +3,10 @@ $dx=$login_dorf->get('x');
 $dy=$login_dorf->get('y');
 
 $c=' class="selected"';
-$s=$_GET['s'];
+
+$s=saveGet('s',0);
+
+
 echo'<p class="txt_menue">
 	<a href="?page=build&gid=39" '.($s==0?$c:'').'>Übersicht</a> |
 	<a href="?page=build&gid=39&s=2" '.($s==2?$c:'').'>Truppen schicken</a> |
@@ -38,7 +41,7 @@ function print_troops($dorf_name,$x,$y,$titel,$volk,
 			echo'<td class="c">?</td>';
 	}
 	if ($user_show==1) {
-		if (!isset($army['hero'])) echo'<td class="c">0</td>';
+		if ($army['hero']==0) echo'<td class="c">0</td>';
 		else	echo'<td>1</td>';
 	}
 	else
@@ -63,11 +66,16 @@ function print_troops($dorf_name,$x,$y,$titel,$volk,
 
 }
 
-if (!isset($_GET['s'])) {		//Truppen im Dorf
+if ($s==0) {		//Truppen im Dorf
 	echo'<p><b>Truppen im Dorf</b></p>';
 
 
 	$user_ids=Truppe::getUsersByXY($dx,$dy);
+	if (empty($user_ids)) {
+		$volk=$login_user->get('volk');
+		$dorf=$login_dorf;
+		print_troops($dorf->get('name'),$dorf->get('x'),$dorf->get('y'),'Eigene Truppen',$volk,null,0);
+	}
 	foreach($user_ids as $user_id) {
 		$truppe=Truppe::getByXYU($dx,$dy,$user_id);
 		$spieler=Spieler::getById($user_id);
@@ -150,7 +158,8 @@ if (!isset($_GET['s'])) {		//Truppen im Dorf
 		}
 	}
 }
-if ($_GET['s']==1) {			//Truppen im Exil
+if ($s==1) {			//Truppen im Exil
+	$userid=$login_user->get('id');
 	echo'<p><b>Truppen im Exil</b></p>';
 
 	$sql="SELECT tr".ROUND_ID."_truppen.*,tr".ROUND_ID."_dorfer.name,tr".ROUND_ID."_user.name AS name2
@@ -158,14 +167,14 @@ if ($_GET['s']==1) {			//Truppen im Exil
 		WHERE tr".ROUND_ID."_truppen.user='".$userid."' AND tr".ROUND_ID."_dorfer.user!='".$userid."'
 			AND tr".ROUND_ID."_truppen.x=tr".ROUND_ID."_dorfer.x
 			AND tr".ROUND_ID."_truppen.y=tr".ROUND_ID."_dorfer.y
-			AND tr_dorfer.user=tr_user.id;";
+			AND tr".ROUND_ID."_dorfer.user=tr".ROUND_ID."_user.id;";
 	$result=mysql_query($sql);
-	for ($i=1;$i<=mysql_num_rows($result);$i++)
-	{
+	if (mysql_num_rows($result)==0)
+		echo'Keine Truppen im Exil.';
+	for ($i=1;$i<=mysql_num_rows($result);$i++) {
 		$data=mysql_fetch_array($result);
-//					var_dump($data);
 
-		$t=split(':',$data['troops']);
+		$t=explode(':',$data['troops']);
 		for ($j=1;$j<=10;$j++)
 			$truppen[$j]=$t[$j-1];
 		$versorgung=versorgung_von_truppen($troops,$t,$spieler_volk);
@@ -174,7 +183,7 @@ if ($_GET['s']==1) {			//Truppen im Exil
 			$truppen,$versorgung);
 	}
 }
-if ($_GET['s']==2) {			//Truppen schicken
+if ($s==2) {			//Truppen schicken
 
 	$dorfer_zusatz='<a href="#" onclick="dgei(\'zx\').value=$x;dgei(\'zy\').value=$y;dgei(\'dname\').value=\'$dname\';">Ziel</a>';
 
@@ -189,9 +198,8 @@ if ($_GET['s']==2) {			//Truppen schicken
 	<form method="post" name="snd" action="?page=a2b">
 	<tbody>
 	<?php
-	$truppe=Truppe::getByXYU($dx,$dy,$login_user->get('id'));
+	$truppe=Truppe::getByXYU($dx,$dy,$login_user);
 	$soldaten=$truppe->soldatenId();
-
 	for ($row=0;$row<3;$row++) {	//Einheiten auflisten
 		echo'<tr>';
 		for ($colomn=0;$colomn<4;$colomn++) {
@@ -227,10 +235,10 @@ if ($_GET['s']==2) {			//Truppen schicken
 					<td width="35"><input class="fm" name="thero" value="'.$value.'"
 						size="2" maxlength="6" type="text" autocomplete="off"></td>
 					<td class="f8" width="70">
-					<a href="#" onclick="document.snd.t'.$id.'.value=0;
-					return false;">(0)</a></td>';
+					<a href="#" onclick="document.snd.thero.value='.$soldaten['hero'].';
+					return false;">('.$soldaten['hero'].')</a></td>';
 			}
-			else { echo'<td colspan="3">'; }
+			else { echo'<td colspan="3"></td>'; }
 		}
 		echo'</tr>';
 	}
@@ -241,8 +249,11 @@ if ($_GET['s']==2) {			//Truppen schicken
 	<tbody><tr><td valign="top" width="33%">
 	<?php
 	if (isset($arr['x'])) $_GET['x']=$arr['x'];
+	$x=saveGet('x','');
 	if (isset($arr['y'])) $_GET['y']=$arr['y'];
+	$y=saveGet('y','');
 	if (isset($arr['dname'])) $_GET['dname']=$arr['dname'];
+	$dname=saveGet('dname','');
 	$c=2;
 	if (isset($arr['c'])) $c=$arr['c'];
 	echo'<div class="f10"><input name="c" value="2" '.($c==2?'checked="checked"':'').'
@@ -253,12 +264,12 @@ if ($_GET['s']==2) {			//Truppen schicken
       type="radio">Angriff: Raubzug</div>
     </td><td valign="top"><div class="b f135">Dorf: ';
 
-	echo'<input class="fm" id="dname" name="dname" value="'.$_GET['dname'].'" size="10"
+	echo'<input class="fm" id="dname" name="dname" value="'.$dname.'" size="10"
 			maxlength="20" type="text"></div>
 		<div><i>oder</i></div><div class="b f135">';
-	echo'X: <input class="fm" id="zx" name="x" value="'.$_GET['x'].'"
+	echo'X: <input class="fm" id="zx" name="x" value="'.$x.'"
 		size="2" maxlength="4" type="text" autocomplete="off">
-			Y: <input class="fm" id="zy" name="y" value="'.$_GET['y'].'"
+			Y: <input class="fm" id="zy" name="y" value="'.$y.'"
 		size="2" maxlength="4" type="text" autocomplete="off">';
 	echo'</div></td></tr></tbody></table>
 		<p>';

@@ -30,21 +30,26 @@ function handleError($errno, $errstr, $errfile, $errline, array $errcontext){
 set_error_handler('handleError');
 
 //variablen zurücksetzen
-$blocks_shown=array();
-$blocks_hidden=array();
-$body_onload='';
-$error='';
-$error_count=0;
-$error_output_fatal=false;
+$action_forwarding=false;  //Ob nach einem Action automatisch weitergeleitet wird
+                           //Spiel-Einstellung: true
+$error_output_fatal=true; //Falls ein Fatal_Error im PHP existiert sollte dies auf
+                           // True umgeschalten werden um alle Fehler anzuzeigen
+						   //Spiel-Einstellung: false
+$title='Traviatus R'.ROUND_ID.' (beta 0.3)'; //Titel der Runde
+
+$blocks_shown=array();     //HTML-Template-Blocks die angezeigt wurden
+$blocks_hidden=array();    //HTML-Template-Blocks die verborgen wurden
+$body_onload='';           //Javascript das beim Laden ausgeführt wird
+$error='';                 //Hier werden Fehlermeldungen gespeichert
+$error_count=0;            //Hier werden Fehler gezählt
 $links='';
 $login_dorf=NULL;
 $login_user=NULL;
 $menu='';
-$page_msg='';	//Beim login mit falschen Daten wird eine Nachricht darin gespeichert
+$page_msg='';//Beim login mit falschen Daten wird eine Nachricht darin gespeichert
 $stview=0;
 $template='std';
 $timerNr=1;
-$title='Traviatus *R'.ROUND_ID.'*(beta)';
 $tooltip=1;
 unset($var1,$var2,$var3,$var4);
 
@@ -73,7 +78,9 @@ if (isset($_GET['do'])) {
 		unset($var1,$var2,$var3,$var4);
 		require('actions/'.$page.'.php');
 		unset($_GET['do']);
-		gotoP($page);
+		//global_save is executed in gotoP()
+		if($action_forwarding)
+			gotoP($page);
 	}
 }
 
@@ -165,7 +172,7 @@ if ($template===false)
 	$html=$content;
 $html=replace_special_chars($html);
 
-if ($script==0) {
+if (!isset($script) or $script==0) {
 	echo $html;
 }
 

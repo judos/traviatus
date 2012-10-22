@@ -183,7 +183,8 @@ class Truppe {
 
 	public static function getString($soldatenId) {
 		foreach($soldatenId as $id=>$anz) {
-			$soldaten[($id-1)%10]=$anz;
+			if ($id!='hero')
+				$soldaten[($id-1)%10]=$anz;
 		}
 		for ($i=0;$i<10;$i++){
 			if(!isset($soldaten[$i])) {
@@ -191,6 +192,7 @@ class Truppe {
 			}
 		}
 		ksort($soldaten);
+		$soldaten[11]=$soldatenId['hero'];
 		return implode(':',$soldaten);
 	}
 
@@ -217,7 +219,7 @@ class Truppe {
 		elseif (is_int($user) or $user==(int)$user)
 			$id=(int)$user;
 		else x('Truppe::getByXYU(x,y,user,gefangen=0): user nicht gefunden',$user);
-		if (!self::$loaded[$x][$y]) {
+		if (!isset(self::$loaded[$x][$y])) {
 			self::loadEntry($x,$y);
 		}
 		if (!isset(self::$objekte[$x][$y][$id][$gefangen])) {

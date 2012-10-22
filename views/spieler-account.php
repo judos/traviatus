@@ -19,7 +19,7 @@ if (isset($_GET['msg'])) echo $_GET['msg'].'<br>';
 <tr><td>Nr.</td><td>Linkname</td><td>Linkziel</td></tr>
 <tr><td class="s7" colspan="3">Links zu wichtigen Gebäuden:</td></tr>
 <?php
-$gebs=array(16,19,20,21,17,37,25,24);
+$gebs=array(16,19,29,20,30,21,17,37,25,24);
 foreach($gebs as $gebId) {
 	$gebName=GebeudeTyp::getById($gebId)->get('name');
 	if ($gebId==25) $gebName.='/ Palast';

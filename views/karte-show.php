@@ -25,95 +25,96 @@ $highest=$login_dorf->highest();
 $highestGid=$login_dorf->highestGid();
 
 if ($dorf!==NULL) { //Ein Dorf ist darauf errichtet
-  echo'<div class="dname"><h1>'.
-    $dorf->get('name').' ('.$px.'|'.$py.')';
-  if ($dorf->get('grosse')==1)
-    echo'<br><div style="font-size:13px; color:#C0C0C0; ">(Hauptdorf)</div>';
-  echo'</h1></div>
-    <div id="f'.$land->get('typ').'"></div>
-    <div class="map_details_right">
-    <div class="f10 b">&nbsp;
-    '.$dorf->get('name').' ('.$px.'|'.$py.')
-    </div>';
+	echo'<div class="dname"><h1>'.
+		$dorf->get('name').' ('.$px.'|'.$py.')';
+	if ($dorf->get('grosse')==1)
+		echo'<br><div style="font-size:13px; color:#C0C0C0; ">(Hauptdorf)</div>';
+	echo'</h1></div>
+		<div id="f'.$land->get('typ').'"></div>
+		<div class="map_details_right">
+		<div class="f10 b">&nbsp;
+		'.$dorf->get('name').' ('.$px.'|'.$py.')
+		</div>';
 
-  //Allgemeine Informationen anzeigen
-  echo'<table class="f10">
-    <tbody><tr>
-    <td><img src="img/un/a/x.gif" border="0"
-      height="12" width="3"></td>
-    <td>Volk:</td><td> <b>
-    '.Outputer::volk($user->get('volk')).'
-    </b></td>
-    </tr>
+	  //Allgemeine Informationen anzeigen
+	echo'<table class="f10">
+		<tbody><tr>
+		<td><img src="img/un/a/x.gif" border="0"
+		  height="12" width="3"></td>
+		<td>Volk:</td><td> <b>
+		'.Outputer::volk($user->get('volk')).'
+		</b></td>
+		</tr>
 
-    <tr>
-    <td><img src="img/un/a/x.gif" border="0" height="12"
-      width="3"></td>
-    <td>Allianz:</td>
-    <td>';
-  //Allianz
-  $allyid=$user->get('ally');
-  $ally=Allianz::getById($allyid);
-  if ($allyid==0)
-    echo'-';
-  else
-    echo'<a href="?page=allianz&id='.$allyid.'">'.$ally->get('tag').'</a>';
+		<tr>
+		<td><img src="img/un/a/x.gif" border="0" height="12"
+		  width="3"></td>
+		<td>Allianz:</td>
+		<td>';
+	//Allianz
+	$allyid=$user->get('ally');
+	if ($allyid==0)
+		echo'-';
+	else {
+		$ally=Allianz::getById($allyid);
+		echo'<a href="?page=allianz&id='.$allyid.'">'.$ally->get('tag').'</a>';
+	}
 
-  echo'</td>
-    </tr>
-    <tr>
-    <td><img src="img/un/a/x.gif" border="0" height="12"
-      width="3"></td>
-    <td>Besitzer:</td><td>
-    <a href="?page=spieler&name='.
-      $user->get('name').'"> <b>'.$user->get('name').'
-    </b></a></td>
-    </tr>
-    <tr>
-    <td><img src="img/un/a/x.gif" border="0" height="12"
-      width="3"></td>
-    <td>Einwohner:</td><td><b>
-    '.$dorf->get('einwohner').'
-    </b></td>
+	echo'</td>
+		</tr>
+		<tr>
+		<td><img src="img/un/a/x.gif" border="0" height="12"
+		  width="3"></td>
+		<td>Besitzer:</td><td>
+		<a href="?page=spieler&name='.
+		  $user->get('name').'"> <b>'.$user->get('name').'
+		</b></a></td>
+		</tr>
+		<tr>
+		<td><img src="img/un/a/x.gif" border="0" height="12"
+		  width="3"></td>
+		<td>Einwohner:</td><td><b>
+		'.$dorf->get('einwohner').'
+		</b></td>
 
-    </tr>
-    </tbody></table>
-    </div>';
+		</tr>
+		</tbody></table>
+		</div>';
 
-  //Informationen über Einheiten
-  echo'<div class="map_details_troops">
-    <div class="f10 b">&nbsp;Einheiten:</div>
-    <table class="f10">
-    <tbody><tr>
-    <td><img src="img/un/a/x.gif" border="0" height="12"
-      width="3"></td>
-    <td>Es liegen keine <br>Informationen vor</td>
-    </tr>
-    </tbody></table></div>';
+	//Informationen über Einheiten
+	echo'<div class="map_details_troops">
+		<div class="f10 b">&nbsp;Einheiten:</div>
+		<table class="f10">
+		<tbody><tr>
+		<td><img src="img/un/a/x.gif" border="0" height="12"
+		  width="3"></td>
+		<td>Es liegen keine <br>Informationen vor</td>
+		</tr>
+		</tbody></table></div>';
 
-  //Aktionen für dieses Feld
-  echo'<div class="map_details_actions">
-    <div class="f10 b">Optionen:</div>
-    <table class="f10" width="100%">
-    <tbody><tr><td>
-    <a href="?page=karte&x='.$px.
-      '&y='.$py.'">» Karte zentrieren</a>
-    </td></tr>
-    <tr>';
-  //Truppen schicken
-  if ($highest[16]>0)
-    echo'<td><a href="?page=build&x='.$px.'&y='.$py.
-      '&s=2&gid=39">» Truppen schicken</a>';
-  else
-    echo'<td class="c">» kein Versammlungsplatz vorhanden';
-  echo'</td></tr><tr>';
-  //Marktplatz
-  if ($highest[17]>0)
-     echo'<td><a href="?page=build&x='.$px.'&y='.$py.
-      '&id='.$highestGid[17].'">» Händler schicken</a>';
-  else
-    echo'<td class="c">» kein Marktplatz vorhanden</td>';
-  echo'</td></tr></tbody></table>';
+	//Aktionen für dieses Feld
+	echo'<div class="map_details_actions">
+		<div class="f10 b">Optionen:</div>
+		<table class="f10" width="100%">
+		<tbody><tr><td>
+		<a href="?page=karte&x='.$px.
+		  '&y='.$py.'">» Karte zentrieren</a>
+		</td></tr>
+		<tr>';
+	//Truppen schicken
+	if ($highest[16]>0)
+		echo'<td><a href="?page=build&x='.$px.'&y='.$py.
+			'&s=2&gid=39">» Truppen schicken</a>';
+	else
+		echo'<td class="c">» kein Versammlungsplatz vorhanden';
+	echo'</td></tr><tr>';
+	//Marktplatz
+	if ($highest[17]>0)
+		echo'<td><a href="?page=build&x='.$px.'&y='.$py.
+			'&id='.$highestGid[17].'">» Händler schicken</a>';
+	else
+		echo'<td class="c">» kein Marktplatz vorhanden</td>';
+	echo'</td></tr></tbody></table>';
 }
 
 if ($dorf===NULL) { //Kein Dorf darauf gebaut

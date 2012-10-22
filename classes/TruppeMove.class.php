@@ -7,9 +7,9 @@ class TruppeMove {
 
 	protected $changed;
 
-	protected static $objekte_user;
-	protected static $objekte_start;
-	protected static $objekte_ziel;
+	protected static $objekte_user;  //[$user][$keyid]
+	protected static $objekte_start; //[$x][$y][$nr]
+	protected static $objekte_ziel;  //[$x][$y][$nr]
 
 	protected static $loaded_user=array();
 	protected static $loaded_start=array();
@@ -66,6 +66,7 @@ class TruppeMove {
 		$soldaten=explode(':',$this->get('truppen'));
 		foreach ($soldaten as $nr => $anz) {
 			$id=$nr+1+($volk-1)*10;
+			if ($nr==10) $id='hero';
 			$result[$id]=$anz;
 		}
 		return $result;
@@ -144,7 +145,7 @@ class TruppeMove {
 				if (self::zielbar($zx,$zy,$user,$aktion)) {
 					$weg=sqrt(pow($zx-$startDorf->get('x'),2)+
 										pow($zy-$startDorf->get('y'),2));
-					$speed=self::maxSpeed($soldaten);
+					$speed=self::maxSpeed($soldaten,$user);
 					if ($weg>=Diverses::get('turnierplatz_ausdauer')) {
 						$speed*=1+self::speedBoni($startDorf,$zx,$zy,$user);
 					}
@@ -157,6 +158,7 @@ class TruppeMove {
 					$truppe=Truppe::getByDU($startDorf,$user);
 					$truppe->entfernen($soldaten);
 					$tstring=Truppe::getString($soldaten);
+					
 					//Truppe losschicken
 					$sql="INSERT INTO `tr".ROUND_ID."_truppen_move`
 							(`user`,`start_x`,`start_y`,`ziel_x`,`ziel_y`,
@@ -192,10 +194,14 @@ class TruppeMove {
 		}
 	}
 
-	public static function maxSpeed($soldaten) {
+	//Soldaten = array ( $id => $anz )
+	public static function maxSpeed($soldaten,$user=null) {
 		foreach($soldaten as $id=>$anz){
 			if($anz>0){
-				$einheit=TruppenTyp::getById($id);
+				if ($id=='hero')
+					$einheit=$user->held()->getTruppenTyp();
+				else
+					$einheit=TruppenTyp::getById($id);
 				$s=$einheit->get('speed');
 				if (!isset($speed)) $speed=$s;
 				if ($s<$speed) $speed=$s;
@@ -264,13 +270,15 @@ class TruppeMove {
 		}
 	}
 
-
-
 	public static function saveAll() {
 		if (self::$objekte_start!==NULL) {
-			foreach(self::$objekte_start as $truppemove) {
-				if ($truppemove->changed)
-					$truppemove->save();
+			foreach(self::$objekte_start as $x=>$arr) {
+				foreach($arr as $y => $arr2) {
+					foreach($arr2 as $nr => $truppenmove){
+						if ($truppenmove->changed)
+							$truppenmove->save();
+					}
+				}
 			}
 		}
 	}

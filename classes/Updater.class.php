@@ -86,7 +86,15 @@ class Updater {
 		$dorfy=$dorf->get('y');
 
 		$land=Land::getByXY($dorfx,$dorfy);
-
+		
+		self::dorfAuftrage($dorf,$user);
+		self::dorfHandler($dorf);
+		self::truppen();
+	}
+	
+	public static function dorfAuftrage($dorf,$user) {
+		$dorfx=$dorf->get('x');
+		$dorfy=$dorf->get('y');
 		//Auftrage bearbeiten
 		$sql="SELECT * FROM tr".ROUND_ID."_others
 			WHERE x=$dorfx AND y=$dorfy AND zeit<='".now()."';";
@@ -110,10 +118,14 @@ class Updater {
 			if ($data['typ']==5) {	//Akademie
 				$user->erforsche($data['id']);
 			}
-			if ($data['typ']==1 or $data['typ']==2 or
-				$data['typ']==3 or $data['typ']==4 or $data['typ']==11 or $data['typ']==12 or $data['typ']==13) {
-				//Kaserne, Stall, Werkstatt, Residenz/Palast oder Fallensteller oder Held ausbilden oder Held wiederbeleben
-				//anzahl fertig gestellter Einheiten
+			$select=array(1,2,3, 4,11, 12,13, 14,15);
+			//Kaserne, Stall, Werkstatt
+			//Residenz/Palast, Fallensteller
+			//Held ausbilden, Held wiederbeleben
+			//Grosse Kaserne, grosser Stall
+			if (in_array($data['typ'],$select)) {
+
+			//anzahl fertig gestellter Einheiten
 				$anz=1+floor((time()-strtotime($data['zeit']))/
 							$data['dauer']);
 				if ($anz>$data['anzahl']) $anz=$data['anzahl'];
@@ -148,8 +160,11 @@ class Updater {
 			WHERE `x`='$dorfx' AND `y`='$dorfy' AND
 				`zeit`<='".now()."';";
 		$result=mysql_query($sql);
-
-
+	}
+	
+	public static function dorfHandler($dorf) {
+		$dorfx=$dorf->get('x');
+		$dorfy=$dorf->get('y');
 		//Händler
 		$sql="SELECT * FROM `tr".ROUND_ID."_handler`
 			WHERE ((ursprung_x=$dorfx AND ursprung_y=$dorfy) OR
@@ -211,6 +226,9 @@ class Updater {
 					Automessages::bericht($userNach,$betreff,$text);
 			}
 		}
+	}
+	
+	public static function truppen() {
 
 		//Truppen ankommen lassen
 		$sql="SELECT * FROM `tr".ROUND_ID."_truppen_move`
