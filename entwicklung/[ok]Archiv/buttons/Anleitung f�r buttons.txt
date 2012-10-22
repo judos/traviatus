@@ -1,0 +1,9 @@
+Leerer Button nehmen,
+Schrift: Arial bold 12px
+farbe: #33659D
+zentrieren. (4px von oben, button2 5px von oben!)
+SCHRIFT IMMER GLEICH WEIT VON LINKS ENTFERNEN!
+Schrift auswählen, Auswahl vergrössern um 2px
+Auswahl Kanten ausblenden um 4-6px
+Mit Weiss 80% Auswahl hinter Schrift füllen.
+Fertig.

@@ -1,0 +1,12 @@
+@CHARSET "UTF-8";
+
+/*
+ *------------------------------------------------------------------------------
+ * GP_CHECK is used to enable the activation of a graficpack.
+ * These styles are necessary, so don't change something in this file.
+ *------------------------------------------------------------------------------
+ */
+
+div.player div#gpack_popup div#gpack_error {display:none;}
+div.player div#gpack_popup div#gpack_activate {display:block;}
+div.player div#gpack_popup div#gpack_activate img#preview {width:116px; height:60px; background-image:url(../../gp_preview.gif);}

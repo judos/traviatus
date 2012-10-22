@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+
+/*
+ *------------------------------------------------------------------------------
+ * TRAVIAN_HACKS is used to define define quick fixes for reading direction
+ * left to right (ltr) or right to left (rtl).
+ *------------------------------------------------------------------------------
+ */
+ 
+/* styles fix for old payment layouts */
+div.plus div#payment table td {border:none;}
+div.plus div#payment table table tr.rbg td {font-weight:bold; text-align:center; background-image:url(../img/a/c2.gif); background-repeat:repeat;}
+div.plus div#payment table {border-collapse:separate;}
+div.plus div#payment table td {padding:2px; text-align:center;}
+div.plus div#payment table tr.s7 td {text-align:left;}
+
+/* styles fix for new payment layouts */
+div.plus div#payment table table td.th_bg {background-image:url(../img/a/c2.gif); background-repeat:repeat;}
