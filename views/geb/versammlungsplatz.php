@@ -162,7 +162,7 @@ if ($s==1) {			//Truppen im Exil
 	$userid=$login_user->get('id');
 	echo'<p><b>Truppen im Exil</b></p>';
 
-	$sql="SELECT tr".ROUND_ID."_truppen.*,tr".ROUND_ID."_dorfer.name,tr".ROUND_ID."_user.name AS name2
+	$sql="SELECT tr".ROUND_ID."_truppen.x,tr".ROUND_ID."_truppen.y
 		FROM `tr".ROUND_ID."_truppen`,`tr".ROUND_ID."_dorfer`,`tr".ROUND_ID."_user`
 		WHERE tr".ROUND_ID."_truppen.user='".$userid."' AND tr".ROUND_ID."_dorfer.user!='".$userid."'
 			AND tr".ROUND_ID."_truppen.x=tr".ROUND_ID."_dorfer.x
@@ -173,14 +173,18 @@ if ($s==1) {			//Truppen im Exil
 		echo'Keine Truppen im Exil.';
 	for ($i=1;$i<=mysql_num_rows($result);$i++) {
 		$data=mysql_fetch_array($result);
-
-		$t=explode(':',$data['troops']);
-		for ($j=1;$j<=10;$j++)
-			$truppen[$j]=$t[$j-1];
-		$versorgung=versorgung_von_truppen($troops,$t,$spieler_volk);
-
-		print_troops($data['name'],$data['x'],$data['y'],'Dorf von '.$data['name2'],$spieler_volk,
-			$truppen,$versorgung);
+		$x=$data['x'];
+		$y=$data['y'];
+		$truppe=Truppe::getByXYU($x,$y,$userid);
+		
+		$dorf=Dorf::getByXY($x,$y);
+		$von=$dorf->user()->get('name');
+		$versorgung=$truppe->versorgung();
+		$link='<a href="?page=">(Umkehren lassen)</a>';
+		
+		print_troops($dorf->get('name'),$x,$y,'Dorf von '.$von.' '.$link,$login_user->get('volk'),
+			$truppe->soldatenId(),$versorgung);
+		
 	}
 }
 if ($s==2) {			//Truppen schicken
