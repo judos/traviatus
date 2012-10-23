@@ -66,7 +66,7 @@ if ($gid>18 and $id==0 and $stufe==0) {
 				'<p class="f10">'.insert_div(t($gebeude->get('besch'))).'</p>'.
 				'<p></p><table class="f10"><tbody><tr><td>';
 			for ($j=0;$j<4;$j++)
-				echo'<img class="res" src="img/un/r/1.gif">'.
+				echo'<img class="res" src="img/un/r/'.($j+1).'.gif">'.
 					$kosten[$j].' | ';
 			echo'<img class="res" src="img/un/r/5.gif">'.
 				$gebeude->get('arbeiter').' | '.
