@@ -76,9 +76,6 @@ echo'</div>';
 
 
 
-
-
-
 //Versammlungsplatz falls nicht gebraucht einfach weglassen
 if ($gebeude2t[20]==16 and $gebeude2[20]>0)
 	echo'<img class="dx1" src="img/un/g/g16.gif">';
@@ -100,9 +97,6 @@ elseif ($gebeude2t[21]==33)
 <?php
 Outputer::dorf2Karte($beschriftung);
 ?>
-
-
-<img class="dmap" usemap="#map1" src="img/un/a/x.gif" border="0" height="339" width="422">
 
 <div id="lplz2"> </div>
 <br><br>

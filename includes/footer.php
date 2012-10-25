@@ -9,10 +9,10 @@ $u=$ver['used'];
 $c=$ver['current'];
 
 if ($u==$c)
-	$footer.='<a href="?page=db">DB version uptodate.</a>';
+	$footer.='<a href="?page=db">DB version ('.$u.') uptodate.</a>';
 elseif ($u<$c or !isset($c))
-	$footer.='<a href="?page=db" style="font-size:48pt; background:red;">DB version outdated! fix here</a>';
+	$footer.='<a href="?page=db" style="font-size:48pt; background:red;">DB version ('.$u.') outdated! fix here</a>';
 elseif ($u>$c)
-	$footer.='<a href="?page=db" style="font-size:48pt; background:red;">DB version newer than backup. fix here</a>';
+	$footer.='<a href="?page=db" style="font-size:48pt; background:red;">DB version ('.$u.') newer than backup. fix here</a>';
 
 ?>
