@@ -195,6 +195,8 @@ class Allianz {
 	}
 
 	public function getRang($id) {
+		if ($id==0)
+			return null;
 		if (!isset($this->range)) {
 			$this->range=AllianzRang::getByAlly($this->get('id'));
 		}
@@ -259,14 +261,14 @@ class Allianz {
 	}
 
 	public static function getById($id) {
-		if (!self::$loaded[$id]) {
+		if (!isset(self::$loaded[$id]) or !self::$loaded[$id]) {
 			self::loadEntry($id);
 		}
-		return self::$objekte[$id];
+		return @self::$objekte[$id];
 	}
 
 	protected static function loadEntry($id) {
-		if (!self::$loaded[$id]) {
+		if (!isset(self::$loaded[$id]) or !self::$loaded[$id]) {
 			self::$loaded[$id]=true;
 			$sql="SELECT * FROM tr".ROUND_ID."_".self::$db_table."
 				WHERE id='$id';";

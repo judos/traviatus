@@ -193,7 +193,7 @@ if (($gid<19) or ($gid>18 AND $id>0)) {
 		}
 		//Hauptgebäude
 		elseif ($id==15) {
-			require('geb/hauptgebäude.php');
+			require('geb/hauptgebaude.php');
 		}
 		//Versammlungsplatz
 		elseif ($id==16) {

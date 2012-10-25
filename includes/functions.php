@@ -520,7 +520,7 @@ function gotoP($page) {
 		$para='';
 		unset($temps);
 		if ($var1.$var2.$var3.$var4!='') $temps=true;
-		if ($temps) {
+		if (isset($temps)) {
 			$temp=new Temp($var1,$var2,$var3,$var4);
 			$para='&temp='.$temp->id;
 		}
