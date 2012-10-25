@@ -140,46 +140,41 @@ class Outputer {
 	}
 
 	public static function dorf2Karte($beschriftung) {
-		//Stadtmauer anwählen
-		echo'<map name="map2"">
-			<area href="?page=build&gid=40" title="'.$beschriftung[40].'"
-				coords="325,225,180" shape="circle">
-			<area href="?page=build&gid=40" title="'.$beschriftung[40].'"
-				coords="220,230,185" shape="circle">
-			</map>';
-		//Alles andere
+		//Map für das Anwählen von Bauplätzen oder Gebäuden (inklusive Stadtmauer)
+		echo'<div class="d2_x" style="z-index:50;">
+			<img usemap="#map3" style="z-index:10000;" src="img/un/a/x.gif" border="0" height="450" width="540">
+			<map name="map3">';
+			
+		$coords=array(
+			19=>'116,131,116,77,191,77,191,131,154,152',
+			20=>'199,106,199,52,274,52,274,106,237,127',
+			21=>'259,96,259,42,334,42,334,96,297,117',
+			22=>'333,109,333,55,408,55,408,109,371,130',
+			23=>'390,157,390,103,465,103,465,157,428,178',
+			24=>'77,169,77,115,152,115,152,169,115,190',
+			25=>'160,177,160,123,235,123,235,177,198,198',
+			26=>'245,159,245,105,320,105,320,159,283,180',
+			27=>'400,196,400,142,475,142,475,196,438,217',
+			28=>'65,239,65,185,140,185,140,239,103,260',
+			29=>'192,204,192,150,267,150,267,204,230,225',
+			30=>'155,229,155,175,230,175,230,229,193,250',
+			31=>'405,256,405,202,480,202,480,256,443,277',
+			32=>'85,278,85,224,160,224,160,278,123,299',
+			
+			40=>'65,121,148,56,285,34,427,66,502,150,511,269,430,389,297,426,133,406,42,288,37,190,72,196,68,255,113,338,169,379,273,394,383,366,466,287,475,191,449,133,394,91,311,67,254,65,182,82,122,113,86,152,72,196,39,190,66,122',
+			39=>'333,198,366,175,379,195,381,218,367,251,351,267,326,278,313,255'
+			);
+		
+		for($i=19;$i<=40;$i++){
+			if(isset($coords[$i]))
+				echo'<area href="?page=build&gid='.$i.'" title="'.$beschriftung[$i].'"
+					coords="'.$coords[$i].'" shape="poly">';
+		}
+		echo'</map>
+			</div>';
 		echo'<map name="map1">
-			<area href="?page=build&gid=19" title="'.$beschriftung[19].'"
-				coords="53,91,53,37,128,37,128,91,91,112" shape="poly">
-			<area href="?page=build&gid=20" title="'.$beschriftung[20].'"
-				coords="136,66,136,12,211,12,211,66,174,87" shape="poly">
-			<area href="?page=build&gid=21" title="'.$beschriftung[21].'"
-				coords="196,56,196,2,271,2,271,56,234,77" shape="poly">
-			<area href="?page=build&gid=22" title="'.$beschriftung[22].'"
-				coords="270,69,270,15,345,15,345,69,308,90" shape="poly">
-			<area href="?page=build&gid=23" title="'.$beschriftung[23].'"
-				coords="327,117,327,63,402,63,402,117,365,138" shape="poly">
-			<area href="?page=build&gid=24" title="'.$beschriftung[24].'"
-				coords="14,129,14,75,89,75,89,129,52,150" shape="poly">
-			<area href="?page=build&gid=25" title="'.$beschriftung[25].'"
-				coords="97,137,97,83,172,83,172,137,135,158" shape="poly">
-			<area href="?page=build&gid=26" title="'.$beschriftung[26].'"
-				coords="182,119,182,65,257,65,257,119,220,140" shape="poly">
-			<area href="?page=build&gid=27" title="'.$beschriftung[27].'"
-				coords="337,156,337,102,412,102,412,156,375,177"
-				shape="poly">
-			<area href="?page=build&gid=28" title="'.$beschriftung[28].'"
-				coords="2,199,2,145,77,145,77,199,40,220" shape="poly">
-			<area href="?page=build&gid=29" title="'.$beschriftung[29].'"
-				coords="129,164,129,110,204,110,204,164,167,185"
-				shape="poly">
-			<area href="?page=build&gid=30" title="'.$beschriftung[30].'"
-				coords="92,189,92,135,167,135,167,189,130,210" shape="poly">
-			<area href="?page=build&gid=31" title="'.$beschriftung[31].'"
-				coords="342,216,342,162,417,162,417,216,380,237"
-				shape="poly">
 			<area href="?page=build&gid=32" title="'.$beschriftung[32].'"
-				coords="22,238,22,184,97,184,97,238,60,259" shape="poly">
+				coords="" shape="poly">
 			<area href="?page=build&gid=33" title="'.$beschriftung[33].'"
 				coords="167,232,167,178,242,178,242,232,205,253"
 				shape="poly">
@@ -194,19 +189,6 @@ class Outputer {
 				coords="80,306,80,252,155,252,155,306,118,327" shape="poly">
 			<area href="?page=build&gid=38" title="'.$beschriftung[38].'"
 				coords="199,316,199,262,274,262,274,316,237,337"
-				shape="poly">
-
-			<area href="?page=build&gid=39" title="'.$beschriftung[39].'"
-				coords="270,158,303,135,316,155,318,178,304,211,'.
-				'288,227,263,238,250,215" shape="poly">
-			<area href="?page=build&gid=40" title="'.$beschriftung[40].'"
-				coords="312,338,347,338,377,320,406,288,421,262,'.
-				'421,222,396,275,360,311" shape="poly">
-			<area href="?page=build&gid=40" title="'.$beschriftung[40].'"
-				coords="49,338,0,274,0,240,33,286,88,338" shape="poly">
-			<area href="?page=build&gid=40" title="'.$beschriftung[40].'"
-				coords="0,144,34,88,93,39,181,15,252,15,305,31,358,63,'.
-				'402,106,421,151,421,93,378,47,280,0,175,0,78,28,0,92"
 				shape="poly">
 			</map>';
 	}

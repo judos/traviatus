@@ -94,13 +94,8 @@ elseif ($gebeude2t[21]==33)
 	echo'<div class="d2_x d2_3">';
 ?>
 
-
-<img usemap="#map2" class="dmap" src="img/un/a/x.gif" border="0" height="450" width="540">
-
-
-
-
 </div>
+
 
 <?php
 Outputer::dorf2Karte($beschriftung);
