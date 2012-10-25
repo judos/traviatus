@@ -1,0 +1,6 @@
+verschiebung von
+	<div class="d2_x">
+zu
+	#map1
+=
+	63x40
