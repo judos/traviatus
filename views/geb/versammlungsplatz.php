@@ -14,85 +14,17 @@ echo'<p class="txt_menue">
 	<a href="?page=warsim">Kampfsimulator</a>
 	</p>';
 
-function print_troops($dorf_name,$x,$y,$titel,$volk,
-	$army,$unterhalt=NULL,$ankunft=NULL,$user_show=1,$user_name='') {
-	global $troops,$timerNr;
-	if (!isset($timerNr)) $timerNr=1;
-	$volk--;
-	echo'<table class="tbg" cellpadding="2" cellspacing="1"><tbody>
-		<tr class="cbg1"><td width="21%">
-		<a href="?page=karte-show&x='.$x.'&y='.$y.'"><span class="c0">'.
-		$dorf_name.'</span></a>
-		</td><td colspan="11" class="b">'.$titel.'</td></tr>
-		<tr class="unit">
-		<td>&nbsp;<a href="spieler.php?name='.$user_name.'">'.
-		$user_name.'</a></td>';
-	for ($j=1;$j<=10;$j++)
-		echo'<td><img src="img/un/u/'.($j+$volk*10).'.gif"
-			title="'.$troops[$j+$volk*10]['name'].'"></td>';
-	echo'<td><img src="img/un/u/hero.gif" title="Held"></td></tr>
-		<tr><td>Einheiten</td>';
-	for ($j=1;$j<=10;$j++) {
-		if ($user_show==1) {
-			if ($army[$j+$volk*10]>0) echo'<td>'.$army[$j+$volk*10].'</td>';
-			else	echo'<td class="c">0</td>';
-		}
-		else
-			echo'<td class="c">?</td>';
-	}
-	if ($user_show==1) {
-		if ($army['hero']==0) echo'<td class="c">0</td>';
-		else	echo'<td>1</td>';
-	}
-	else
-		echo'<td class="c">?</td>';
-	echo'</tr><tr class="cbg1">';
-	if ($ankunft==NULL)
-		echo'<td>Unterhalt</td><td class="s7" colspan="11">'.$unterhalt.
-			'<img class="res" src="img/un/r/4.gif">pro Stunde</td>';
-	else {
-		$dauer=zeit_dauer(strtotime($ankunft)-time());
-		$akt=date('H:i:s',strtotime($ankunft));
-		echo'<td>Ankunft</td><td colspan="11">
-			<table class="f10" cellpadding="0" cellspacing="0" width="100%">
-			<tbody><tr align="center">
-			<td width="50%">&nbsp; in <span id="timer'.$timerNr.'">'.
-				$dauer.'</span> Std.</td>
-			<td width="50%">um '.$akt.'<span> Uhr</span>
-			</td></tr></tbody></table></td>';
-		$timerNr++;
-	}
-	echo'</tr></tbody></table><p></p>';
-
-}
 
 if ($s==0) {		//Truppen im Dorf
 	echo'<p><b>Truppen im Dorf</b></p>';
 
-
 	$user_ids=Truppe::getUsersByXY($dx,$dy);
 	if (empty($user_ids)) {
-		$volk=$login_user->get('volk');
-		$dorf=$login_dorf;
-		print_troops($dorf->get('name'),$dorf->get('x'),$dorf->get('y'),'Eigene Truppen',$volk,null,0);
+		echo'Keine Truppen im Dorf.';
 	}
 	foreach($user_ids as $user_id) {
 		$truppe=Truppe::getByXYU($dx,$dy,$user_id);
-		$spieler=Spieler::getById($user_id);
-		$volk=$spieler->get('volk');
-		if ($user_id==$login_user->get('id')) {
-			$name='Eigene Truppen';
-			$dorf=$login_dorf;
-		}
-		else {
-			$showname=$spieler->get('name');
-			$name='Truppen von <a href="?page=spieler&name='.$showname.'">'.$showname.'</a>';
-			$dorf=Dorf::getByXY($truppe->get('ursprung_x'),$truppe->get('ursprung_y'));
-		}
-
-		$soldaten=$truppe->soldatenId();
-		$versorgung=$truppe->versorgung();
-		print_troops($dorf->get('name'),$dorf->get('x'),$dorf->get('y'),$name,$volk,$soldaten,$versorgung);
+		echo $truppe->toHtmlBox($login_user,$login_dorf);
 	}
 
 	//Truppen unterwegs in dieses dorf
@@ -102,30 +34,7 @@ if ($s==0) {		//Truppen im Dorf
 		$zielName=$login_dorf->get('name');
 
 		foreach($truppenmove as $truppe) {
-			$sx=$truppe->get('start_x');
-			$sy=$truppe->get('start_y');
-			$startDorf=$truppe->startDorf();
-			$startName=$startDorf->get('name');
-			$spieler=$startDorf->user();
-			$volk=$spieler->get('volk');
-			$soldaten=$truppe->soldatenId();
-
-			switch($truppe->get('aktion')) {
-				case 1:$lnk='Neues Dorf gründen';break;
-				case 2:$lnk='Unterstützung für '.$zielName;break;
-				case 3:$lnk='Angriff gegen '.$zielName;break;
-				case 4:$lnk='Raubzug gegen '.$zielName;break;
-				case 5:$lnk='Ausspähen von '.$zielName;break;
-			}
-			$lnk='<a href="?page=karte-show&x='.$dx.'&y='.$dy.'">
-				<span class="c0">'.$lnk.'</span></a>';
-			$show=1;
-			$name_of_user='';
-			if ($spieler->get('id')!=$login_user->get('id')) $show=0;
-			if ($show) $name_of_user=$spieler->get('name');
-
-			print_troops($startName,$sx,$sy,$lnk,$volk,$soldaten,NULL,
-									 $truppe->get('ziel_zeit'),$show,$name_of_user);
+			echo $truppe->toHtmlBox($login_user,$login_dorf);
 		}
 	}
 
@@ -136,25 +45,7 @@ if ($s==0) {		//Truppen im Dorf
 		$startName=$login_dorf->get('name');
 		$volk=$login_user->get('volk');
 		foreach($truppenmove as $truppe) {
-			$zx=$truppe->get('ziel_x');
-			$zy=$truppe->get('ziel_y');
-			$zielDorf=$truppe->zielDorf();
-			if ($zielDorf!==NULL)
-				$zielName=$zielDorf->get('name');
-			$soldaten=$truppe->soldatenId();
-
-			switch($truppe->get('aktion')) {
-				case 1:$lnk='Neues Dorf gründen ('.$zx.'|'.$zy.')';break;
-				case 2:$lnk='Unterstützung für '.$zielName;break;
-				case 3:$lnk='Angriff gegen '.$zielName;break;
-				case 4:$lnk='Raubzug gegen '.$zielName;break;
-				case 5:$lnk='Ausspähen von '.$zielName;break;
-			}
-			$lnk='<a href="?page=karte-show&x='.$zx.'&y='.$zy.'">
-				<span class="c0">'.$lnk.'</span></a>';
-
-			print_troops($startName,$dx,$dy,$lnk,$volk,$soldaten,NULL,
-									 $truppe->get('ziel_zeit'));
+			echo $truppe->toHtmlBox($login_user,$login_dorf);
 		}
 	}
 }
@@ -176,15 +67,9 @@ if ($s==1) {			//Truppen im Exil
 		$x=$data['x'];
 		$y=$data['y'];
 		$truppe=Truppe::getByXYU($x,$y,$userid);
-		
-		$dorf=Dorf::getByXY($x,$y);
-		$von=$dorf->user()->get('name');
-		$versorgung=$truppe->versorgung();
-		$link='<a href="?page=">(Umkehren lassen)</a>';
-		
-		print_troops($dorf->get('name'),$x,$y,'Dorf von '.$von.' '.$link,$login_user->get('volk'),
-			$truppe->soldatenId(),$versorgung);
-		
+		$ruck='<a href="?page=build&gid=39&s=3&x='.$x.'&y='.$y.'">'.
+			'Zurückziehen</a>';
+		echo $truppe->toHtmlBox($login_user,$login_dorf,$ruck);
 	}
 }
 if ($s==2) {			//Truppen schicken

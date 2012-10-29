@@ -170,7 +170,7 @@ if ($s=='newvillage') {
 	}
 	$dauer=$weg/$speed*3600;
 
-	$expansion=explode(':',$dorf_data['expansion']);
+	$expansion=explode(':',$login_dorf->get('expansion'));
 	$slots=$login_dorf->dorf_slots();
 
 	$neue_dorfer=explode(':',Diverses::get('neue_dorfer'));
@@ -210,8 +210,8 @@ if ($s=='newvillage') {
 		if ($expansion[0]<$slots) {
 			//Genug Kulturpunkte
 			if ($neue_dorfer[$anz_dorfer+$anz_kolo-1]*1000<=$kp) {
-				echo'<input type=hidden name="x" value="'.$x.'">
-					<input type=hidden name="y" value="'.$y.'">
+				echo'<input type="hidden" name="x" value="'.$x.'">
+					<input type="hidden" name="y" value="'.$y.'">
 					<p>';
 				Outputer::button('s1','ok');
 				echo'</p>';

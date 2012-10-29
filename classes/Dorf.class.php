@@ -564,7 +564,7 @@ class Dorf {
 		else {
 			foreach ($users as $user) {
 				$truppe=Truppe::getByXYU($this->x,$this->y,$user);
-				$versorgung+=$truppe->versorgung();
+				$versorgung+=$truppe->getVersorgung();
 			}
 		}
 		return $versorgung;

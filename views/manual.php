@@ -12,9 +12,7 @@ $template=false;
 
 $volker=explode(':',Diverses::get('volker'));
 
-$typ=$_GET['typ'];
-if (!isset($typ)) $typ=0;
-
+$typ=saveGet('typ',0);
 
 if ($typ==0) {
 ?>
@@ -140,9 +138,10 @@ if ($typ==1) {
 	}
 }
 if ($typ==2) {	//Gebäude im Überblick
-	$gebs=$_GET['gebs'];
-	$gid=$_GET['gid'];
-	if (!isset($gid)) $gid=$_GET['id'];
+	
+	$gebs=saveGet('gebs',null);
+	$gid=saveGet('gid',saveGet('id',null));
+	
 	if (isset($gebs) AND !isset($gid)) {
 		$gebeude_typ=array(1=>'Rohstoffe',2=>'Militär',3=>'Infrastruktur');
 		echo'	<h1><img src="img/un/u/geb.gif" class="unit"> Gebäude ('.
@@ -164,7 +163,7 @@ if ($typ==2) {	//Gebäude im Überblick
 		$kosten=$g->baukosten(1);
 		echo'<h1><img class="unit" src="img/un/u/geb.gif"> '.
 			$g->get('name').'</h1>'.
-			'<p>'.t($g->get('besch').$g->get('besch_ext')).'</p><p><b>Kosten</b> und <b>Bauzeit</b>
+			'<p>'.t($g->get('besch').$g->get('volksvorteile')).'</p><p><b>Kosten</b> und <b>Bauzeit</b>
 			bei Stufe 1:<br>
 			<img class="res" src="img/un/r/1.gif" alt="Holz"
 				title="Holz" style="padding-top:4px">'.$kosten[0].' |
@@ -180,12 +179,13 @@ if ($typ==2) {	//Gebäude im Überblick
 			<img src="img/un/a/clock.gif" class="clock"> '.
 				zeit_dauer($g->bauzeit(1,$login_dorf)).'<br><br>
 			<b>Voraussetzungen:</b> <br>';
-		unset($output);
+		
 		if ($g->get('needs')==0)
 			echo'keine';
 		elseif ($g->get('needs')==-1)
 			echo'nicht baubar';
 		else {
+			$output='';
 			foreach($g->needs() as $gebeude => $stufe) {
 				if ($gebeude==-1 or $gebeude=='volk')
 					$output.='<a href="">Nur '.$volker[$stufe-1].'</a>';
@@ -215,7 +215,11 @@ if ($typ==2) {	//Gebäude im Überblick
 
 <map name="nav">
 <?php
-echo'<area href="?page=manual&'.$para1.'" title="zurück" coords="0,0,45,18" shape="rect"><area href="?page=manual" title="Übersicht" coords="46,0,70,18" shape="rect"><area href="?page=manual&'.$para2.'" title="weiter" coords="71,0,116,18" shape="rect">';
+if (isset($para1))
+	echo'<area href="?page=manual&'.$para1.'" title="zurück" coords="0,0,45,18" shape="rect">';
+echo'<area href="?page=manual" title="Übersicht" coords="46,0,70,18" shape="rect">';
+if (isset($para2))
+	echo'<area href="?page=manual&'.$para2.'" title="weiter" coords="71,0,116,18" shape="rect">';
 ?>
 </map>
 

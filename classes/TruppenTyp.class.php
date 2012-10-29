@@ -170,6 +170,24 @@ class TruppenTyp {
 							(100-50*($highest[13]-1)/19));
 		return $kosten;
 	}
+	
+	public function imgSymbol() {
+		return '<img src="img/un/u/'.$this->id.'.gif" '.
+			'title="'.$this->get('name').'">';
+	}
+	
+	public static function getVersorgung($soldatenIds){
+		$versorgung=0;
+		foreach ($soldatenIds as $id => $anz) {
+			if ($id!='hero'){
+				$typ=TruppenTyp::getById($id);
+				$food=$typ->get('versorgung');
+			}else
+				$food=6;
+			$versorgung+=$anz*$food;
+		}
+		return round($versorgung);
+	}
 
 	public static function getById($id) {
 		if (!isset(self::$objekte[$id])) {

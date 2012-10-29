@@ -75,26 +75,8 @@ class Truppe {
 		return $this->anzSoldaten()==0;
 	}
 
-	public function versorgung() {
-		$versorgung=0;
-		$user=Spieler::getById($this->userid);
-		if ($user===NULL) {
-			x('Truppe->versorgung(): $user===NULL');
-			return;
-		}
-		$volk=$user->get('volk');
-		$soldaten=explode(':',$this->get('troops'));
-		foreach ($soldaten as $nr => $anz) {
-			if ($nr<10) {
-				$id=$nr+1+($volk-1)*10;
-				$typ=TruppenTyp::getById($id);
-				$food=$typ->get('versorgung');
-			}
-			elseif($nr==10)	//Held
-				$food=6;
-			$versorgung+= $anz * $food;
-		}
-		return round($versorgung);
+	public function getVersorgung() {
+		return TruppenTyp::getVersorgung($this->soldatenId());
 	}
 
 	public function hinzufugen($soldaten) {
@@ -150,6 +132,29 @@ class Truppe {
 			Standort: ('.$this->get('x').' | '.$this->get('y').'),
 			Soldaten: '.$this->get('troops').', Gefangen: '.$this->get('gefangen').',
 			Ursprung: ('.$this->get('ursprung_x').' | '.$this->get('ursprung_y').')';
+	}
+	
+	public function toHtmlBox($user_viewing,$dorf_viewing,$special=null) {
+		$dorf=Dorf::getByXY($this->x,$this->y);
+		$owner=Spieler::getById($this->userid);
+		if ($user_viewing==$owner) {
+			if ($dorf==$dorf_viewing)
+				$title="Eigene Truppen";
+			else {
+				$n=$dorf->user()->get('name');
+				$title='Unterstützung für <a href="?page=spieler&name='.$n.'">'.$n.'</a>';
+			}
+		}
+		else{
+			$n=$owner->get('name');
+			$title='Truppen von <a href="?page=spieler&name='.$n.'">'.$n.'</a>';
+		}
+		$volk=$this->volk();
+		$units=$this->soldatenId();
+		$supply=$this->getVersorgung();
+		$arrival=null;
+		$out=Outputer::truppenBox($dorf,$dorf_viewing,$title,$volk,$units,$supply,$arrival,$special);
+		return $out;
 	}
 
 	public function save() {

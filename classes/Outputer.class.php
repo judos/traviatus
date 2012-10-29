@@ -27,6 +27,67 @@ class Outputer {
       height="20" type="image" '.$atts.'>';
 	}
 	
+	public static function truppenBox($dorf,$dorf_viewing,$title,$volk,$units,$supply,$arrival,$special=null) {
+		global $timerNr;
+		if (!isset($timerNr)) $timerNr=1;
+		$dout='';
+		if ($dorf!=$dorf_viewing){
+			$x=$dorf->get('x');
+			$y=$dorf->get('y');
+			$dname=$dorf->get('name');
+			$dout='<a href="?page=karte-show&x='.$x.'&y='.$y.'"><span class="c0">'.
+			$dname.'</span></a>';
+		}
+		$ou='<table class="tbg" cellpadding="2" cellspacing="1"><tbody>
+			<tr class="cbg1"><td width="21%">'.$dout.'
+			</td><td colspan="11" class="b">'.$title.'</td></tr>
+			<tr class="unit">
+			<td>&nbsp;</a></td>';
+		for ($j=1;$j<=10;$j++){
+			$typ=TruppenTyp::getById($j+($volk-1)*10);
+			$ou.='<td>'.$typ->imgSymbol().'</td>';
+		}
+		$ou.='<td><img src="img/un/u/hero.gif" title="Held"></td></tr>
+			<tr><td>Einheiten</td>';
+		for ($j=1;$j<=10;$j++) {
+			if ($units!=null) {
+				if ($units[$j+($volk-1)*10]>0) $ou.='<td>'.$units[$j+($volk-1)*10].'</td>';
+				else	$ou.='<td class="c">0</td>';
+			}
+			else
+				$ou.='<td class="c">?</td>';
+		}
+		if ($units!=null) {
+			if ($units['hero']!=0) $ou.='<td>1</td>';
+			else	$ou.='<td class="c">0</td>';
+		}
+		else
+			$ou.='<td class="c">?</td>';
+		$ou.='</tr>';
+		if ($supply!=null)
+			$ou.='<tr class="cbg1"><td>Unterhalt</td><td class="s7" colspan="11">'.$supply.
+				'<img class="res" src="img/un/r/4.gif">pro Stunde</td></tr>';
+		
+		if ($arrival!=null){
+			$dauer=zeit_dauer(strtotime($arrival)-time());
+			$akt=date('H:i:s',strtotime($arrival));
+			$ou.='<tr class="cbg1"><td>Ankunft</td><td colspan="11">
+				<table class="f10" cellpadding="0" cellspacing="0" width="100%">
+				<tbody><tr align="center">
+				<td width="50%">&nbsp; in <span id="timer'.$timerNr.'">'.
+					$dauer.'</span> Std.</td>
+				<td width="50%">um '.$akt.'<span> Uhr</span>
+				</td></tr></tbody></table></td></tr>';
+			$timerNr++;
+		}
+		if ($special!=null){
+			$ou.='<tr class="cbg1"><td></td><td colspan="11">'.
+				$special.'</td></tr>';
+		}
+		$ou.='</tbody></table><p></p>';
+		return $ou;
+	}
+	
 	
 	public static function nachrichtenMenu() {
 		global $page;

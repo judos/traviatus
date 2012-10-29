@@ -93,6 +93,55 @@ class TruppeMove {
 	public function zielDorf() {
 		return Dorf::getByXY($this->get('ziel_x'),$this->get('ziel_y'));
 	}
+	
+	public function getUser() {
+		return Spieler::getById($this->get('user'));
+	}
+	
+	public function getVersorgung() {
+		return TruppenTyp::getVersorgung($this->soldatenId());
+	}
+	
+	public function toHtmlBox($user_viewing,$dorf_viewing) {
+		$dorfs=$this->startDorf();
+		$dorfz=$this->zielDorf();
+		if ($dorf_viewing==$dorfs){
+			$dorf=$dorfz;
+			if ($dorf==null)
+				$zielName=array($this->get('ziel_x'),$this->get('ziel_y'));
+			$word=array('für','gegen','von');
+		}
+		else{
+			$dorf=$dorfs;
+			if ($dorf==null)
+				$zielName=array($this->get('start_x'), $this->get('start_y'));
+			
+			$word=array('von','aus','aus');
+		}
+		
+		if ($dorf!=null){
+			$n=$dorf->user()->get('name');
+			$zielName='<a href="?page=spieler&name='.$n.'">'.$n.'</a>';
+		}
+		else {
+			$zielName='<a href="?page=karte-show&x='.$zielname[0].'&y='.$zielname[1].'">'.
+					'('.$zielname[0].'|'.$zielname[1].')</a>';
+		}
+		
+		switch($this->get('aktion')) {
+			case 1:$title='Neues Dorf gründen';break;
+			case 2:$title="Unterstützung $word[0] $zielName";break;
+			case 3:$title="Angriff $word[1] $zielName";break;
+			case 4:$title="Raubzug $word[1] $zielName";break;
+			case 5:$title="Ausspähen $word[2] $zielName";break;
+		}
+		$volk=$this->getUser()->get('volk');
+		$units=$this->soldatenId();
+		$supply=$this->getVersorgung();
+		$arrival=$this->get('ziel_zeit');
+		$out=Outputer::truppenBox($dorf,$dorf_viewing,$title,$volk,$units,$supply,$arrival);
+		return $out;
+	}
 
 	private function save() {
 		$sql="UPDATE tr".ROUND_ID."_".self::$db_table." SET ";
@@ -177,10 +226,11 @@ class TruppeMove {
 		}
 	}
 
-	public static function speedBoni($start,$zx,$zy,$user) {
+	//$zx,$zy = zielDorf
+	public static function speedBoni($startDorf,$zx,$zy,$user) {
 		$uid=$user->get('id');
-		if ($start->get('user')==$uid) {
-			$highest=$start->highest();
+		if ($startDorf->get('user')==$uid) {
+			$highest=$startDorf->highest();
 			return $highest[14]*0.1;
 		}
 		$ziel=Dorf::getByXY($zx,$zy);
@@ -190,7 +240,7 @@ class TruppeMove {
 				return $highest[14]*0.1;
 			}
 			new Errorlog('TruppeMove::speedBoni $ziel!=null but user is'.
-									 ' not found');
+				' not found');
 		}
 	}
 
@@ -218,7 +268,7 @@ class TruppeMove {
 		else {
 			x('TruppeMove::getByUser('.$user.') hat user nicht erkannt.',$user);
 		}
-		if (!self::$loaded_user[$id]) {
+		if (!isset(self::$loaded_user[$id])) {
 			self::loadByUser($id);
 		}
 		return self::$objekte_user[$id];
