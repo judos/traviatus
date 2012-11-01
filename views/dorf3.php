@@ -30,126 +30,133 @@ echo'</p>';
 
 
 if ($s==5) {	//Truppen
-  ?>
-  <table class="tbg" cellpadding="2" cellspacing="1">
-  <tbody><tr class="rbg">
-  <td colspan="12">Eigene Truppen</td></tr>
-  <tr class="unit"><td width="150">Dorfname</td>
-  <?php
-  $volk=$login_user->get('volk');
-  for ($i=1;$i<=10;$i++) {
-  	$id=$i+($volk-1)*10;
-  	$typName=TruppenTyp::getById($id)->get('name');
-    echo'<td><img src="img/un/u/'.$id.'.gif" title="'.$typName.'"></td>';
-  }
-  echo'<td><img src="img/un/u/hero.gif" title="Held"></td></tr>';
+	?>
+	<table class="tbg" cellpadding="2" cellspacing="1">
+	<tbody><tr class="rbg">
+	<td colspan="12">Eigene Truppen</td></tr>
+	<tr class="unit"><td width="150">Dorfname</td>
+	<?php
+	$volk=$login_user->get('volk');
+	for ($i=1;$i<=10;$i++) {
+		$id=$i+($volk-1)*10;
+		$typName=TruppenTyp::getById($id)->get('name');
+		echo'<td><img src="img/un/u/'.$id.'.gif" title="'.$typName.'"></td>';
+	}
+	echo'<td><img src="img/un/u/hero.gif" title="Held"></td></tr>';
 
-  unset($all);
-  foreach($dorfer as $dorf) {
-    $x=$dorf->get('x');
-    $y=$dorf->get('y');
-    $cl='';$clr='';$cll='';
-    if ($x==$dorfx and $y==$dorfy) { $cl='ou'; $clr='ou re'; $cll='ou li'; }
+	$all=array(0,0,0,0,0,0,0,0,0,0,0);
+	foreach($dorfer as $dorf) {
+		$x=$dorf->get('x');
+		$y=$dorf->get('y');
+		$cl='';$clr='';$cll='';
+		if ($x==$dorfx and $y==$dorfy) {
+			$cl='ou'; $clr='ou re'; $cll='ou li';
+		}
 
-    $truppe=$dorf->eigeneTruppe();
-    $soldaten=$truppe->soldatenNr();
+		$truppe=$dorf->eigeneTruppe();
+		$soldaten=$truppe->soldatenNr();
 
-    //Dorf
-    echo'<tr><td class="s7 '.$cll.'"><a href="?page=dorf1&dorfx='.$x.'&dorfy='.$y.'">'.$dorf->get('name').'</a></td>';
+		//Dorf
+		echo'<tr><td class="s7 '.$cll.'"><a href="?page=dorf1&dorfx='.$x.'&dorfy='.$y.'">'.$dorf->get('name').'</a></td>';
 
-    //Truppen
-    for ($j=0;$j<=10;$j++) {
-      $all[$j]+=$soldaten[$j];
-      if ($j==10) $cl=$clr;
-      if ($soldaten[$j]==0) echo'<td class="c '.$cl.'">0</td>';
-      else echo'<td class="'.$cl.'">'.$soldaten[$j].'</td>';
-    }
-    echo'</tr>';
-  }
-  echo'<tr><td colspan="12"></td></tr><tr><td class="s7 f10"><b>Summe</b></td>';
-  for ($i=0;$i<=10;$i++) {
-      if ($all[$i]==0) echo'<td class="c">0</td>';
-      else echo'<td>'.$all[$i].'</td>';
-  }
-  echo'</tr></tbody></table>';
+		//Truppen
+		for ($j=0;$j<=10;$j++) {
+			$all[$j]+=$soldaten[$j];
+			if ($j==10) $cl=$clr;
+			if ($soldaten[$j]==0)
+				echo'<td class="c '.$cl.'">0</td>';
+			else
+				echo'<td class="'.$cl.'">'.$soldaten[$j].'</td>';
+		}
+		echo'</tr>';
+	}
+	echo'<tr><td colspan="12"></td></tr><tr><td class="s7 f10"><b>Summe</b></td>';
+	for ($i=0;$i<=10;$i++) {
+		if ($all[$i]==0) echo'<td class="c">0</td>';
+		else echo'<td>'.$all[$i].'</td>';
+	}
+	echo'</tr></tbody></table>';
 }
 
 
 if ($s==4) {	//Kulturpunkte KP
 	?>
-  <table class="tbg" cellpadding="2" cellspacing="1">
-  <tbody><tr class="rbg"><td colspan="6">Kulturpunkte</td></tr>
-  <tr><td width="150">Dorfname</td><td>KPs/Tag</td><td>Feste</td><td>Einheitenbau</td><td>Slots</td></tr>
-  <?php
-  $totkp=0;
-  foreach($dorfer as $dorf) {
+	<table class="tbg" cellpadding="2" cellspacing="1">
+	<tbody><tr class="rbg"><td colspan="6">Kulturpunkte</td></tr>
+	<tr><td width="150">Dorfname</td><td>KPs/Tag</td><td>Feste</td><td>Einheitenbau</td><td>Slots</td></tr>
+	<?php
+	$totkp=0;
+	$kps=0;
+	$slots_benutzt=0;
+	$slots_total=0;
+	foreach($dorfer as $dorf) {
+		$x=$dorf->get('x');
+		$y=$dorf->get('y');
+		$cl='';$clr='';$cll='';
+		if ($x==$dorfx and $y==$dorfy) {
+			$cl='ou'; $clr='ou re'; $cll='ou li';
+		}
+		//Name und KP pro Tag
+		echo'<tr><td class="s7 '.$cll.'"><a href="?page=dorf1&dorfx='.$x.'&dorfy='.$y.'">'.$dorf->get('name').'</a></td>
+			<td class="'.$cl.'">'.round($dorf->get('einwohner')/2).'</td>';
+		$kps+=round($dorf->get('einwohner')/2);
 
-    $x=$dorf->get('x');
-    $y=$dorf->get('y');
-    $cl='';$clr='';$cll='';
-    if ($x==$dorfx and $y==$dorfy) { $cl='ou'; $clr='ou re'; $cll='ou li'; }
-    //Name und KP pro Tag
-    echo'<tr><td class="s7 '.$cll.'"><a href="?page=dorf1&dorfx='.$x.'&dorfy='.$y.'">'.$dorf->get('name').'</a></td>
-      <td class="'.$cl.'">'.round($dorf->get('einwohner')/2).'</td>';
-    $kps+=round($dorf->get('einwohner')/2);
-
-    //Feste
-    $highest=$dorf->highest();
-    $rathaus=$highest[24];
-
-    if ($rathaus>0) {
-      $auftrage=$dorf->auftrage(8);
-      echo'<td class="'.$cl.'" title="Rathaus Stufe '.$rathaus.'">
-        <a href="?page=build&dorfx='.$x.'&dorfy='.$y.'&highest=24">';
-      if (empty($auftrage) and $rathaus<10) {
-        echo'<b> • R'.$rathaus.' </b>';
-      }
-      elseif (empty($auftrage) and $rathaus>=10) {
-      	echo'<b> &#9673; R'.$rathaus.' </b>';
-      }
-      else {
-        $auftrag=$auftrage[0];
-        $dauer=strtotime($auftrag->get('zeit'))-time();
-        $fest=Fest::getById($auftrag->get('id'));
-        $totkp+=$fest->kp($dorf);
-        echo'<span id="timer'.$timerNr.'">'.zeit_dauer($dauer).'</span>';
-        $timerNr++;
-      }
-      echo'</a></td>';
-    }
-    else {
-      echo'<td class="'.$cl.'"></td>';
-    }
-
-
-    $auftrage=$dorf->auftrage(4);
-    if (empty($auftrage)) {
-    	echo'<td class="'.$cl.'"><span class="c">-</span></td>';
-  	}
-  	else {
-  		$einheiten=array();
-  		foreach($auftrage as $auftrag) {
-  			$einheiten[$auftrag->get('id')]+=$auftrag->get('anzahl');
-  		}
-  		echo'<td class="'.$cl.'">';
-  		foreach($einheiten as $tid => $anzahl) {
-  			$typ=TruppenTyp::getById($tid);
-  			echo'<a href="?page=build&dorfx='.$x.'&dorfy='.$y.'&highest=25">
-  				<img src="img/un/u/'.$tid.'.gif" title="'.$anzahl.' '.$typ->named($anzahl).'"></a>';
-  		}
-  		echo'</td>';
-    }
+		//Feste
+		$highest=$dorf->highest();
+		$rathaus=$highest[24];
+		if ($rathaus>0) {
+			$auftrage=$dorf->auftrage(8);
+			echo'<td class="'.$cl.'" title="Rathaus Stufe '.$rathaus.'">
+				<a href="?page=build&dorfx='.$x.'&dorfy='.$y.'&highest=24">';
+			if (empty($auftrage) and $rathaus<10) {
+				echo'<b> • R'.$rathaus.' </b>';
+			}
+			elseif (empty($auftrage) and $rathaus>=10) {
+				echo'<b> &#9673; R'.$rathaus.' </b>';
+			}
+			else {
+				$auftrag=$auftrage[0];
+				$dauer=strtotime($auftrag->get('zeit'))-time();
+				$fest=Fest::getById($auftrag->get('id'));
+				$totkp+=$fest->kp($dorf);
+				echo'<span id="timer'.$timerNr.'">'.zeit_dauer($dauer).'</span>';
+				$timerNr++;
+			}
+			echo'</a></td>';
+		}
+		else {
+			echo'<td class="'.$cl.' c">-</td>';
+		}
 
 
-    //Slots
-    $slots=$dorf->dorf_slots();
-    $benutzt=sizeof($dorf->expansion());
-    echo'</td><td class="'.$clr.'">'.$benutzt.'/'.$slots.'</td></tr>';
-    $x1+=$benutzt;
-    $x2+=$slots;
-  }
-  echo'<tr><td colspan="5"></td></tr><tr><td class="s7"><b>Summe</b></td><td>'.$kps.'</td>
-  	<td>+'.$totkp.' KP</td><td></td><td>'.$x1.'/'.$x2.'</td></tr>
+		$auftrage=$dorf->auftrage(4);
+		if (empty($auftrage)) {
+			echo'<td class="'.$cl.'"><span class="c">-</span></td>';
+		}
+		else {
+			$einheiten=array();
+			foreach($auftrage as $auftrag) {
+				$einheiten[$auftrag->get('id')]+=$auftrag->get('anzahl');
+			}
+			echo'<td class="'.$cl.'">';
+			foreach($einheiten as $tid => $anzahl) {
+				$typ=TruppenTyp::getById($tid);
+				echo'<a href="?page=build&dorfx='.$x.'&dorfy='.$y.'&highest=25">
+					<img src="img/un/u/'.$tid.'.gif" title="'.$anzahl.' '.$typ->named($anzahl).'"></a>';
+			}
+			echo'</td>';
+		}
+
+
+		//Slots
+		$slots=$dorf->dorf_slots();
+		$benutzt=sizeof($dorf->expansion());
+		echo'</td><td class="'.$clr.'">'.$benutzt.'/'.$slots.'</td></tr>';
+		$slots_benutzt+=$benutzt;
+		$slots_total+=$slots;
+	}
+	echo'<tr><td colspan="5"></td></tr><tr><td class="s7"><b>Summe</b></td><td>'.$kps.'</td>
+		<td>+'.$totkp.' KP</td><td></td><td>'.$slots_benutzt.'/'.$slots_total.'</td></tr>
 		</tbody></table>';
 }
 
@@ -157,146 +164,154 @@ if ($s==4) {	//Kulturpunkte KP
 
 if ($s==3) {	//Lager
 	?>
-  <table class="tbg" cellpadding="2" cellspacing="1">
-  <tbody><tr class="rbg"><td colspan="7">Lager</td></tr>
-  <tr><td width="150">Dorfname</td><td><img class="res" src="img/un/r/1.gif" title="Holz"></td>
-  <td><img class="res" src="img/un/r/2.gif" title="Lehm"></td><td><img class="res" src="img/un/r/3.gif" title="Eisen"></td>
-  <td><img class="res" src="img/un/a/clock.gif" title="Dauer"></td>
-  <td><img class="res" src="img/un/r/4.gif" title="Getreide"></td>
-  <td><img class="res" src="img/un/a/clock.gif" title="Dauer"></td></tr>
-  <?php
-  foreach($dorfer as $dorf) {
+	<table class="tbg" cellpadding="2" cellspacing="1">
+	<tbody><tr class="rbg"><td colspan="7">Lager</td></tr>
+	<tr><td width="150">Dorfname</td><td><img class="res" src="img/un/r/1.gif" title="Holz"></td>
+	<td><img class="res" src="img/un/r/2.gif" title="Lehm"></td><td><img class="res" src="img/un/r/3.gif" title="Eisen"></td>
+	<td><img class="res" src="img/un/a/clock.gif" title="Dauer"></td>
+	<td><img class="res" src="img/un/r/4.gif" title="Getreide"></td>
+	<td><img class="res" src="img/un/a/clock.gif" title="Dauer"></td></tr>
+	<?php
+	foreach($dorfer as $dorf) {
 
-    $lager=$dorf->lager();
-    $lagerGrosse=$dorf->lagerGrosse();
-    $produktion=$dorf->produktion();
-    $produktion[3]-=$dorf->versorgung();
-    $x=$dorf->get('x');
-    $y=$dorf->get('y');
-    $cl='';$clr='';$cll='';
-    if ($x==$dorfx and $y==$dorfy) { $cl='ou'; $clr='ou re'; $cll='ou li'; }
-    echo'<tr><td class="s7 '.$cll.'"><a href="?page=dorf1&dorfx='.$x.'&dorfy='.$y.'">'.$dorf->get('name').'</a></td>';
-    unset($dauer);
-    for ($j=0;$j<=3;$j++) {
-      if ($j<3) $lagerIndex=0;
-      else $lagerIndex=1;
+		$lager=$dorf->lager();
+		$lagerGrosse=$dorf->lagerGrosse();
+		$produktion=$dorf->produktion();
+		$produktion[3]-=$dorf->versorgung();
+		$x=$dorf->get('x');
+		$y=$dorf->get('y');
+		$cl='';$clr='';$cll='';
+		if ($x==$dorfx and $y==$dorfy) {
+			$cl='ou'; $clr='ou re'; $cll='ou li';
+		}
+		echo'<tr><td class="s7 '.$cll.'"><a href="?page=dorf1&dorfx='.$x.'&dorfy='.$y.'">'.$dorf->get('name').'</a></td>';
+		unset($dauer);
+		for ($j=0;$j<=3;$j++) {
+			if ($j<3) $lagerIndex=0;
+			else $lagerIndex=1;
 
-      $p=((int)$lager[$j])/$lagerGrosse[$lagerIndex];
-      $frei=$lagerGrosse[$lagerIndex]-$lager[$j];
-      if ($produktion[$j]>0)
-	      $dauerAkt=$frei/$produktion[$j];
-	    elseif ($produktion[$j]<0)
-	    	$dauerAkt=abs($lager[$j]/$produktion[$j]);
-	    else
-	    	$dauerAkt=$dauer;
-      if ($dauerAkt<$dauer or !isset($dauer)) $dauer=$dauerAkt;
+			$p=((int)$lager[$j])/$lagerGrosse[$lagerIndex];
+			$frei=$lagerGrosse[$lagerIndex]-$lager[$j];
+			if ($produktion[$j]>0)
+				$dauerAkt=$frei/$produktion[$j];
+			elseif ($produktion[$j]<0)
+				$dauerAkt=abs($lager[$j]/$produktion[$j]);
+			else
+				$dauerAkt=$dauer;
+			if (!isset($dauer) or $dauerAkt<$dauer)
+				$dauer=$dauerAkt;
 
-      echo'<td class="r7 '.$cl.'" title="'.round($lager[$j]).' / '.$lagerGrosse[$lagerIndex].'">'.round($p*100).'%</td>';
-      //Dauer
-      if ($j>1) {
-      	if ($j==3) $cl=$clr;
-      	if ($dauer==0) {
-      		if ($produktion[$j]>0) echo'<td class="m7 '.$cl.'" style="color:red;">Voll</td>';
-      		if ($produktion[$j]==0) echo'<td class="m7 '.$cl.'" style="color:green;">-</td>';
-      		if ($produktion[$j]<0) echo'<td class="m7 '.$cl.'" style="color:red;">Leer</td>';
-      	}
-      	else {
-      		$c='';
-      		if ($produktion[$j]<0) $c='style="color:red;"';
-	      	echo'<td class="r7 '.$cl.'" id="timer'.$timerNr.'" '.$c.'>'.zeit_dauer($dauer*3600).'</td>';
-  	    	$timerNr++;
-  	    }
-  	    unset($dauer);
-      }
+			echo'<td class="r7 '.$cl.'" title="'.round($lager[$j]).' / '.$lagerGrosse[$lagerIndex].'">'.round($p*100).'%</td>';
+			//Dauer
+			if ($j>1) {
+				if ($j==3) $cl=$clr;
+				if ($dauer==0) {
+					if ($produktion[$j]>0) echo'<td class="m7 '.$cl.'" style="color:red;">Voll</td>';
+					if ($produktion[$j]==0) echo'<td class="m7 '.$cl.'" style="color:green;">-</td>';
+					if ($produktion[$j]<0) echo'<td class="m7 '.$cl.'" style="color:red;">Leer</td>';
+				}
+				else {
+					$c='';
+					if ($produktion[$j]<0)
+						$c='style="color:red;"';
+					echo'<td class="r7 '.$cl.'" id="timer'.$timerNr.'" '.$c.'>'.zeit_dauer($dauer*3600).'</td>';
+					$timerNr++;
+				}
+				unset($dauer);
+			}
 
-    }
-  }
-  echo'</tbody></table>';
+		}
+	}
+	echo'</tbody></table>';
 }
 
 
 
 if ($s==2) {	//Rohstoffe
-  ?>
-  <table class="tbg" cellpadding="2" cellspacing="1">
-  <tbody><tr class="rbg"><td colspan="6">Rohstoffe</td></tr>
-  <tr><td width="150">Dorfname</td><td><img class="res" src="img/un/r/1.gif" title="Holz"></td>
-  <td><img class="res" src="img/un/r/2.gif" title="Lehm"></td><td><img class="res" src="img/un/r/3.gif" title="Eisen"></td>
-  <td><img class="res" src="img/un/r/4.gif" title="Getreide"></td><td>Händler</td></tr>
-  <?php
-  $dorfer=$login_user->dorfer();
-  foreach($dorfer as $dorf) {
+	?>
+	<table class="tbg" cellpadding="2" cellspacing="1">
+	<tbody><tr class="rbg"><td colspan="6">Rohstoffe</td></tr>
+	<tr><td width="150">Dorfname</td><td><img class="res" src="img/un/r/1.gif" title="Holz"></td>
+	<td><img class="res" src="img/un/r/2.gif" title="Lehm"></td><td><img class="res" src="img/un/r/3.gif" title="Eisen"></td>
+	<td><img class="res" src="img/un/r/4.gif" title="Getreide"></td><td>HÃ¤ndler</td></tr>
+	<?php
+	$dorfer=$login_user->dorfer();
+	$totlager=array(0,0,0,0);
+	$gesamt_ver_handler=0;
+	$gesamt_handler=0;
+	foreach($dorfer as $dorf) {
+		$lager=$dorf->lager();
+		$x=$dorf->get('x');
+		$y=$dorf->get('y');
+		$cl='';$clr='';$cll='';
+		if ($x==$dorfx and $y==$dorfy){
+			$cl='ou'; $clr='ou re'; $cll='ou li';
+		}
+		echo'<tr><td class="s7 '.$cll.'"><a href="?page=dorf1&dorfx='.$x.'&dorfy='.$y.'">'.$dorf->get('name').'</a></td>';
 
-    $lager=$dorf->lager();
-    $x=$dorf->get('x');
-    $y=$dorf->get('y');
-    $cl='';$clr='';$cll='';
-    if ($x==$dorfx and $y==$dorfy) { $cl='ou'; $clr='ou re'; $cll='ou li'; }
-    echo'<tr><td class="s7 '.$cll.'"><a href="?page=dorf1&dorfx='.$x.'&dorfy='.$y.'">'.$dorf->get('name').'</a></td>';
-    for ($j=0;$j<=3;$j++) {
-      $totlager[$j]+=$lager[$j];
-      $la=number_format($lager[$j],0,'','´');
-      echo'<td class="r7 '.$cl.'">'.$la.'</td>';
-    }
+		for ($j=0;$j<=3;$j++) {
+			$totlager[$j]+=$lager[$j];
+			$la=number_format($lager[$j],0,'','´');
+			echo'<td class="r7 '.$cl.'">'.$la.'</td>';
+		}
 
-    echo'<td class="'.$clr.'"><a href="?page=build&dorfx='.$x.'&dorfy='.$y.'&highest=17">
-      '.$dorf->freieHandler().'/'.$dorf->handler().'</a></td></tr>';
-    $gesamt_ver_handler+=$dorf->freieHandler();
-    $gesamt_handler+=$dorf->handler();
-  }
-  echo'<tr><td colspan="12"></td></tr><tr><td class="s7 f10"><b>Summe</b></td>';
-  for ($i=0;$i<=3;$i++) {
-      if ($totlager[$i]==0) echo'<td class="c">0</td>';
-      else echo'<td>'.number_format($totlager[$i],0,'','´').'</td>';
-  }
-  echo'<td>'.$gesamt_ver_handler.'/'.$gesamt_handler.'</td>';
-  echo'</tbody></table>';
+		echo'<td class="'.$clr.'"><a href="?page=build&dorfx='.$x.'&dorfy='.$y.'&highest=17">
+			'.$dorf->freieHandler().'/'.$dorf->handler().'</a></td></tr>';
+			$gesamt_ver_handler+=$dorf->freieHandler();
+			$gesamt_handler+=$dorf->handler();
+	}
+	echo'<tr><td colspan="12"></td></tr><tr><td class="s7 f10"><b>Summe</b></td>';
+	for ($i=0;$i<=3;$i++) {
+	if ($totlager[$i]==0) echo'<td class="c">0</td>';
+	else echo'<td>'.number_format($totlager[$i],0,'',"´").'</td>';
+	}
+	echo'<td>'.$gesamt_ver_handler.'/'.$gesamt_handler.'</td>';
+	echo'</tbody></table>';
 }
 
 
-if ($s==1) { 	//Übersicht
+if ($s==1) { 	//Ãœbersicht
 
-  echo'<table class="tbg" cellpadding="2" cellspacing="1">
-    <tbody><tr class="rbg"><td colspan="6">Übersicht</td></tr>
-    <tr><td width="150">Dorfname</td><td>Angriffe</td><td>Bau</td><td>Truppenbau</td><td>Händler</td></tr>';
-  foreach($dorfer as $dorf) {
+	echo'<table class="tbg" cellpadding="2" cellspacing="1">
+		<tbody><tr class="rbg"><td colspan="6">Ãœbersicht</td></tr>
+		<tr><td width="150">Dorfname</td><td>Angriffe</td><td>Bau</td><td>Truppenbau</td><td>Händler</td></tr>';
+	foreach($dorfer as $dorf) {
 
-    $x=$dorf->get('x');
-    $y=$dorf->get('y');
-    $cl='';$clr='';$cll='';
-    if ($x==$dorfx and $y==$dorfy) { $cl='ou'; $clr='ou re'; $cll='ou li'; }
-    //Name
-    echo'<tr><td class="s7 '.$cll.'"><a href="?page=dorf1&dorfx='.$x.'&dorfy='.$y.'">'.$dorf->get('name').'</a></td>';
+		$x=$dorf->get('x');
+		$y=$dorf->get('y');
+		$cl='';$clr='';$cll='';
+		if ($x==$dorfx and $y==$dorfy) { $cl='ou'; $clr='ou re'; $cll='ou li'; }
+		//Name
+		echo'<tr><td class="s7 '.$cll.'"><a href="?page=dorf1&dorfx='.$x.'&dorfy='.$y.'">'.$dorf->get('name').'</a></td>';
 
-    //Angriffe
-    echo'<td class="'.$cl.'">';
-    $moves=$dorf->truppenBewegungen();
-//    x('');
-    if (empty($moves)) echo'<span class="c">-</span>';
-    else {
-    	echo'<a href="?page=build&dorfx='.$x.'&dorfy='.$y.'&gid=39">';
-    	foreach($moves as $typ => $move) {
-    		echo'<img src="img/un/a/'.$typ.'.gif" border="0" onmouseover="TagToTip(\'tip'.$tooltip.'\',\'\')">
-    			<span id="tip'.$tooltip.'">
-    			<b class="c'.$move['farbe'].' f10">'.$move['anz'].' '.$move['volltext'].'</b><br>
+		//Angriffe
+		echo'<td class="'.$cl.'">';
+		$moves=$dorf->truppenBewegungen();
+		if (empty($moves)) echo'<span class="c">-</span>';
+		else {
+			echo'<a href="?page=build&dorfx='.$x.'&dorfy='.$y.'&gid=39">';
+			foreach($moves as $typ => $move) {
+				echo'<img src="img/un/a/'.$typ.'.gif" border="0" onmouseover="TagToTip(\'tip'.$tooltip.'\',\'\')">
+					<span id="tip'.$tooltip.'">
+					<b class="c'.$move['farbe'].' f10">'.$move['anz'].' '.$move['volltext'].'</b><br>
 					in <span id="timer'.$timerNr.'">'.zeit_dauer($move['first']-time()).'</span>
 					Std.</span>';
-    		$tooltip++;
-    	}
-    	echo'</a>';
-    }
+				$tooltip++;
+			}
+			echo'</a>';
+		}
 		echo'</td>';
 
-    //Gebäude Bau
-    echo'<td class="'.$cl.'">';
-    $auftrage=$dorf->auftrage(10);
-    if (empty($auftrage)) {
-    	echo'<span class="c">-</span>';
-    }
-    else {
+		//Gebäude Bau
+		echo'<td class="'.$cl.'">';
+		$auftrage=$dorf->auftrage(10);
+		if (empty($auftrage)) {
+			echo'<span class="c">-</span>';
+		}
+		else {
 			foreach($auftrage as $auftrag) {
 				$gid=$auftrag->get('id');
-				$stufe=$dorf->gebeudeStufe($gid);
+				$stufe=$dorf->gebeudeStufe($gid)+1;
 				$typ=$dorf->gebeudeTyp($gid);
 				
 				$gebeude=GebeudeTyp::getById($typ);
@@ -315,52 +330,56 @@ if ($s==1) { 	//Übersicht
 				$timerNr++;
 			}
 		}
-    echo'</td>';
+		echo'</td>';
 
-    //Truppen
-    $none=TRUE;
-    echo'<td class="'.$cl.'">';
-    for ($typNr=1;$typNr<=4;$typNr++) {
-   	  $auftrage=$dorf->auftrage($typNr);
-      if (!empty($auftrage)) {
-      	$none=FALSE;
-        $einheiten=array();
-        foreach($auftrage as $auftrag) {
-          $einheiten[$auftrag->get('id')]+=$auftrag->get('anzahl');
-          $stamp=strtotime($auftrag->get('zeit'))+($auftrag->get('anzahl')-1)*$auftrag->get('dauer');
-          if ($stamp>$einheiten_finished[$auftrag->get('id')])
-          	$einheiten_finished[$auftrag->get('id')]=$stamp;
-        }
-        foreach($einheiten as $tid => $anzahl) {
-          $typ=TruppenTyp::getById($tid);
-          if ($typNr<4) $h=18+$typNr;
-          else $h=25;
-          
-          $stamp=$einheiten_finished[$tid];
-          $fertig=date('H:i d.m.Y',$stamp);
-          
-          echo'<a href="?page=build&dorfx='.$x.'&dorfy='.$y.'&highest='.$h.'"
-          	onmouseover="TagToTip(\'tip'.$tooltip.'\',\'\')">
+		//Truppen
+		$none=TRUE;
+		echo'<td class="'.$cl.'">';
+		for ($typNr=1;$typNr<=4;$typNr++) {
+			$auftrage=$dorf->auftrage($typNr);
+			if (!empty($auftrage)) {
+				$none=FALSE;
+				$einheiten=array();
+				foreach($auftrage as $auftrag) {
+					$id=$auftrag->get('id');
+					if (!isset($einheiten[$id]))
+						$einheiten[$id]=0;
+					$einheiten[$id]+=$auftrag->get('anzahl');
+					$stamp=strtotime($auftrag->get('zeit'))+($auftrag->get('anzahl')-1)*$auftrag->get('dauer');
+					if (!isset($einheiten_finished[$id]))
+						$einheiten_finished[$id]=time();
+					if ($stamp>$einheiten_finished[$id])
+						$einheiten_finished[$auftrag->get('id')]=$stamp;
+				}
+				foreach($einheiten as $tid => $anzahl) {
+					$typ=TruppenTyp::getById($tid);
+					if ($typNr<4) $h=18+$typNr;
+					else $h=25;
+					
+					$stamp=$einheiten_finished[$tid];
+					$fertig=date('H:i d.m.Y',$stamp);
+			  
+					echo'<a href="?page=build&dorfx='.$x.'&dorfy='.$y.'&highest='.$h.'"
+						onmouseover="TagToTip(\'tip'.$tooltip.'\',\'\')">
 						<img src="img/un/u/'.$tid.'.gif" ></a>
 						<span id="tip'.$tooltip.'">
-					<b>'.$anzahl.' '.$typ->named($anzahl).'</b><br>
-					<span id="timer'.$timerNr.'">'.zeit_dauer($stamp-time()).'</span><br>
-					Fertig: '.$fertig.'</span>';
-				$tooltip++;
-				$timerNr++;
-            
-        }
-      }
-    }
-    if ($none) echo'<span class="c">-</span>';
-    echo'</td>';
+						<b>'.$anzahl.' '.$typ->named($anzahl).'</b><br>
+						<span id="timer'.$timerNr.'">'.zeit_dauer($stamp-time()).'</span><br>
+						Fertig: '.$fertig.'</span>';
+					$tooltip++;
+					$timerNr++;
+				}
+			}
+		}
+		if ($none) echo'<span class="c">-</span>';
+		echo'</td>';
 
-		//Händler
-    echo'<td class="'.$clr.'"><a href="?page=build&dorfx='.$x.'&dorfy='.$y.'&highest=17">
-      '.$dorf->freieHandler().'/'.$dorf->handler().'</a></td></tr>';
-  }
+			//Händler
+		echo'<td class="'.$clr.'"><a href="?page=build&dorfx='.$x.'&dorfy='.$y.'&highest=17">
+			'.$dorf->freieHandler().'/'.$dorf->handler().'</a></td></tr>';
+	}
 
-  echo'</tbody></table>';
+	echo'</tbody></table>';
 
 }
 ?>

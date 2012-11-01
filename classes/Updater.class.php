@@ -9,7 +9,7 @@ class Updater {
 		if ($value<time()-3600) {
 			Diverses::set('natur_last_update',now());
 
-			$sql="SELECT x,y,typ FROM tr".ROUND_ID."_lander WHERE oase=1 AND annektiert=0;";
+			$sql="SELECT x,y,typ FROM tr".ROUND_ID."_lander WHERE oase=1 AND annektiert_user=0;";
 			$result=mysql_query($sql);
 			while ($data=mysql_fetch_assoc($result)) {
 
@@ -79,6 +79,7 @@ class Updater {
 		//Ress im Dorf werden automatisch updated sobald das
 		//Dorf über die Klasse Dorf instanziert wurde.
 		self::spielerAllies();
+		self::natur1h();
 
 		$user=$dorf->user();
 		$username=$user->get('name');
@@ -291,7 +292,7 @@ class Updater {
 				if ($data['msg']==1){
 					$betreff=$start_dorf->get('name').' unterstützt '.
 						$ziel_dorf->get('name');
-					$msg='4'.chr(13)."1:Absender:".$dieserUser->get('name').
+					$msg="1:Absender:".$dieserUser->get('name').
 						" aus Dorf ".$start_dorf->get('name').chr(13).
 						"3:".$dieserUser->get('volk').chr(13)."4:Einheiten:".
 						$data['truppen'].chr(13)."5:0";

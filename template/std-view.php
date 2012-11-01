@@ -1,11 +1,15 @@
 <?php
 
-if ($login_user===NULL and $page!='login') gotoP('login');
+if ($page!='login')
+	needed_login();
+
+add_javascript('keyhit');
 
 Outputer::links();
+
 Outputer::blocks();
 Outputer::menu();
-
+add_link('phpMyAdmin','/phpmyadmin');
 
 ?>
 

@@ -46,7 +46,6 @@ echo date('d.m.y',strtotime($bericht->get('zeit'))).' um '.
 $alles=explode(chr(13),$bericht->get('text'));
 echo'<table class="tbg" cellpadding="2" cellspacing="1"><tbody>';
 for ($teil=0;$teil<sizeof($alles);$teil++) {
-	if ($teil>0) echo'<br>';
 	$zeile=explode(':',$alles[$teil]);
 
 	if ($zeile[0]==0) { //Reiner Text
@@ -74,11 +73,14 @@ for ($teil=0;$teil<sizeof($alles);$teil++) {
 			'</td></tr>';
 	}
 	if ($zeile[0]==3)	{ //Bilder von Einheiten
+		
 		echo'<tr class="unit"><td>&nbsp;</td>';
 		$v=($zeile[1]-1)*10;
-		for ($j=1;$j<=10;$j++)
+		for ($j=1;$j<=10;$j++){
+			$troop=TruppenTyp::getById($j+$v);
 			echo'<td><img src="img/un/u/'.($j+$v).'.gif" title="'.
-				$troops[$j+$v]['name'].'"></td>';
+				$troop->get('name').'"></td>';
+		}
 		echo'</tr>';
 	}
 	if ($zeile[0]==4) {	//Text und Einheitenanzahl

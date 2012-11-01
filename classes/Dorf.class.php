@@ -68,6 +68,7 @@ class Dorf {
 				if ($move->get('user')==$this->get('user')) {
 					$ak=$move->get('aktion');
 					unset($typ);
+					if ($ak==1) $typ='def1';
 					if ($ak==2) $typ='def2';
 					if ($ak>2) $typ='att2';
 					if (substr($typ,0,3)=='def') {
@@ -384,7 +385,7 @@ class Dorf {
 	public function gebeudeTyp($gid) {
 		if ($gid<18) {
 			$g1=$this->gebeude1typ();
-			return $g1[$gid];
+			return $g1[$gid-1];
 		}
 		else {
 			$g2=$this->gebeude2typ();
@@ -739,7 +740,7 @@ class Dorf {
 	}
 
 	protected static function loadEntry($x,$y) {
-		if (!isset(self::$loaded[$x][$y])) {
+		if (!isset(self::$loaded[$x][$y]) or !self::$loaded[$x][$y]) {
 			$sql="SELECT * FROM tr".ROUND_ID."_".self::$db_table."
 				WHERE x=$x AND y=$y;";
 			$result=mysql_query($sql);
@@ -768,7 +769,7 @@ class Dorf {
 	}
 
 	public static function getByXY($x,$y) {
-		if (!isset(self::$loaded[$x][$y])) {
+		if (!isset(self::$loaded[$x][$y]) or !self::$loaded[$x][$y]) {
 			self::loadEntry($x,$y);
 		}
 		return @self::$objekte[$x][$y];
@@ -817,11 +818,19 @@ class Dorf {
 		}
 		if (!isset($_COOKIE['dorfx']) or
 			!isset($_COOKIE['dorfy'])) {
-			$dorf=$login_user->startDorf();;
+			$dorf=$login_user->startDorf();
 		}
 		else {
-			$dorf=Dorf::getByXY($_COOKIE['dorfx'],
-											$_COOKIE['dorfy']);
+			$dorf=Dorf::getByXY($_COOKIE['dorfx'],$_COOKIE['dorfy']);
+			if ($dorf==null){
+				$dorf=$login_user->startDorf();
+				$x=$dorf->get('x');
+				$y=$dorf->get('y');
+				setcookie('dorfx',$x);
+				setcookie('dorfy',$y);
+				$_COOKIE['dorfx']=$x;
+				$_COOKIE['dorfy']=$y;
+			}
 		}
 		return $dorf;
 	}

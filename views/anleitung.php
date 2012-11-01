@@ -3,19 +3,19 @@ if (!$execute) die('');
 outgame_links();
 outgame_blocks();
 
-if (!isset($_GET['s']))
-	$_GET['s']=0;
+$s=saveGet('s',0);
+	
 echo'<div style="position:relative; top:-30px;">
     <img src="img/de/t1/anleitung.gif" width="468" height="60" border="0" />
   </div>
   <div class="wholebox">
-    <a href="?page=anleitung" '.($_GET['s']==0?'class="selected"':'').'>Die Völker</a> |
-    <a href="?page=anleitung&s=1" '.($_GET['s']==1?'class="selected"':'').'>Die Gebäude</a> |
-    <a href="?page=anleitung&s=2" '.($_GET['s']==2?'class="selected"':'').'>FAQ</a> |
-    <a href="?page=anleitung&s=3" '.($_GET['s']==3?'class="selected"':'').'>Neue Dörfer</a>
+    <a href="?page=anleitung" '.($s==0?'class="selected"':'').'>Die Völker</a> |
+    <a href="?page=anleitung&s=1" '.($s==1?'class="selected"':'').'>Die Gebäude</a> |
+    <a href="?page=anleitung&s=2" '.($s==2?'class="selected"':'').'>FAQ</a> |
+    <a href="?page=anleitung&s=3" '.($s==3?'class="selected"':'').'>Neue Dörfer</a>
   </div>';
 
-if ($_GET['s']==0) {
+if ($s==0) {
 ?>
 
 <div class="wholebox">
@@ -160,7 +160,7 @@ ist es wichtig zu Beginn des Spieles das Volk zu nehmen, das zu einem passt.</p>
 }
 
 
-if ($_GET['s']==1) {
+if ($s==1) {
 ?>
 <br>
 Zu Beginn des Spiels sollte man zunächst für eine solide wirtschaftliche
@@ -218,7 +218,7 @@ foreach ($gebeude as $index=>$id) {
 
 }
 
-if ($_GET['s']==2) {
+if ($s==2) {
 ?>
 <div class="wholebox">
 <img src="img/un/h/faq_vp.jpg" alt="Versammlungsplatz" title="Versammlungsplatz"
@@ -294,7 +294,7 @@ wenn es kein Hauptdorf ist.</div>
 <?php
 }
 
-if ($_GET['s']==3) {
+if ($s==3) {
 ?>
 <div class="wholebox">
 <img align="right" src="img/un/u2/u30.gif" alt="Siedler" title="Siedler" style="margin-left:10px;">

@@ -10,22 +10,29 @@ w3: +25hg
 	40 Wildschweine
 	25 Wölfe
 	30 Bären
+	10 Tiger
 w4: +25l
 	25 Ratten
 	20 Spinnen
+	30 Schlangen
 	10 Wildschweine
 w5: +25l
 	40 Ratten
 	30 Spinnen
+	 8 Schlangen
 	18 Wildschweine
 w6: +25lg
 	35 Ratten
 	25 Spinnen
 	15 Wildschweine
+	 5 Krokodil
+	15 Tiger
 w7: +25e
-	35 Ratten
+	50 Ratten
 	20 Spinnen
-	25 Fledermäuse
+	35 Schlangen
+	40 Fledermäuse
+	 5 Wölfe
 w8: +25e
 	20 Ratten
 	10 Spinnen

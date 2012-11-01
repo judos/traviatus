@@ -36,7 +36,7 @@ class TruppeMove {
 		//Den 2. User hinzufügen
 		if ($this->zielDorf()!==NULL) {
 			$user2=$this->zielDorf()->get('user');
-			if (self::$objekte_user[$user2]===NULL)
+			if (!isset(self::$objekte_user[$user2]))
 				self::$objekte_user[$user2]=array();
 			if (!arrayObjectsContains(
 					self::$objekte_user[$user2],'keyid',$keyid))
@@ -124,12 +124,16 @@ class TruppeMove {
 			$zielName='<a href="?page=spieler&name='.$n.'">'.$n.'</a>';
 		}
 		else {
-			$zielName='<a href="?page=karte-show&x='.$zielname[0].'&y='.$zielname[1].'">'.
-					'('.$zielname[0].'|'.$zielname[1].')</a>';
+			$x=$this->get('ziel_x');
+			$y=$this->get('ziel_y');
+			$dorf=array('x'=>$x,'y'=>$y);
+			$zielName='<a href="?page=karte-show&x='.$x.'&y='.$y.'">'.
+					'('.$x.'|'.$y.')</a>';
+			
 		}
 		
 		switch($this->get('aktion')) {
-			case 1:$title='Neues Dorf gründen';break;
+			case 1:$title="Neues Dorf gründen in $zielName";break;
 			case 2:$title="Unterstützung $word[0] $zielName";break;
 			case 3:$title="Angriff $word[1] $zielName";break;
 			case 4:$title="Raubzug $word[1] $zielName";break;

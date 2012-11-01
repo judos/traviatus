@@ -10,7 +10,11 @@ $path=str_repeat('../',$anz);
 
 //Includes
 include "includes/functions.php";
-include "includes/arrayobjects functions.php";
+include "includes/arrays.func.php";
+include "includes/debug.func.php";
+include "includes/arrayobjects.func.php";
+include "includes/math.func.php";
+include "includes/string.func.php";
 include "includes/vector4.php";
 include "includes/configs.php";
 include "includes/links.php";
@@ -18,30 +22,23 @@ include "includes/classes.php";
 include "includes/backup_db.php";
 connect();
 
-//Alle Fehler und PHP Notizen abfangen und selber auf der Seite ausgeben
-function handleError($errno, $errstr, $errfile, $errline, array $errcontext){
-	// error was suppressed with the @-operator
-	if (0 === error_reporting())
-		return false;
-		//Daten an die Fehlerfunktion weitergeben (function x() siehe includes/functions.php)
-	x('ERROR'.$errno.' '.$errstr);
-}
-//Obige Funktion verwenden um Fehler etc. abzufangen.
+//Die Funktion handleError verwenden um Fehler etc. abzufangen.
 set_error_handler('handleError');
 
 //variablen zurücksetzen
 $action_forwarding=false;  //Ob nach einem Action automatisch weitergeleitet wird
                            //Spiel-Einstellung: true
-$error_output_fatal=true; //Falls ein Fatal_Error im PHP existiert sollte dies auf
+$error_output_fatal=false; //Falls ein Fatal_Error im PHP existiert sollte dies auf
                            // True umgeschalten werden um alle Fehler anzuzeigen
 						   //Spiel-Einstellung: false
-$title='Traviatus R'.ROUND_ID.' (beta 0.3)'; //Titel der Runde
+$title='Traviatus R'.ROUND_ID.' (beta 0.31)'; //Titel der Runde
 
 $blocks_shown=array();     //HTML-Template-Blocks die angezeigt wurden
 $blocks_hidden=array();    //HTML-Template-Blocks die verborgen wurden
 $body_onload='';           //Javascript das beim Laden ausgeführt wird
 $error='';                 //Hier werden Fehlermeldungen gespeichert
 $error_count=0;            //Hier werden Fehler gezählt
+$javascripts='';           //Zusätzliche javascripts in html-code
 $links='';
 $login_dorf=NULL;
 $login_user=NULL;
@@ -149,6 +146,7 @@ $html=str_replace('++CONTENT++',$content,$html);
 $html=str_replace('++FOOTER++',$footer,$html);
 $rel_path_escape='';
 if (isset($path) and $path!='') $rel_path_escape='../';
+$html=str_replace('++JAVASCRIPTS++',$javascripts,$html);
 $html=str_replace('++REL_PATH++',$rel_path_escape,$html);
 
 if (in_array('servertime',$blocks_shown)) {
@@ -157,9 +155,6 @@ if (in_array('servertime',$blocks_shown)) {
 		$html=str_replace('++'.$key.'++',$var,$html);
 	}
 }
-
-//TODO: remove comment
-//special_chars_wrong_codec($html);
 
 prooveblocks();
 showblock('error');

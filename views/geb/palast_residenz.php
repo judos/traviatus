@@ -74,11 +74,20 @@ elseif ($s==4) {
 			wurde noch kein anderes Dorf gegründet/erobert.</td></tr>';
 	else {
 		for ($i=1;$i<=$expansion[0];$i++) {
-			$dorf=Dorf::getByXY($expansion[$i*2-1],$expansion[$i*2]);
-
+			$x=$expansion[$i*2-1];
+			$y=$expansion[$i*2];
+			$dorf=Dorf::getByXY($x,$y);
+			if ($dorf!=null){
+				$name='<a href="?page=karte-show&x='.$x.'&y='.$y.'">'.$dorf->get('name').'</a>';
+				$einwohner=$dorf->get('einwohner');
+			}
+			else {
+				$name='Zerstört';
+				$einwohner=0;
+			}
 			echo'<tr><td align="right">'.$i.'.&nbsp;</td>
-				<td class="s7">'.$dorf->get('name').'</td>
-				<td>'.$dorf->get('einwohner').'</td>
+				<td class="s7">'.$name.'</td>
+				<td>'.$einwohner.'</td>
 				<td><table class="f10" cellpadding="0" cellspacing="0">
 				<tbody><tr>
 				<td align="right" width="35">('.$expansion[$i*2-1].'</td>

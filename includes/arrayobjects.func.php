@@ -53,19 +53,19 @@ function arrayObjectsSort(&$arr,$att,$order) {
 }
 function arrayObjectsSort_compare_att($a, $b) {
 	global $compare_att,$compare_order;
-	$x=$a->get($compare_att);
-	if (is_string($x)) {
+	$av=$a->get($compare_att);
+	$bv=$b->get($compare_att);
+	if (is_string($av)) {
 		if ($compare_order=='asc')
-			return strnatcmp($a->get($compare_att),$b->get($compare_att));
+			return strnatcmp($av,$bv);
 		else
-			return strnatcmp($b->get($compare_att),$a->get($compare_att));
+			return strnatcmp($bv,$av);
 	}
-	elseif (is_int($x)) {
+	elseif (is_int($av)) {
 		if ($compare_order=='asc')
-			$return=$a->get($compare_att)-$b->get($compare_att);
+			return $av-$bv;
 		else
-			$return=$b->get($compare_att)-$a->get($compare_att);
-		return $return;
+			return $bv-$av;
 	}
 }
 

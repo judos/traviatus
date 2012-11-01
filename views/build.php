@@ -22,21 +22,11 @@ if (isset($_GET['highest'])) {
 if (!isset($gid)) gotoP('dorf1');
 
 //Gebäude ID und Grid ID und Stufe finden
-if ($gid<19){
-	$gebeude1typ=$login_dorf->gebeude1typ();
-	$gebeude1=$login_dorf->gebeude1();
-	$id=$gebeude1typ[$gid-1];
-	$stufe=$gebeude1[$gid-1];
-}
-else {
-	$gebeude2typ=$login_dorf->gebeude2typ();
-	$gebeude2=$login_dorf->gebeude2();
-	$id=$gebeude2typ[$gid-19];
-	$stufe=$gebeude2[$gid-19];
-}
+$id=$login_dorf->gebeudeTyp($gid);
+$stufe=$login_dorf->gebeudeStufe($gid);
+
 if ($id>0) {
 	$gebeude=GebeudeTyp::getById($id);
-	$name=$gebeude->get('name');
 }
 
 $produktion=$login_dorf->produktion();
@@ -126,7 +116,7 @@ if (($gid<19) or ($gid>18 AND $id>0)) {
 	$kosten=$gebeude->baukosten($nachste_stufe);
 
 	//Name Stufe Beschreibung
-	echo'<h1><b>'.$name.' Stufe '.$stufe.'</b></h1>
+	echo'<h1><b>'.$gebeude->get('name').' Stufe '.$stufe.'</b></h1>
 	<p class="f10">'.insert_div(t($gebeude->get('besch'))).'</p>';
 
 	//Informationen zu Nutzen des Gebäudes

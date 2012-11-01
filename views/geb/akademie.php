@@ -8,6 +8,8 @@ $auftrage=$login_dorf->auftrage(5);
 
 
 foreach($typen as $tid => $typ) {
+	if ($tid=='hero')
+		continue;
 	if ($typ->erforschbar($login_user,$login_dorf) and
 			!$login_user->einheitErforscht($tid)) {
 

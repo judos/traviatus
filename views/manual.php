@@ -1,20 +1,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<title></title><link rel=stylesheet type="text/css" href="unx.css">
-<meta http-equiv="imagetoolbar" content="no">
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title></title><link rel=stylesheet type="text/css" href="unx.css">
+	<meta http-equiv="imagetoolbar" content="no">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 </head>
 <body>
 <?php
 
 $template=false;
-
 $volker=explode(':',Diverses::get('volker'));
-
 $typ=saveGet('typ',0);
 
-if ($typ==0) {
+
+if ($typ==0) { // Übersicht
 ?>
 <h1><img src="img/un/u/geb.gif" class="unit"> Übersicht</h1>
 
@@ -55,7 +54,7 @@ Sehr ausführliche Travian Dokumentation</li></ul></p>
 }
 if ($typ==1) {
 	$volk=$_GET['volk'];
-	if (isset($volk)) {	//Einheiten eines Volkes im Ãœberblick
+	if (isset($volk)) {	//Einheiten eines Volkes im Überblick
 
 		echo'<h1><img src="img/un/u/geb.gif" class="unit"> Einheiten ('.
 			$volker[$volk-1].')</h1>
@@ -109,7 +108,7 @@ if ($typ==1) {
 			<p><table cellspacing="1" cellpadding="2" class="f10">
 			<tr><td>Geschwindigkeit:</td><td><b>'.$e->get('speed').'</b>
 			Felder/Stunde</td></tr><tr>
-			<td>TragfÃ¤higkeit:</td><td><b>'.$e->get('tragen').'</b>
+			<td>Tragfähigkeit:</td><td><b>'.$e->get('tragen').'</b>
 			Rohstoffe</td></tr><tr>
 			<td>Versorgung:</td><td><img class="res" src="img/un/r/5.gif"
 			alt="supply"> '.$e->get('versorgung').'</td>
@@ -163,7 +162,7 @@ if ($typ==2) {	//Gebäude im Überblick
 		$kosten=$g->baukosten(1);
 		echo'<h1><img class="unit" src="img/un/u/geb.gif"> '.
 			$g->get('name').'</h1>'.
-			'<p>'.t($g->get('besch').$g->get('volksvorteile')).'</p><p><b>Kosten</b> und <b>Bauzeit</b>
+			'<p>'.t(insert_div($g->get('besch')).$g->get('volksvorteile')).'</p><p><b>Kosten</b> und <b>Bauzeit</b>
 			bei Stufe 1:<br>
 			<img class="res" src="img/un/r/1.gif" alt="Holz"
 				title="Holz" style="padding-top:4px">'.$kosten[0].' |

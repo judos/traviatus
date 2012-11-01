@@ -176,6 +176,24 @@ class TruppenTyp {
 			'title="'.$this->get('name').'">';
 	}
 	
+	public static function getByVolk($volk) {
+		$r=array();
+		for($i=1;$i<=10;$i++){
+			$id=$i+($volk-1)*10;
+			$r[$id] = self::getById($id);
+		}
+		return $r;
+	}
+	
+	public static function getIdsByVolk($volk) {
+		$r=array();
+		for($i=1;$i<=10;$i++){
+			$id=$i+($volk-1)*10;
+			$r[]=$id;
+		}
+		return $r;
+	}
+	
 	public static function getVersorgung($soldatenIds){
 		$versorgung=0;
 		foreach ($soldatenIds as $id => $anz) {

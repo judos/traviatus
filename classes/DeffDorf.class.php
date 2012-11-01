@@ -17,7 +17,7 @@ class DeffDorf {
 	public function DeffDorf() {
 		$array = func_get_args();
 		if (sizeof($array)==1) $this->DeffDorf1($array[0]);
-		elseif (sizeof($array)==4) $this->DeffDorf2($array[0],$array[1],$array[2],$array[3]);
+		elseif (sizeof($array)==4) $this->DeffDorf4($array[0],$array[1],$array[2],$array[3]);
 		else x('DeffDorf aufruf ungültig, bitte Constructor Aufruf prüfen.');
 
 	}
@@ -61,7 +61,8 @@ class DeffDorf {
 		}
 	}
 
-	public function DeffDorf2($palace,$wall,$fallen,$deffTruppen) {
+	//$wall an array with $gid => $stufe
+	public function DeffDorf4($palace,$wall,$fallen,$deffTruppen) {
 		$this->palace=$palace;
 		$this->wall=$wall;
 		$this->fallen=$fallen;
@@ -69,6 +70,8 @@ class DeffDorf {
 	}
 
 	public function deffBoni() {
+		if ($this->deffboni===null)
+			calcDeffBoni();
 		return $this->deffboni;
 	}
 
@@ -83,7 +86,7 @@ class DeffDorf {
 
 		//Durch Held gewonnene Boni
 		foreach($this->deffTruppen as $nr => $truppe) {
-			if ($truppe['hero']==1)
+			if (@$truppe['hero']==1)
 				$deffboni+=$truppe['heroboni'];
 		}
 
@@ -105,23 +108,22 @@ class DeffDorf {
 	//Gibt übrige Truppen des Angreifers zurück
 	//$ktyp= 3Angriff 4Raubzug
 	public function attack($truppeAngreifer,$ktyp) {
-		$debug=FALSE;
+		$debug=false;
 		
 		//Deffboni ausrechnen fürs Dorf
 		$this->calcDeffBoni();
 		
 		//Offboni ausrechnen für Angreifer
 		$offboni=0;
-		if ($truppeAngreifer['hero']==1)
+		if (@$truppeAngreifer['hero']==1)
 			$offboni+=$truppeAngreifer['heroboni'];
 		
 		//Offwerte ausrechnen
-		$offWerte=array();	// ( 'infa'=>$wert, 'kava'=>$wert );
+		$offWerte=array('infa'=>0,'kava'=>0);	// ( 'infa'=>$wert, 'kava'=>$wert );
 		$volkAngreifer=$truppeAngreifer['volk'];
-		for($tid=$volkAngreifer*10-9;$tid<=$volkAngreifer*10;$tid++) {
+		$einheiten = TruppenTyp::getByVolk($volkAngreifer);
+		foreach($einheiten as $tid => $einheit) {
 			if (isset($truppeAngreifer[$tid]) and $truppeAngreifer[$tid]>0) {
-				$einheit=TruppenTyp::getById($tid);
-
 				$werte=$einheit->werte();
 				$anzahl=$truppeAngreifer[$tid];
 				if ($einheit->get('typ')==2)
@@ -131,17 +133,19 @@ class DeffDorf {
 			}
 		}
 		
-		//Deffaufteilung ausrechnen (wieviel prozent deffen kavallerie und wieviel deffen infanterie
+		
 		$offWerte['total']=$offWerte['infa']+$offWerte['kava'];
 		//Offboni hinzuzählen
 		$offWerte['total']*= (100+$offboni)/100;
+		
+		//Deffaufteilung ausrechnen (wieviel prozent deffen kavallerie und wieviel deffen infanterie
 		if ($offWerte['total']>0)
 			$deffVerteilung=array( 'infa'=>$offWerte['infa']/$offWerte['total'], 'kava'=>$offWerte['kava']/$offWerte['total'] );
 		else
 			$deffVerteilung=array('infa'=>50,'kava'=>50);
 		
 		//Deffwerte ausrechnen
-		$deffWerte=array(); // ( 'infa'=>$wert, 'kava'=>$wert );
+		$deffWerte=array('infa'=>0,'kava'=>0); // ( 'infa'=>$wert, 'kava'=>$wert );
 		foreach($this->deffTruppen as $nr => $truppe) {
 			$volk=$truppe['volk'];
 			for($tid=$volk*10-9;$tid<=$volk*10;$tid++) {
@@ -163,23 +167,23 @@ class DeffDorf {
 		//Gewinner herausfinden
 		if ($deffWerte['total']>$offWerte['total']) {
 			$winner='deff';
-			$pointsWinner=$deffWerte;
-			$pointsLooser=$offWerte;
+			$pointsWinner=$deffWerte['total'];
+			$pointsLooser=$offWerte['total'];
 		}
 		elseif ($deffWerte['total']<$offWerte['total']) {
 			$winner='off';
-			$pointsWinner=$offWerte;
-			$pointsLooser=$deffWerte;
+			$pointsWinner=$offWerte['total'];
+			$pointsLooser=$deffWerte['total'];
 		}
 		else {
 			$winner='none';
-			$pointsWinner=$offWerte;
-			$pointsLooser=$offWerte;
+			$pointsWinner=$offWerte['total'];
+			$pointsLooser=$offWerte['total'];
 		}
 		
 		//Schadensprozente des Gewinners ausrechnen
-		if ($pointsWinner['total']>0)
-			$damage= 100*(pow($pointsLooser['total']/$pointsWinner['total'],3/2));
+		if ($pointsWinner>0)
+			$damage= 100*(pow($pointsLooser/$pointsWinner,3/2));
 		else
 			$damage=100;
 		$deffWipe=0;	//Prozent der Truppen des Verteidigers die untergehen
@@ -226,21 +230,23 @@ class DeffDorf {
 		//Deff auslöschen soviel wie ausgerechnet
 		foreach($this->deffTruppen as $nr => &$truppe) {
 			$volk=$truppe['volk'];
-			for ($tid=$volk*10-9;$tid<=$volk*10;$tid++) {
+			$einheiten = TruppenTyp::getIdsByVolk($volk);
+			foreach($einheiten as $tid) {
 				$truppe[$tid] = round((100-$deffWipe)/100 * $truppe[$tid],0);
 			}
-			if ($truppe['hero']==1)
+			if (@$truppe['hero']==1)
 				$truppe['herolive']= -$deffWipe;
 		}
 		
 		//Angreiffer auslöschen soviel wie ausgerechnet
 		$volk=$truppeAngreifer['volk'];
-		for($tid=$volk*10-9;$tid<=$volk*10;$tid++) {
+		$einheiten = TruppenTyp::getIdsByVolk($volk);
+		foreach($einheiten as $tid) {
 			if (isset($truppeAngreifer[$tid]) and $truppeAngreifer[$tid]>0) {
 				$truppeAngreifer[$tid] = round((100-$offWipe)/100 * $truppeAngreifer[$tid],0);
 			}
 		}
-		if ($truppeAngreifer['hero']==1)
+		if (@$truppeAngreifer['hero']==1)
 			$truppeAngreifer['herolive']= -$offWipe;
 				
 		//fertig Angriffstruppe zurückliefern, DeffTruppen sind noch gespeichert,

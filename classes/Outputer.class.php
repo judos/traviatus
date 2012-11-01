@@ -32,9 +32,16 @@ class Outputer {
 		if (!isset($timerNr)) $timerNr=1;
 		$dout='';
 		if ($dorf!=$dorf_viewing){
-			$x=$dorf->get('x');
-			$y=$dorf->get('y');
-			$dname=$dorf->get('name');
+			if ($dorf instanceof Dorf){
+				$x=$dorf->get('x');
+				$y=$dorf->get('y');
+				$dname=$dorf->get('name');
+			}
+			else {
+				$x=$dorf['x'];
+				$y=$dorf['y'];
+				$dname='Unbekanntes Land';
+			}
 			$dout='<a href="?page=karte-show&x='.$x.'&y='.$y.'"><span class="c0">'.
 			$dname.'</span></a>';
 		}
@@ -332,12 +339,12 @@ class Outputer {
 		if ($login_user->hatNeueNachrichten()) $show-=2;
 		if ($login_user->hatNeueBerichte()) $show--;
 		$menu.=''.
-			'<a href="?page=dorf1" accesskey="1" id="navileft" onfocus="this.blur();">'.
+			'<a href="?page=dorf1" id="navileft" onfocus="this.blur();">'.
 			'	<img id="n1" src="img/un/a/x.gif"
 				title="Dorfübersicht"></a>'.
-			'<a href="?page=dorf2" accesskey="2" onfocus="this.blur();"><img id="n2" src="img/un/a/x.gif"
+			'<a href="?page=dorf2" onfocus="this.blur();"><img id="n2" src="img/un/a/x.gif"
 				title="Dorfzentrum"></a>'.
-			'<a href="?page=karte" accesskey="3" onfocus="this.blur();"><img id="n3" src="img/un/a/x.gif"
+			'<a href="?page=karte" onfocus="this.blur();"><img id="n3" src="img/un/a/x.gif"
 				title="Karte"></a>'.
 			'<a href="?page=statistiken" onfocus="this.blur();">
 				<img id="n4" src="img/un/a/x.gif"

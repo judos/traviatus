@@ -365,7 +365,7 @@ class Spieler {
 	//setzt last_action auf NOW()
 	public static function checkLogin($name,$pw) {
 		$sql="SELECT id FROM tr".ROUND_ID."_".self::$db_table."
-			WHERE name='$name' ;";//AND pw='".$pw."';";
+			WHERE name='$name' AND pw='".$pw."';";
 		$result=mysql_query($sql);
 		if (mysql_num_rows($result)==0) return NULL;
 		if (mysql_num_rows($result)>1) {
