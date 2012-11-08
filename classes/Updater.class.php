@@ -232,195 +232,99 @@ class Updater {
 	public static function truppen() {
 
 		//Truppen ankommen lassen
-		$sql="SELECT * FROM `tr".ROUND_ID."_truppen_move`
+		$sql="SELECT keyid FROM `tr".ROUND_ID."_truppen_move`
 			WHERE `ziel_zeit`<='".now()."';";
 		$result=mysql_query($sql);
-		while ($data=mysql_fetch_array($result)) {
-
-			$sx=$data['start_x'];$sy=$data['start_y'];
-			$zx=$data['ziel_x'];$zy=$data['ziel_y'];
-			$start_dorf=Dorf::getByXY($sx,$sy);
-			$ziel_dorf=Dorf::getByXY($zx,$zy);
-			$dieserUser=Spieler::getById($data['user']);
+		while ($data=mysql_fetch_assoc($result)) {
+			
+			$truppe=TruppeMove::getById($data['keyid']);
+			$start_dorf=$truppe->startDorf();
+			$ziel_dorf=$truppe->zielDorf();
+			$sx=$start_dorf->get('x');
+			$sy=$start_dorf->get('y');
+			$zx=$ziel_dorf->get('x');
+			$zy=$ziel_dorf->get('y');
+			
+			$dieserUser=$truppe->getUser();
 
 			//Neues Dorf gr¸nden
-			if ($data['aktion']==1)	{
+			if ($truppe->get('aktion')==1)	{
 				//Falls Dorf noch frei ist
 				if (Dorf::isFree($zx,$zy)) {
 					//Truppe lˆschen
-					$sql3="DELETE FROM `tr".ROUND_ID."_truppen_move`
-						WHERE keyid='".$data['keyid']."';";
-					$result3=mysql_query($sql3);
+					$truppe->delete();
 
 					//Dorf gr¸nden
-					Dorf::create($zx,$zy,$data['user'],0);
+					Dorf::create($zx,$zy,$dieserUser,0);
 
 					//Expansion festhalten
 					$start_dorf->neueExpansion($zx,$zy);
 				}
 				//Falls Dorf schon besiedelt wurde, Siedler umkehren lassen
 				else {
-					$ziel_zeit=date('Y-m-d H:i:s',2*strtotime(
-						$data['ziel_zeit'])-strtotime($data['start_zeit']));
-					$sql3="UPDATE `tr".ROUND_ID."_truppen_move`
-						SET start_x='$zx', start_y='$zy',
-							ziel_x='$sx',ziel_y='$sy',
-							aktion='2',start_zeit='".$data['ziel_zeit']."',
-							ziel_zeit='$ziel_zeit'
-						WHERE keyid='".$data['keyid']."';";
-					$result3=mysql_query($sql3);
-
 					Automessages::siedlerUmgekehrt($dieserUser,
-						$data['ziel_zeit']);
+						$truppe->get('ziel_zeit'));
+						
+					$truppe->turnBack();
 				}
 			}
 			//Unterst¸tzung
-			if ($data['aktion']==2)	{
+			if ($truppe->get('aktion')==2)	{
 				//Truppe lˆschen
-				$sql3="DELETE FROM `tr".ROUND_ID."_truppen_move`
-					WHERE keyid='".$data['keyid']."';";
-				$result3=mysql_query($sql3);
+				$truppe->delete();
 
 				//Soldaten einf¸gen
-				$zieltruppe=Truppe::getByXYU($data['ziel_x'],
-												$data['ziel_y'],$data['user']);
-				$zieltruppe->hinzufugen($data['truppen']);
+				$zieltruppe=Truppe::getByXYU($zx,$zy,$dieserUser);
+				$zieltruppe->hinzufugen($truppe->get('truppen'));
 
 				//Ziel user
 				$zielUser=$ziel_dorf->user();
 
-				if ($data['msg']==1){
+				if ($truppe->get('msg')==1){
 					$betreff=$start_dorf->get('name').' unterst¸tzt '.
 						$ziel_dorf->get('name');
 					$msg="1:Absender:".$dieserUser->get('name').
 						" aus Dorf ".$start_dorf->get('name').chr(13).
 						"3:".$dieserUser->get('volk').chr(13)."4:Einheiten:".
-						$data['truppen'].chr(13)."5:0";
+						$truppe->get('truppen').chr(13)."5:0";
 
-					Automessages::unterstutzung($dieserUser,$betreff,$msg,$data['ziel_zeit']);
-
-					if ($zielUser->get('id')!=$dieserUser->get('id')) {
-						Automessages::unterstutzung($zielUser,$betreff,$msg,$data['ziel_zeit']);
+					Automessages::unterstutzung($dieserUser,$betreff,$msg,$truppe->get('ziel_zeit'));
+	
+					if ($zielUser !=$dieserUser) {
+						Automessages::unterstutzung($zielUser,$betreff,$msg,$truppe->get('ziel_zeit'));
 					}
 				}
 			}
-			/*
+			
 			//Angriff normal oder Raubzug
-			if ($data['aktion']==3 or $data['aktion']==4)	{
-				//Name und Volk des Angreiffers herausfinden
-				$sql2="SELECT `name`,`volk` FROM `tr".ROUND_ID."_user` WHERE `id`='".$data['user']."';";
-				$result2=mysql_query($sql2);
-				$data2=mysql_fetch_array($result2);
-				$name=$data2['name']; $volk=$data2['volk'];
-
-				//Name des Angreiffenden Dorfes
-				$sql2="SELECT `name` FROM `tr".ROUND_ID."_dorfer` WHERE `x`='".$data['start_x']."' AND `y`='".$data['start_y']."';";
-				$result2=mysql_query($sql2);
-				$data2=mysql_fetch_array($result2);
-				$angreiffendes_dorf=$data2['name'];
+			if ($truppe->get('aktion')==3 or $truppe->get('aktion')==4)	{
+				
+				$angreifer=$dieserUser;
+				$angreifer_dorf=$start_dorf;
 
 				//Deff Truppen laden
-				unset($deff_truppen);
-				unset($deff_truppen_spieler);
-				$sql2="SELECT tr".ROUND_ID."_truppen.troops,tr".ROUND_ID."_truppen.user,tr".ROUND_ID."_user.volk
-					FROM `tr".ROUND_ID."_truppen`,`tr".ROUND_ID."_user`
-					WHERE tr".ROUND_ID."_truppen.x='".$data['ziel_x']."' AND tr".ROUND_ID."_truppen.y='".$data['ziel_y']."'
-						AND tr".ROUND_ID."_user.id=tr".ROUND_ID."_truppen.user;";
-				$result2=mysql_query($sql2);
-				for ($i=1;$i<=mysql_num_rows($result2);$i++)
-				{
-					$data2=mysql_fetch_array($result2);
-
-					$t=split(':',$data2['troops']);
-					$v=$data2['volk'];
-					for ($j=0;$j<=9;$j++)
-					{
-						//Deff Truppen gesamtzahl und zahl jedes Spielers speichern
-						$deff_truppen[$j+1+$v*10-10]+=$t[$j];
-						$deff_truppen_spieler[$data2['user']][$j+1+$v*10-10]+=$t[$j];
-						$deff_truppen_string_start[$data2['user']].=$t[$j];
-						if ($j<9) $deff_truppen_string_start[$data2['user']].=':';
-					}
+				$deff_dorf=new DeffDorf($ziel_dorf);
+				
+				$off=$truppe->soldatenId();
+				if ($off['hero']==1){
+					$held=Held::getByUser($angreifer);
+					$off['heroboni']=$held->deffwert();
 				}
+				$off['volk']=$angreifer->get('volk');
+				
+				$left=$deff_dorf->attack($off,$truppe->get('aktion'));
+				
+				//if ($left['survived']) {
+					//TODO: troup must return
+				//}
+				//else {
+				//	$truppe->delete();
+				//}
+				//TODO: deff must be saved in db
+				
+				//TODO: send messages to users
 
-				//Angriffstruppen laden
-				$angriffs_truppen_09=split(':',$data['truppen']);
-				for ($i=1;$i<=10;$i++)
-					$angriffs_truppen[$i+$volk*10-10]=$angriffs_truppen_09[$i-1];
-
-				//Kampfsim
-				$neu_truppen=kampfsim($troops,$angriffs_truppen,$deff_truppen,$data['aktion']-2);
-
-				//Angriffstruppen berechnen, string formen
-				$anz_angreifer=0;
-				$neu_truppen1_string='';
-				$verluste_angreifer_string='';
-				for ($i=1;$i<=10;$i++)
-				{
-					$anz_angreifer+=$neu_truppen[1][$i+$volk*10-10];
-					$neu_truppen1_string.=$neu_truppen[1][$i+$volk*10-10];
-					if ($i<10) $neu_truppen1_string.=':';
-					$verluste_angreifer[$i]=$angriffs_truppen[$i+$volk*10-10]-$neu_truppen[1][$i+$volk*10-10];
-
-					$verluste_angreifer_string.=$verluste_angreifer[$i];
-					if ($i<10) $verluste_angreifer_string.=':';
-				}
-				if ($anz_angreifer>0)	//Zur√ºck schicken
-				{
-					$neue_ziel_zeit=date('Y-m-d H:i:s',2*strtotime($data['ziel_zeit'])-strtotime($data['start_zeit']));
-
-					$sql2="UPDATE `tr".ROUND_ID."_truppen_move` SET `ziel_x`='".$data['start_x']."', `ziel_y`='".$data['start_y']."',
-						`start_x`='".$data['ziel_x']."', `start_y`='".$data['ziel_y']."', `start_zeit`='".$data['ziel_zeit']."',
-						`ziel_zeit`='$neue_ziel_zeit', `aktion`='2', `truppen`='$neu_truppen1_string', `msg`='0' ";
-				}
-				else		//oder l√∂schen
-					$sql2="DELETE FROM `tr".ROUND_ID."_truppen_move` ";
-
-				$sql2.=" WHERE `user`='".$data['user']."' AND `ziel_x`='".$data['ziel_x']."' AND `ziel_y`='".$data['ziel_y']."'
-						AND `ziel_zeit`='".$data['ziel_zeit']."' AND `truppen`='".$data['truppen']."';";
-				$result2=mysql_query($sql2);
-
-				//Deff truppen berechnen
-				$anzahl_deff=0;
-				$sql2="SELECT tr".ROUND_ID."_truppen.user,tr".ROUND_ID."_user.volk,tr".ROUND_ID."_user.name,
-						tr".ROUND_ID."_dorfer.user AS dorfuser,tr".ROUND_ID."_dorfer.name AS dorfname
-					FROM `tr".ROUND_ID."_truppen`,`tr".ROUND_ID."_user`,`tr".ROUND_ID."_dorfer`
-					WHERE tr".ROUND_ID."_truppen.x='".$data['ziel_x']."' AND tr".ROUND_ID."_truppen.y='".$data['ziel_y']."' AND
-					tr".ROUND_ID."_user.id=tr".ROUND_ID."_truppen.user AND tr".ROUND_ID."_truppen.x=tr".ROUND_ID."_dorfer.x
-						AND tr".ROUND_ID."_truppen.y=tr".ROUND_ID."_dorfer.y;";
-				$result2=mysql_query($sql2);
-				for ($i=1;$i<=mysql_num_rows($result2);$i++)
-				{
-					$data2=mysql_fetch_array($result2);
-
-					$volk=$data2['volk'];
-					$deff_truppen_string='';
-					$deff_truppen_verluste_string='';
-					$anz=0;
-					for ($j=1;$j<=10;$j++)
-					{
-						//Deff Truppen prozentsatz der √ºbriggebliebenen berechnen
-						if ($deff_truppen[$j+$volk*10-10]==0)
-							$prozent=0;
-						else
-							$prozent=$deff_truppen_spieler[$data2['user']][$j+$volk*10-10]/$deff_truppen[$j+$volk*10-10];
-
-						$deff_truppen_einheit=round($prozent*$neu_truppen[2][$j+$volk*10-10],0);
-						$anz+=$deff_truppen_einheit;
-						$deff_truppen_string.=$deff_truppen_einheit;
-						if ($j<10) $deff_truppen_string.=':';
-
-						$verluste=$deff_truppen_spieler[$data2['user']][$j+$volk*10-10]-$deff_truppen_einheit;
-						$deff_truppen_verluste_string.=$verluste;
-						if ($j<10) $deff_truppen_verluste_string.=':';
-					}
-					if ($anz>0)
-						$sql3="UPDATE `tr".ROUND_ID."_truppen` SET `troops`='$deff_truppen_string' ";
-					else
-						$sql3="DELETE FROM `tr".ROUND_ID."_truppen` ";
-					$sql3.="WHERE `x`='".$data['ziel_x']."' AND `y`='".$data['ziel_y']."' AND `user`='".$data2['user']."';";
-					$result3=mysql_query($sql3);
-
+				/*
 					//Nachrichten verschicken
 					$anzahl_deff++;
 					if ($data2['dorfuser']==$data2['user'])	//Besitzer des Dorfes
@@ -484,8 +388,8 @@ class Updater {
 				}
 				$sql3="INSERT INTO `tr".ROUND_ID."_msg` (`an`,`typ`,`zeit`,`betreff`,`text`) VALUES
 					('$name','3',NOW(),'$betreff','$text');";
-				$result3=mysql_query($sql3);
-			}*/
+				$result3=mysql_query($sql3);*/
+			}
 		}
 	}
 }

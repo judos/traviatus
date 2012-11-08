@@ -60,7 +60,7 @@ function aa(s) {
     t+=af;
   }
   else {
-    t="<a href=\"#\" onClick=\"Popup(2,5); return false;\"><span class=\"c0 t\">0:00:0</span>?</a>";
+    t="<a href=\"#\" onClick=\"Popup(0,'inf'); return false;\"><span class=\"c0 t\">0:00:0</span>?</a>";
   }
   return t;
 }

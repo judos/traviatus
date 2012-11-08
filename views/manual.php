@@ -12,48 +12,57 @@ $template=false;
 $volker=explode(':',Diverses::get('volker'));
 $typ=saveGet('typ',0);
 
-
 if ($typ==0) { // Übersicht
-?>
-<h1><img src="img/un/u/geb.gif" class="unit"> Übersicht</h1>
+	if (isset($_GET['id']) and $_GET['id']=='inf'){
+		?>
+		<h1><img src="img/un/u/geb.gif" class="unit"> Information</h1>
+		<p>Diese Aktion wurde bereits ausgeführt, möglicherweise ist allerdings
+		der Server ausgelastet und konnte die Aktion noch nicht behandeln.<br />
+		Durch ein Neuladen der Seite könnte der Fehler allerdings bereits behoben sein.</p>
+		<?php
+	}
+	else{
+		?>
+		<h1><img src="img/un/u/geb.gif" class="unit"> Übersicht</h1>
 
-<p>Diese Ingame Hilfe ermöglicht es dir wichtige Informationen jederzeit schnell nachzuschlagen.
-<img src="img/un/a/troops.gif" width="140" height="89" border="0" align="right" style="position:absolute; z-index:61; right:0px; top:80px; margin-right:10px;"><img src="img/un/a/buildings.gif" width="140" height="89" border="0" align="right" style="position:absolute; z-index:61; right:0px; top:170px; margin-right:10px;"><ul>
-<li>Die Einheiten</li>
+		<p>Diese Ingame Hilfe ermöglicht es dir wichtige Informationen jederzeit schnell nachzuschlagen.
+		<img src="img/un/a/troops.gif" width="140" height="89" border="0" align="right" style="position:absolute; z-index:61; right:0px; top:80px; margin-right:10px;"><img src="img/un/a/buildings.gif" width="140" height="89" border="0" align="right" style="position:absolute; z-index:61; right:0px; top:170px; margin-right:10px;"><ul>
+		<li>Die Einheiten</li>
 
-<ul>
+		<ul>
 
-<?php
-foreach($volker as $nr=>$name)
-	echo'<li><a href="?page=manual&typ=1&volk='.($nr+1).'">'.$name.
-		'</a></li>';
-?>
-</ul>
+		<?php
+		foreach($volker as $nr=>$name)
+			echo'<li><a href="?page=manual&typ=1&volk='.($nr+1).'">'.$name.
+				'</a></li>';
+		?>
+		</ul>
 
-<br>
-<li>Die Gebäude</li>
+		<br>
+		<li>Die Gebäude</li>
 
-<ul>
-<li><a href="?page=manual&typ=2&gebs=1">Rohstoffe</a></li>
-<li><a href="?page=manual&typ=2&gebs=2">Militär</a></li>
+		<ul>
+		<li><a href="?page=manual&typ=2&gebs=1">Rohstoffe</a></li>
+		<li><a href="?page=manual&typ=2&gebs=2">Militär</a></li>
 
-<li><a href="?page=manual&typ=2&gebs=3">Infrastruktur</a></li>
-</ul>
+		<li><a href="?page=manual&typ=2&gebs=3">Infrastruktur</a></li>
+		</ul>
 
 
-<br>
-<li><a href="?page=anleitung" target="_blank">Spielanleitung
-<img src="img/un/a/external.gif" width="10" height="10" border="0"></a><br>
-Die Ingame Hilfe stellt nur Kurzinformationen zur Verfügung. Mehr Informationen zum Spiel gibt es<br>
-in der Spielanleitung.</li><br>
-<br>
-<li><a href="http://help.travian.de/" target="_blank">Travian FAQ
-<img src="img/un/a/external.gif" width="10" height="10" border="0"></a><br>
-Sehr ausführliche Travian Dokumentation</li></ul></p>
-<?php
+		<br>
+		<li><a href="?page=anleitung" target="_blank">Spielanleitung
+		<img src="img/un/a/external.gif" width="10" height="10" border="0"></a><br>
+		Die Ingame Hilfe stellt nur Kurzinformationen zur Verfügung. Mehr Informationen zum Spiel gibt es<br>
+		in der Spielanleitung.</li><br>
+		<br>
+		<li><a href="http://help.travian.de/" target="_blank">Travian FAQ
+		<img src="img/un/a/external.gif" width="10" height="10" border="0"></a><br>
+		Sehr ausführliche Travian Dokumentation</li></ul></p>
+		<?php
+	}
 }
 if ($typ==1) {
-	$volk=$_GET['volk'];
+	$volk=saveGet('volk',null);
 	if (isset($volk)) {	//Einheiten eines Volkes im Überblick
 
 		echo'<h1><img src="img/un/u/geb.gif" class="unit"> Einheiten ('.
@@ -123,7 +132,7 @@ if ($typ==1) {
 				>Palast</a> Stufe 10 oder
 				<a href="?page=manual&typ=2&gid=25">Residenz</a> Stufe 10';
 			$needs=$e->needs();
-			unset($output);
+			$output='';
 			foreach($needs as $gebeude => $stufe) {
 					$output.='<a href="?page=manual&typ=2&gid='.$gebeude.'">'.
 						GebeudeTyp::getById($gebeude)->get('name').'</a> Stufe '.
@@ -158,6 +167,8 @@ if ($typ==2) {	//Gebäude im Überblick
 		$para2='typ=2&gebs='.$nac_gebs;
 	}
 	if (!isset($gebs) AND isset($gid)) {	//Ein Gebäude anzeigen
+		xx($typ);
+		xx($_GET);
 		$g=GebeudeTyp::getById($gid);
 		$kosten=$g->baukosten(1);
 		echo'<h1><img class="unit" src="img/un/u/geb.gif"> '.

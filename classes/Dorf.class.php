@@ -781,6 +781,10 @@ class Dorf {
 				$x.':'.$y.' is false');
 			return NULL;
 		}
+		
+		if (is_object($user))
+			$user=$user->get('id');
+		
 		//Geb�ude zusammen setzen
 		$geb1=strRepeatSep('0',18,':');
 		$geb2=array_fill(0,22,0);

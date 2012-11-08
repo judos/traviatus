@@ -10,10 +10,12 @@ class TruppeMove {
 	protected static $objekte_user;  //[$user][$keyid]
 	protected static $objekte_start; //[$x][$y][$nr]
 	protected static $objekte_ziel;  //[$x][$y][$nr]
+	protected static $objekte_id;    //[$keyid]
 
 	protected static $loaded_user=array();
 	protected static $loaded_start=array();
 	protected static $loaded_ziel=array();
+	protected static $loaded_id=array();
 
 	protected static $db_key=array('id');
 	protected static $db_table='truppen_move';
@@ -24,7 +26,13 @@ class TruppeMove {
 		$this->keyid=$keyid;
 		$this->data=$d;
 		$this->changed=false;
-
+		
+		$this->addToReferences();
+	}
+	
+	protected function addToReferences() {
+		$keyid=$this->keyid;
+		$d=$this->data;
 		//Den 1. User hinzufügen
 		$user1=$this->startDorf()->get('user');
 		if (self::$objekte_user[$user1]===NULL)
@@ -44,7 +52,7 @@ class TruppeMove {
 		}
 
 		//Start Dorf hinzufügen
-		if (self::$objekte_start[$d['start_x']][$d['start_y']]===NULL)
+		if (@self::$objekte_start[$d['start_x']][$d['start_y']]===NULL)
 			self::$objekte_start[$d['start_x']][$d['start_y']]=array();
 		if (!arrayObjectsContains(self::$objekte_start
 					[$d['start_x']][$d['start_y']],'keyid',$keyid))
@@ -52,12 +60,16 @@ class TruppeMove {
 									$d['start_x']][$d['start_y']],$this);
 
 		//Ziel Dorf hinzufügen
-		if (self::$objekte_ziel[$d['ziel_x']][$d['ziel_y']]===NULL)
+		if (@self::$objekte_ziel[$d['ziel_x']][$d['ziel_y']]===NULL)
 			self::$objekte_ziel[$d['ziel_x']][$d['ziel_y']]=array();
 		if (!arrayObjectsContains(self::$objekte_ziel
 					[$d['ziel_x']][$d['ziel_y']],'keyid',$keyid))
 			array_push(self::$objekte_ziel[
 									$d['ziel_x']][$d['ziel_y']],$this);
+		
+		//ID hinzufügen
+		if (!isset(self::$objekte_id[$keyid]))
+			self::$objekte_id[$keyid]=$this;
 	}
 
 	public function soldatenId() {
@@ -102,6 +114,54 @@ class TruppeMove {
 		return TruppenTyp::getVersorgung($this->soldatenId());
 	}
 	
+	public function delete() {
+		$sql="DELETE FROM tr".ROUND_ID."_truppen_move
+			WHERE keyid='".$this->keyid."';";
+		mysql_query($sql);
+		$this->deleteReference();
+	}
+	
+	protected function deleteReference() {
+		self::$objekte_id[$this->keyid]=null;
+		
+		$user1=$this->startDorf()->get('user');
+		self::$objekte_user[$user1][$this->keyid]=null;
+		if ($this->zielDorf()!==NULL) {
+			$user2=$this->zielDorf()->get('user');
+			self::$objekte_user[$user1][$this->keyid]=null;
+		}
+		$sx=$this->get('start_x');
+		$sy=$this->get('start_y');
+		$zx=$this->get('ziel_x');
+		$zy=$this->get('ziel_y');
+		arrayObjectsDelete(self::$objekte_start[$sx][$sy],'keyid',$this->keyid);
+		arrayObjectsDelete(self::$objekte_ziel[$zx][$zy],'keyid',$this->keyid);
+	}
+	
+	public function turnBack() {
+		$this->deleteReference();
+		$z=strtotime($this->get('ziel_zeit'));
+		$s=strtotime($this->get('start_zeit'));
+		$start_zeit=$this->get('ziel_zeit');
+		$ziel_zeit=date('Y-m-d H:i:s',2*$z-$s);
+		
+		$sql="UPDATE `tr".ROUND_ID."_truppen_move` 
+			SET start_x='{$this->data['ziel_x']}', 
+				start_y='{$this->data['ziel_y']}',
+				ziel_x='{$this->data['start_x']}',
+				ziel_y='{$this->data['start_y']}',
+				aktion='2',start_zeit='$start_zeit',
+				ziel_zeit='$ziel_zeit'
+			WHERE keyid='{$this->keyid}';";
+		mysql_query($sql);
+		
+		$sql="SELECT * FROM `tr".ROUND_ID."_truppen_move`
+			WHERE keyid='".$this->keyid."';";
+		$result=mysql_query($sql);
+		$this->data=mysql_fetch_assoc($result);
+		$this->addToReferences();
+	}
+	
 	public function toHtmlBox($user_viewing,$dorf_viewing) {
 		$dorfs=$this->startDorf();
 		$dorfz=$this->zielDorf();
@@ -129,7 +189,6 @@ class TruppeMove {
 			$dorf=array('x'=>$x,'y'=>$y);
 			$zielName='<a href="?page=karte-show&x='.$x.'&y='.$y.'">'.
 					'('.$x.'|'.$y.')</a>';
-			
 		}
 		
 		switch($this->get('aktion')) {
@@ -160,6 +219,11 @@ class TruppeMove {
 		}
 		$sql=substr($sql,0,-4);
 		mysql_query($sql);
+	}
+	
+	public function __toString() {
+		global $login_user,$login_dorf;
+		return $this->toHtmlBox($login_user,$login_dorf);
 	}
 
 	//Testet ob der User diese Aktion auf dieses Ziel ausführen
@@ -277,6 +341,12 @@ class TruppeMove {
 		}
 		return self::$objekte_user[$id];
 	}
+	
+	public static function getById($id) {
+		if (!isset(self::$loaded_id[$id]))
+			self::loadById($id);
+		return self::$objekte_id[$id];
+	}
 
 	protected static function loadByUser($user) {
 		$sql="SELECT * FROM tr".ROUND_ID."_".self::$db_table."
@@ -285,6 +355,13 @@ class TruppeMove {
 		if (self::$objekte_user[$user]===NULL)
 			self::$objekte_user[$user]=array();
 		self::$loaded_user[$user]=true;
+	}
+	
+	protected static function loadById($id) {
+		$sql="SELECT * FROM tr".ROUND_ID."_".self::$db_table."
+			WHERE keyid=$id;";
+		self::sqlQuery($sql);
+		self::$loaded_id[$id]=true;
 	}
 
 	public static function getByZiel($x,$y) {

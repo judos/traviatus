@@ -105,8 +105,9 @@ foreach($truppen as $tid => $einheit) {
 echo'</tr><tr>';
 
 foreach($truppen as $tid => $einheit) {
-  echo'<td style="padding:0px;">
-  	<input class="fm" name="a_'.$tid.'" value="'.$_GET['a_'.$tid].'" maxlength="6" type="text" style="width:40px;"></td>';
+	$anz=saveGet('a_'.$tid,'');
+	echo'<td style="padding:0px;">
+		<input class="fm" name="a_'.$tid.'" value="'.$anz.'" maxlength="6" type="text" style="width:40px;"></td>';
 }
 echo'</tr></table>';
 
@@ -135,7 +136,8 @@ for ($volk=1;$volk<=4;$volk++) {
 		}
 		echo'</tr><tr>';
 		foreach($truppen as $tid => $einheit) {
-			echo'<td style="padding:0px;"><input class="fm" name="d_'.$tid.'" value="'.$_GET['d_'.$tid].'"
+			$anz=saveGet('d_'.$tid,'');
+			echo'<td style="padding:0px;"><input class="fm" name="d_'.$tid.'" value="'.$anz.'"
 				maxlength="6" type="text" style="width:40px;"></td>';
 		}
 		echo'</tr>';
