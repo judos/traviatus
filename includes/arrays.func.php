@@ -28,13 +28,27 @@ function sortArray2_compare_att($a, $b) {
 
 function array_add($arr1,$arr2) {
 	foreach($arr1 as $id => $nr) {
-		if (isset($arr1[$id])) {
+		if (isset($arr2[$id])) {
 			$arr1[$id]+=$arr2[$id];
 		}
 	}
 	foreach($arr2 as $id => $nr) {
 		if (!isset($arr1[$id])) {
 			$arr1[$id]=$nr;
+		}
+	}
+	return $arr1;
+}
+
+function array_sub($arr1,$arr2) {
+	foreach($arr1 as $id => $nr) {
+		if (isset($arr2[$id])) {
+			$arr1[$id]-=$arr2[$id];
+		}
+	}
+	foreach($arr2 as $id => $nr) {
+		if (!isset($arr1[$id])) {
+			$arr1[$id]=-$nr;
 		}
 	}
 	return $arr1;

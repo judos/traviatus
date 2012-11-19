@@ -25,6 +25,8 @@ class DeffDorf {
 	protected $damageLooser;	//in %
 	protected $deffWipe;		// Deff Truppen Verluste in %
 	protected $offWipe;			// Off Truppen Verluste in %
+	
+	protected $offPartySurvived;// did any soldier of the attack survive
 
 	public static $save = FALSE;
 
@@ -52,25 +54,23 @@ class DeffDorf {
 		$this->fallen=$dorf->get('fallen');
 
 		//Truppen zusammenträllern
-		$nr=0;
 		$this->deffTruppen=array();
 		$users=Truppe::getUsersByXY($dorf->get('x'),$dorf->get('y'));
-		foreach($users as $user) {
-			$truppe=Truppe::getByXYU($dorf->get('x'),$dorf->get('y'),$user);
+		foreach($users as $userid) {
+			$truppe=Truppe::getByXYU($dorf->get('x'),$dorf->get('y'),$userid);
 			$soldaten=$truppe->soldatenId();
 			$volk=$truppe->volk();
-			$this->deffTruppen[$nr]= array_merge( array('user'=>$user,'volk'=>$volk), $truppe->soldatenId() );
-			if ($this->deffTruppen[$nr]['hero']==1) {
-				$held=Held::getByUser($user);
+			$this->deffTruppen[$userid]= array_merge( array('volk'=>$volk), $soldaten );
+			if ($this->deffTruppen[$userid]['hero']==1) {
+				$held=Held::getByUser($userid);
 				if ($held===NULL) {
 					new Errorlog('DeffDorf::__construct Dorf erstellt, Held gefunden in der Truppe. Könnte ihn aber anhand der userid
-						nicht ausfindig machen. userid:'.$user.', truppe:'.$truppe.', soldaten:'.$soldaten);
+						nicht ausfindig machen. userid:'.$userid.', truppe:'.$truppe.', soldaten:'.$soldaten);
 				}
 				else {
-					$this->deffTruppen[$nr]['heroboni']=$held->deffBoni();
+					$this->deffTruppen[$userid]['heroboni']=$held->deffBoni();
 				}
 			}
-			$nr++;
 		}
 	}
 
@@ -230,7 +230,7 @@ class DeffDorf {
 	}
 	
 	protected function outputValues() {
-		x('Offwerte:',$this->offWerte,'DeffVerteilung:',$this->deffVerteilung,
+		x('Offwerte:',$this->offWerte,'DeffVerteilung:',$this->deffAufteilung,
 			'Deffwerte:',$this->deffWerte,'Winner:',$this->winner,
 			'pointsWinner:',$this->pointsWinner,'pointsLooser:',$this->pointsLooser,
 			'DamageWinner:',$this->damageWinner,'DamageLooser:',$this->damageLooser,
@@ -254,18 +254,18 @@ class DeffDorf {
 		//Angreiffer auslöschen soviel wie ausgerechnet
 		$volk=$this->truppeAngreifer['volk'];
 		$einheiten = TruppenTyp::getIdsByVolk($volk);
-		$this->truppeAngreifer['survived']=false;
+		$this->offPartySurvived=false;
 		foreach($einheiten as $tid) {
 			if (isset($this->truppeAngreifer[$tid]) and $this->truppeAngreifer[$tid]>0) {
 				$this->truppeAngreifer[$tid] = round((100-$this->offWipe)/100 * $this->truppeAngreifer[$tid],0);
 				if($this->truppeAngreifer[$tid]>0)
-					$this->truppeAngreifer['survived']=true;
+					$this->offPartySurvived=true;
 			}
 		}
 		if (@$this->truppeAngreifer['hero']==1){
 			$this->truppeAngreifer['herolive']= -$this->offWipe;
 			if ($this->truppeAngreifer['herolive']>0)
-				$this->truppeAngreifer['survived']=true;
+				$this->offPartySurvived=true;
 		}
 	}
 
@@ -289,10 +289,15 @@ class DeffDorf {
 		
 		$this->killSomeDeffTroops();
 		$this->killSomeOffTroops();
-				
-		//fertig Angriffstruppe zurückliefern, DeffTruppen sind noch gespeichert,
-		// müssen separat abgefragt werden.
-		return $truppeAngreifer;
+		
+		//TODO: implement schlachtfeld
+		$sf=new SchlachtFeld($this->truppeAngreifer,$this->deffTruppen);
+		
+		return $sf;
+	}
+	
+	public function hasOffPartlySurvived() {
+		return $this->offPartySurvived;
 	}
 
 

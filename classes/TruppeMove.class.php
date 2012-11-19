@@ -180,8 +180,8 @@ class TruppeMove {
 		}
 		
 		if ($dorf!=null){
-			$n=$dorf->user()->get('name');
-			$zielName='<a href="?page=spieler&name='.$n.'">'.$n.'</a>';
+			$u = $dorf->user();
+			$zielName = $u->getLink();
 		}
 		else {
 			$x=$this->get('ziel_x');

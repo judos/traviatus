@@ -75,7 +75,6 @@ if ($s=='') {
 
 	//Informationen für die Truppe sammeln
 	$spieler=$dorf->user();
-	$user_n=$spieler->get('name');
 
 	$aktion_name=array(2=>'Unterstützung für',3=>'Angriff auf',
 	                   4=>'Raubzug gegen',5=>'Ausspähen von');
@@ -107,7 +106,7 @@ if ($s=='') {
 			$dorf->get('name').' ('.$x.'|'.$y.')</a></td></tr>
 		<tr><td width="11%">Spieler:</td>
 		<td class="s7">
-		<a href="?page=spieler&name='.$user_n.'">'.$user_n.'</a>
+		'.$spieler->getLink().'
 		</td></tr><tr><td width="11%">Entfernung:</td>
 		<td class="s7">'.round($weg,2).' Felder</td></tr>
 		<tr><td width="11%">Geschwindigkeit:</td>

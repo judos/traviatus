@@ -20,7 +20,7 @@ class Bericht {
 	const PART_SUPPLY     =   5;
 	const PART_NEW_TABLE  = 100;
 	
-	public function Bericht($id,$data) {
+	protected function Bericht($id,$data) {
 		$this->id=$id;
 		$this->data=$data;
 		if (isset(self::$objekte[$id]))
@@ -41,6 +41,7 @@ class Bericht {
 			$zeile=explode(':',$alles[$teil]);
 			$html.=self::partToHtml($zeile);
 		}
+		$html.='</tbody></table>';
 		return $html;
 	}
 	
@@ -66,6 +67,36 @@ class Bericht {
 			return self::partSupplyToHtml($arr);
 		elseif ($type==self::PART_NEW_TABLE)
 			return self::partNewTableToHtml($arr);
+	}
+	
+	protected static function partTextOnlyToHtml($arr) {
+		return'<tr class="cbg1"><td width="100%" colspan="11">'.
+			$arr[1].'</td></tr>';
+	}
+	
+	protected static function partTextTitleToHtml($arr) {
+		$html='<tr class="cbg1">';
+		if ($arr[1]=='Angreifer')
+			$html.='<td width="21%" class="c2 b">'.$arr[1].'</td>';
+		elseif($arr[1]=='Verteidiger')
+			$html.='<td width="21%" class="c1 b">'.$arr[1].'</td>';
+		else //($arr[1]=='Unterstützung')
+			$html.='<td width="21%" class="c1 b">'.$arr[1].'</td>';
+		$html.='<td colspan=10 class="b">'.$arr[2].'</td></tr>';
+		return $html;
+	}
+	
+	protected static function partRessToHtml($arr) {
+		$html='<tr><td width="100" class="left">&nbsp;Rohstoffe</td><td class="s7">';
+		for ($i=1;$i<=4;$i++){
+			if ($arr[$i]=='')
+				$arr[$i]=0;
+			$html.='<img class="res" src="img/un/r/'.$i.'.gif">'.$arr[$i];
+			if ($i<4)
+				$html.=' | ';
+		}
+		$html.='</td></tr>';
+		return $html;
 	}
 	
 	protected static function partUnitTypesToHtml($arr) {
@@ -128,6 +159,8 @@ class Bericht {
 	}
 	
 	public static function loadById($id) {
+		if (isset(self::$objekte[$id]))
+			return;
 		global $login_user;
 		$sql="SELECT * FROM `tr".ROUND_ID."_".self::$db_table."`
 			WHERE `an`='".$login_user->get('name')."' AND von=''
@@ -147,7 +180,8 @@ class Bericht {
 				ORDER BY `zeit` DESC;";
 			$result=mysql_query($sql);
 			while($data=mysql_fetch_assoc($result)) {
-				new Bericht($data['keyid'],$data);
+				if (!isset(self::$objekte[$data['keyid']]))
+					new Bericht($data['keyid'],$data);
 			}
 			self::$all_loaded=true;
 		}

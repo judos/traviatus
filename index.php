@@ -28,7 +28,7 @@ set_error_handler('handleError');
 //variablen zurücksetzen
 $action_forwarding=false;  //Ob nach einem Action automatisch weitergeleitet wird
                            //Spiel-Einstellung: true
-$error_output_fatal=true; //Falls ein Fatal_Error im PHP existiert sollte dies auf
+$error_output_fatal=false; //Falls ein Fatal_Error im PHP existiert sollte dies auf
                            // True umgeschalten werden um alle Fehler anzuzeigen
 						   //Spiel-Einstellung: false
 $title='Traviatus R'.ROUND_ID.' (beta 0.31)'; //Titel der Runde

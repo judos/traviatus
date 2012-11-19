@@ -32,6 +32,16 @@ class Spieler {
 		self::$objekte[$id]=$this;
 		self::$objekte[$data['name']]=$this;
 	}
+	
+	// [$bold:boolean]
+	public function getLink() {
+		$a=func_get_args();
+		$bold= (isset($a[0])? $a[0] : false);
+		$b1=($bold?'<b>':'');
+		$b2=($bold?'</b>':'');
+		return '<a href="?page=spieler&name='.$this->data['name'].'">'.
+			$b1.$this->data['name'].$b2.'</a>';
+	}
 
 	public function held() {
 		return Held::getAliveOrNonByUser($this);

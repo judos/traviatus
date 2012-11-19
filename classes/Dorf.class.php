@@ -30,6 +30,11 @@ class Dorf {
 		self::$objekte[$x][$y]=$this;
 		$this->update();
 	}
+	
+	public function getLink() {
+		return '<a href="?page=karte-show&x='.$this->x.'&y='.$this->y.'">'.
+			$this->get('name').' ('.$this->x.'|'.$this->y.')</a>';
+	}
 
 	public function truppenBewegungen() {
 		$result=array();

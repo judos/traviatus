@@ -46,7 +46,6 @@ if ($tab==1) {
         $dauer=sqrt(pow($x-$dx,2)+pow($y-$dy,2))/$speed*3600;
         $dorf=$result['dorf'];
         $spieler=$dorf->user();
-        $spieler_name=$spieler->get('name');
         echo'<form method="post" action="?page=build&gid='.$gid.'&do=sendgoods">
 
           <input type=hidden name="zielx" value="'.$x.'">
@@ -69,8 +68,7 @@ if ($tab==1) {
           <p class="f135">'.$dorf->get('name').' ('.$x.'|'.$y.')</p>
           <table><tbody><tr class="left">
           <td>Spieler:</td>
-          <td><a href="?page=spieler&name='.$spieler_name.'">'.
-          $spieler_name.'</a></td></tr>
+          <td>'.$spieler->getLink().'</td></tr>
           <tr class="left"><td>Dauer:</td>
           <td>'.zeit_dauer($dauer).'</td></tr>
           <tr class="left"><td>Händler:</td>

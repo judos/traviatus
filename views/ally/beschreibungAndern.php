@@ -40,8 +40,7 @@ foreach($mitglieder as $spieler) {
 	if ($spieler->get('ally_rang')>0) {
 		$rang=$ally->getRang($spieler->get('ally_rang'));
 		echo'<tr><td>'.$rang->get('rang_name').'</td>
-			<td><a href="?page=spieler&name='.$spieler->get('name').
-			'">'.$spieler->get('name').'</a></td></tr>';
+			<td>'.$spieler->getLink().'</td></tr>';
 	}
 }
 echo'<tr><td colspan="2"></td></tr>

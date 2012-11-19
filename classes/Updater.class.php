@@ -312,7 +312,8 @@ class Updater {
 				}
 				$off['volk']=$angreifer->get('volk');
 				
-				$left=$deff_dorf->attack($off,$truppe->get('aktion'));
+				$schlachtFeld=$deff_dorf->attack($off,$truppe->get('aktion'));
+				//TODO: implement
 				
 				//if ($left['survived']) {
 					//TODO: troup must return

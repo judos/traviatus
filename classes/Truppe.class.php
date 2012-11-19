@@ -141,13 +141,12 @@ class Truppe {
 			if ($dorf==$dorf_viewing)
 				$title="Eigene Truppen";
 			else {
-				$n=$dorf->user()->get('name');
-				$title='Unterstützung für <a href="?page=spieler&name='.$n.'">'.$n.'</a>';
+				$u=$dorf->user();
+				$title='Unterstützung für '.$u->getLink();
 			}
 		}
 		else{
-			$n=$owner->get('name');
-			$title='Truppen von <a href="?page=spieler&name='.$n.'">'.$n.'</a>';
+			$title='Truppen von '.$owner->getLink();
 		}
 		$volk=$this->volk();
 		$units=$this->soldatenId();
@@ -254,9 +253,9 @@ class Truppe {
 		if (!isset(self::$objekte[$x][$y])) return array();
 		$users=array_keys(self::$objekte[$x][$y]);
 		$result=array();
-		foreach($users as $user) {
-			if (!Truppe::getByXYU($x,$y,$user,$gefangen)->leer())
-				array_push($result,$user);
+		foreach($users as $userid) {
+			if (!Truppe::getByXYU($x,$y,$userid,$gefangen)->leer())
+				array_push($result,$userid);
 		}
 		return $result;
 	}

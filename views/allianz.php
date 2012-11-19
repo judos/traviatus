@@ -52,8 +52,7 @@ if (!isset($_GET['s'])) {
 		if ($spieler->get('ally_rang')>0) {
 			$rang=$ally->getRang($spieler->get('ally_rang'));
 			echo'<tr class="s7"><td>'.$rang->get('rang_name').'</td>
-				<td><a href="?page=spieler&name='.$spieler->get('name').
-				'">'.$spieler->get('name').'</a></td></tr>';
+				<td>'.$spieler->getLink().'</td></tr>';
 		}
 	}
 	echo'<tr><td colspan="2"></td></tr>
@@ -78,8 +77,7 @@ if (!isset($_GET['s'])) {
 			$cl='li'; $cr='re';
 		}
 		echo'<tr><td class="'.$c.$cl.'">'.$nr.'.</td>
-			<td class="s7 '.$c.'"><a href="?page=spieler&name='.
-			$spieler->get('name').'">'.$spieler->get('name').'</a></td>
+			<td class="s7 '.$c.'">'.$spieler->getLink().'</td>
 			<td class="'.$c.'">'.$spieler->get('einwohner').'</td>
 			<td class="'.$c.'">'.$spieler->anzDorfer().'</td>
 			<td class="'.$c.$cr.'">

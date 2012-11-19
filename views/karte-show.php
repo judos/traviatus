@@ -66,9 +66,7 @@ if ($dorf!==NULL) { //Ein Dorf ist darauf errichtet
 		<td><img src="img/un/a/x.gif" border="0" height="12"
 		  width="3"></td>
 		<td>Besitzer:</td><td>
-		<a href="?page=spieler&name='.
-		  $user->get('name').'"> <b>'.$user->get('name').'
-		</b></a></td>
+		'.$user->getLink(true).'</td>
 		</tr>
 		<tr>
 		<td><img src="img/un/a/x.gif" border="0" height="12"

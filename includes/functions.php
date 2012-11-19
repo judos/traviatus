@@ -14,13 +14,13 @@ function toHtmlName($te) {
 
 //Ersetzt in Travian texte [spieler]id[/spieler] und [allianz]id[/allianz]
 function insert_tra_tags($text) {
-  $text=preg_replace('/\[url=(.+)\](.+)\[\/url\]/i','<a href="http://\1">\2</a>',$text); //[url=link]text[/link]
-  $text=preg_replace('/\[url\](.+)\[\/url\]/i','<a href="http://\1">\1</a>',$text); //[url]link[/link]
-  $text=preg_replace('/\[b\](.+)\[\/b\]/i','<b>\1</b>',$text); //[b]text[/b]
-  $text=preg_replace('/\[u\](.+)\[\/u\]/i','<u>\1</u>',$text); //[u]text[/u]
-  $text=preg_replace('/\[i\](.+)\[\/i\]/i','<i>\1</i>',$text); //[i]text[/i]
-  $text=preg_replace('/\[center\](.+)\[\/center\]/i','<center>\1</center>',$text); //[center]text[/center]
-  $text=preg_replace('/\[img\](.+)\[\/img\]/','<img src="\1" />',$text); //[img]link[/img]
+	$text=preg_replace('/\[url=(.+)\](.+)\[\/url\]/i','<a href="http://\1">\2</a>',$text); //[url=link]text[/link]
+	$text=preg_replace('/\[url\](.+)\[\/url\]/i','<a href="http://\1">\1</a>',$text); //[url]link[/link]
+	$text=preg_replace('/\[b\](.+)\[\/b\]/i','<b>\1</b>',$text); //[b]text[/b]
+	$text=preg_replace('/\[u\](.+)\[\/u\]/i','<u>\1</u>',$text); //[u]text[/u]
+	$text=preg_replace('/\[i\](.+)\[\/i\]/i','<i>\1</i>',$text); //[i]text[/i]
+	$text=preg_replace('/\[center\](.+)\[\/center\]/i','<center>\1</center>',$text); //[center]text[/center]
+	$text=preg_replace('/\[img\](.+)\[\/img\]/','<img src="\1" />',$text); //[img]link[/img]
 	$text=preg_replace_callback("/\[spieler\]([^\[\]]+)\[\/spieler\]/i","insert_tra_tags_spieler",$text);
 	$text=preg_replace_callback("/\[allianz\]([^\[\]]+)\[\/allianz\]/i","insert_tra_tags_ally",$text);
 	return $text;
@@ -33,7 +33,7 @@ function insert_tra_tags_ally($treffer) {
 function insert_tra_tags_spieler($treffer) {
 	$spieler=Spieler::getById($treffer[1]);
 	if ($spieler===NULL) return '<i>&raquo;Spieler nicht gefunden&laquo;</i>';
-	return '<a href="?page=spieler&name='.$spieler->get('name').'">'.$spieler->get('name').'</a>';
+	return $spieler->getLink();
 }
 
 //Ersetzt ++Name++ durch Wert aus der diversus Tabelle

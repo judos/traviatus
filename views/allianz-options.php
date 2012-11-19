@@ -51,8 +51,7 @@ elseif ($s!='') {
 				echo'<tr><td width="10%"><a href="?page=allianz-options&'.
 					'do=user_ausladen&s=user_einladen&id='.$spieler->get('id').'">
 					<img src="img/un/a/del.gif">
-					</a></td><td class="s7"><a href="?page=spieler&name='.
-					$spieler->get('name').'">'.$spieler->get('name').'</a></td>
+					</a></td><td class="s7">'.$spieler->getLink().'</td>
 					</tr>';
 			}
 			echo'</table>';

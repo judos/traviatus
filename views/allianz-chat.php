@@ -26,8 +26,7 @@ $sql="SELECT * FROM tr".ROUND_ID."_ally_chat WHERE ally_id=".$ally->get('id')." 
 $result=mysql_query($sql);
 while($data=mysql_fetch_assoc($result)) {
 	$user=Spieler::getByID($data['user_id']);
-	$name=$user->get('name');
-	echo'<p>['.date('H:i',strtotime($data['zeit'])).'] <a href="?page=spieler&name='.$name.'">'.$name.'</a>: '.$data['text'].'</p>';
+	echo'<p>['.date('H:i',strtotime($data['zeit'])).'] '.$user->getLink().': '.$data['text'].'</p>';
 	$lastmsg=$data['zeit'];
 }
 

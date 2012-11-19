@@ -202,7 +202,7 @@ function print_volk($volk,$army_vor,$army_nach,$typ,$title,$info=NULL) {
 	echo'</td>';
 	$einheiten = TruppenTyp::getByVolk($volk);
 	foreach($einheiten as $tid => $einheit) {
-		echo'<td width="40"><img class="unit" src="img/un/u/'.$i.'.gif" title="'.$einheit->get('name').'"></td>';
+		echo'<td width="40"><img class="unit" src="img/un/u/'.$tid.'.gif" title="'.$einheit->get('name').'"></td>';
 	}
 	echo'</tr><tr><td class="left">&nbsp;Einheiten</td>';
 	foreach($einheiten as $tid => $einheit) {

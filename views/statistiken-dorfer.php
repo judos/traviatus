@@ -46,13 +46,12 @@ for ($i=1;$i<=mysql_num_rows($result);$i++) {
 		$c_li='li ';
 		$c_re='re ';
 	}
-	$spieler_name=Spieler::getById($data['user'])->get('name');
+	$spieler=Spieler::getById($data['user']);
 	echo'<tr>
 		<td class="'.$c.$c_li.'nbr right">'.($i+$start).'.&nbsp;</td>
 		<td class="'.$c.'s7"><a href="?page=karte&x='.
 			$data['x'].'&y='.$data['y'].'">'.$data['name'].'</a></td>
-		<td class="'.$c.'s7"><a href="?page=spieler&name='.
-			$spieler_name.'">'.$spieler_name.'</a></td>
+		<td class="'.$c.'s7">'.$spieler->getLink().'</td>
 		<td class="'.$c.'">'.$data['einwohner'].'</td>
 		<td class="'.$c.$c_re.'">('.$data['x'].'|'.$data['y'].')</td>
 		</tr>';
