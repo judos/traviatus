@@ -80,8 +80,8 @@ class Spieler {
 	//3=letzte 3tage aktiv
 	//4=letzte 7tage aktiv
 	//5=inaktiv
-	//TODO: Spieler wird updated falls eigenschaft geändert wird
-	//-> lastlogin/lastaction einführen
+	//last_update wird aktualisiert falls login geprüft wird
+	// (bei jedem Aufruf einer Seite)
 	public function onlineStatus() {
 		$x=time()-strtotime($this->get('last_update'));
 		if ($x<5*60) return 1;

@@ -61,8 +61,14 @@ class InfoMessage extends Bericht {
 		$this->addPart(parent::PART_NEW_TABLE,array());
 	}
 	
+	public function sendToUsers($users_arr,$betreff,$typ) {
+		foreach($users_arr as $user) {
+			$this->sendTo($user,$betreff,$typ);
+		}
+	}
+	
 	// $user: string, or Spieler-object
-	// $betreff: string
+	// $betreff: string, name des Spielers
 	public function sendTo($user,$betreff,$typ) {
 		if (is_object($user))
 			$name=$user->get('name');

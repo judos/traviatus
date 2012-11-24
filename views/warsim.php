@@ -27,25 +27,26 @@ if (isset($_GET['a_v'])) {
 	//Truppen
 	$deffTruppen=array();
 	for ($volk=1;$volk<=4;$volk++) {
-		unset($truppe);
+		$truppe=array();
 		$d_v[$volk]=saveGet('d_v'.$volk, 0);
 		if ($d_v[$volk]==1) {
-			$truppe=array('volk'=>$volk);
 			$ids=TruppenTyp::getIdsByVolk($volk);
 			foreach($ids as $tid)
 				$truppe[$tid]=saveGet('d_'.$tid, 0);
-			$deffTruppen[]=$truppe;
+			$truppe['hero']=0;
+			$deffTruppen[]=new Soldaten($volk,Soldaten::soldatenNr($truppe),null);
 		}
 	}
 
 	//Deffheld
-	if ($hero_v>0) {
-		$deffTruppen[0]['hero']=1;
-		$deffTruppen[0]['heroboni']=$hero_v;
-	}
+	//TODO: implement held somehow
+	//if ($hero_v>0) {
+	//	$deffTruppen[0]['hero']=1;
+	//	$deffTruppen[0]['heroboni']=$hero_v;
+	//}
 	
 	//Deffdorf erstellen
-	$dorf=new DeffDorf($pala,$wall,$fallen,$deffTruppen);
+	$dorf=new KampfSim($pala,$wall,$fallen,$deffTruppen);
 
 	//Angreifer zusammenstellen
 	$offTruppen=array();

@@ -50,16 +50,18 @@ class Outputer {
 			</td><td colspan="11" class="b">'.$title.'</td></tr>
 			<tr class="unit">
 			<td>&nbsp;</a></td>';
-		for ($j=1;$j<=10;$j++){
-			$typ=TruppenTyp::getById($j+($volk-1)*10);
+		$typen=TruppenTyp::getByVolk($volk);
+		foreach($typen as $typ){
 			$ou.='<td>'.$typ->imgSymbol().'</td>';
 		}
 		$ou.='<td><img src="img/un/u/hero.gif" title="Held"></td></tr>
 			<tr><td>Einheiten</td>';
-		for ($j=1;$j<=10;$j++) {
-			if ($units!=null) {
-				if ($units[$j+($volk-1)*10]>0) $ou.='<td>'.$units[$j+($volk-1)*10].'</td>';
-				else	$ou.='<td class="c">0</td>';
+		foreach($typen as $tid=>$typ){
+			if ($units!=null){
+				if ($units[$tid]>0)
+					$ou.='<td>'.$units[$tid].'</td>';
+				else
+					$ou.='<td class="c">0</td>';
 			}
 			else
 				$ou.='<td class="c">?</td>';

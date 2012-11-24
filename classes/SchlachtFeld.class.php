@@ -3,8 +3,61 @@
 class SchlachtFeld {
 	public static $save=false;
 	
-	public function SchlachtFeld() {
+	protected $off;
+	protected $deff;
+	protected $bericht;
+	
+	public function SchlachtFeld($off,$deff) {
+		$this->off=$off;
+		$this->deff=$deff;
+		$this->writeBericht();
+	}
+	
+	public function someOffSurvived() {
+		$volk=$this->off['volk'];
+		$einheiten = TruppenTyp::getIdsByVolk($volk);
+		$offPartySurvived=false;
+		foreach($einheiten as $tid) {
+			if (isset($this->off[$tid]) and $this->off[$tid]>0)
+				$offPartySurvived=true;
+		}
+		if (@$this->off['hero']==1){
+			if ($this->off['herolive']>0)
+				$offPartySurvived=true;
+		}
+		return $offPartySurvived;
+	}
+	
+	//returns array ( $tid => $count);
+	public function getRemainingOff() {
+		$result=array();
+		$volk=$this->off['volk'];
+		$einheiten = TruppenTyp::getIdsByVolk($volk);
+		foreach($einheiten as $tid) {
+			if (isset($this->off[$tid]) and $this->off[$tid]>0)
+				$result[$tid]=$this->off[$tid];
+			else
+				$result[$tid]=0;
+		}
+		if (@$this->off['hero']==1 and $this->off['herolive']>0)
+			$result['hero']=1;
+		else
+			$result['hero']=0;
+		return $offPartySurvived;
+	}
+	
+	public function getUsers() {
 		//TODO: implement
+		return array();
+	}
+	
+	public function getBerichtBetreff() {
+		//TODO: implement
+		return '';
+	}
+	
+	public function getBericht() {
+		return $this->bericht;
 	}
 	
 	protected function writeBericht() {
@@ -34,7 +87,8 @@ class SchlachtFeld {
 			$t='Unterst.';
 		}
 		
-		x($b->toHtml());	
+		x($b->toHtml());
+		$this->bericht = $b;
 	}
 	
 }

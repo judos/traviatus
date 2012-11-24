@@ -1,11 +1,10 @@
 <?php
 
-class TruppeMove {
+class TruppeMove extends Soldaten{
+	public static $save=true;
 
 	protected $keyid;
 	protected $data;
-
-	protected $changed;
 
 	protected static $objekte_user;  //[$user][$keyid]
 	protected static $objekte_start; //[$x][$y][$nr]
@@ -20,14 +19,25 @@ class TruppeMove {
 	protected static $db_key=array('id');
 	protected static $db_table='truppen_move';
 
-	public static $save=true;
 
 	public function TruppeMove($keyid,$d) {
 		$this->keyid=$keyid;
 		$this->data=$d;
 		$this->changed=false;
-		
+		$this->initTruppeMove();
 		$this->addToReferences();
+	}
+	
+	private function initTruppeMove() {
+		$user=Spieler::getById($this->get('user'));
+		$volk=$user->get('volk');
+		$soldaten=explode(':',$this->data['truppen']);
+		if (isset($soldaten[10]) && $soldaten[10]!=0){
+			$held=$user->held();
+		}
+		else
+			$held=null;
+		parent::__construct($volk,$soldaten,$held);
 	}
 	
 	protected function addToReferences() {
@@ -71,29 +81,26 @@ class TruppeMove {
 		if (!isset(self::$objekte_id[$keyid]))
 			self::$objekte_id[$keyid]=$this;
 	}
-
-	public function soldatenId() {
-		$user=Spieler::getById($this->get('user'));
-		$volk=$user->get('volk');
-		$soldaten=explode(':',$this->get('truppen'));
-		foreach ($soldaten as $nr => $anz) {
-			$id=$nr+1+($volk-1)*10;
-			if ($nr==10) $id='hero';
-			$result[$id]=$anz;
+	
+	public function setNumbers($soldatenIds,$held) {
+		$this->soldaten=$soldatenIds;
+		if (isset($soldatenIds['held']) and $soldatenIds['hero']==1){
+			$this->held=$held;
+			if ($held==null)
+				x('setNumbers erwartet ein Held objekt falls dieser in der Truppe sein soll.');
 		}
-		return $result;
-	}
-
-	public function soldatenNr() {
-		$soldaten=explode(':',$this->get('troops'));
-		return $soldaten;
+		$this->changed=true;
 	}
 
 	public function get($att) {
+		if ($att=='truppen')
+			return parent::soldatenString();
 		return $this->data[$att];
 	}
 
 	protected function set($att,$value) {
+		if($att=='truppen')
+			x('Es ist nicht erlaubt das Attribut truppen für ein Objekt der Klasse TruppeMove zu ändern.');
 		$this->data[$att]=$value;
 		$this->changed=true;
 	}
@@ -108,10 +115,6 @@ class TruppeMove {
 	
 	public function getUser() {
 		return Spieler::getById($this->get('user'));
-	}
-	
-	public function getVersorgung() {
-		return TruppenTyp::getVersorgung($this->soldatenId());
 	}
 	
 	public function delete() {
@@ -146,10 +149,10 @@ class TruppeMove {
 		$ziel_zeit=date('Y-m-d H:i:s',2*$z-$s);
 		
 		$sql="UPDATE `tr".ROUND_ID."_truppen_move` 
-			SET start_x='{$this->data['ziel_x']}', 
-				start_y='{$this->data['ziel_y']}',
-				ziel_x='{$this->data['start_x']}',
-				ziel_y='{$this->data['start_y']}',
+			SET start_x='{$this->get('ziel_x')}', 
+				start_y='{$this->get('ziel_y')}',
+				ziel_x='{$this->get('start_x')}',
+				ziel_y='{$this->get('start_y')}',
 				aktion='2',start_zeit='$start_zeit',
 				ziel_zeit='$ziel_zeit'
 			WHERE keyid='{$this->keyid}';";
@@ -208,13 +211,14 @@ class TruppeMove {
 
 	private function save() {
 		$sql="UPDATE tr".ROUND_ID."_".self::$db_table." SET ";
+		$this->data['truppen']=$this->get('truppen');
 		foreach($this->data as $key => $value) {
 			$sql.="$key='$value',";
 		}
 		$sql=substr($sql,0,-1);
 		$sql.=" WHERE ";
 		foreach(self::$db_key as $att) {
-			$sql.="$att='".$this->data[$att]
+			$sql.="$att='".$this->get($att)
 				."' AND ";
 		}
 		$sql=substr($sql,0,-4);

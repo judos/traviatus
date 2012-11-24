@@ -2,7 +2,7 @@
 
 
 class Held {
-
+	//TODO: refactor to support simulation only
 	protected $id;
 	protected $data;
 
@@ -70,12 +70,12 @@ class Held {
 		return array($vert_i,$vert_k);
 	}
 
-	public function offwert() {
+	public function offWert() {
 		$boni=$this->punkteVerteilt();
 		return $boni[2]/5;
 	}
 
-	public function deffwert() {
+	public function deffWert() {
 		$boni=$this->punkteVerteilt();
 		return $boni[3]/5;
 	}
@@ -181,6 +181,7 @@ class Held {
 		return null;
 	}
 
+	//parameter: $user id or object
 	public static function getByUser($user) {
 		if (is_object($user))
 			$id=$user->get('id');

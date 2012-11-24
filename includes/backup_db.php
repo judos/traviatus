@@ -148,7 +148,7 @@ function backup_db() {
 					else {
 						trigger_error('Unbekannter Datentyp von MySql erhalten: '.$ftyp,E_USER_WARNING);
 					}
-					//TODO: Find out more about other Types like bits
+					//XXX: Find out more about other Types like bits
 					if($i<$feld_anzahl-1)
 						$write_to_file.=', ';
 				}

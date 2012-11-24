@@ -16,24 +16,24 @@ class Updater {
 				$typ=$data['typ'];
 
 				$truppe=Truppe::getByXYU($data['x'],$data['y'],0);
-				$tiere=$truppe->soldatenNr();
+				$tiere=$truppe->soldatenIdWithoutHero();
 
 				$oase=Oase::getById($typ);
-				$tiergrenze=$oase->tierGrenze();
+				$tiergrenze=$oase->tierGrenzeIds();
 
-				foreach($tiere as $tierNr => $anz) {
+				foreach($tiere as $tierId => $anz) {
 
-					$grenze=$tiergrenze[$tierNr];
+					$grenze=$tiergrenze[$tierId];
 
 					//Nur Anteil berechnen der hinzugef�gt wird
 					if ($grenze>0) {
-						$tiere[$tierNr]= 1/(pow($grenze,1.4)) * $anz * ($grenze-$anz);
-						$tiere[$tierNr]+= mt_rand(-2000,2000)/1000;
-						if ($tiere[$tierNr]<0) $tiere[$tierNr]=0;
+						$tiere[$tierId]= 1/(pow($grenze,1.4)) * $anz * ($grenze-$anz);
+						$tiere[$tierId]+= mt_rand(-2000,2000)/1000;
+						if ($tiere[$tierId]<0) $tiere[$tierId]=0;
 					}
 				}
 
-				$truppe->hinzufugen(implode(':',$tiere));
+				$truppe->hinzufugen($tiere);
 			}
 
 			return TRUE;
@@ -298,7 +298,6 @@ class Updater {
 			
 			//Angriff normal oder Raubzug
 			if ($truppe->get('aktion')==3 or $truppe->get('aktion')==4)	{
-				
 				$angreifer=$dieserUser;
 				$angreifer_dorf=$start_dorf;
 
@@ -308,88 +307,26 @@ class Updater {
 				$off=$truppe->soldatenId();
 				if ($off['hero']==1){
 					$held=Held::getByUser($angreifer);
-					$off['heroboni']=$held->deffwert();
+					$off['heroboni']=$held->offWert();
 				}
 				$off['volk']=$angreifer->get('volk');
-				
+				//TODO: deffdorf can't know attack_user
 				$schlachtFeld=$deff_dorf->attack($off,$truppe->get('aktion'));
-				//TODO: implement
 				
-				//if ($left['survived']) {
-					//TODO: troup must return
-				//}
-				//else {
-				//	$truppe->delete();
-				//}
-				//TODO: deff must be saved in db
-				
-				//TODO: send messages to users
-
-				/*
-					//Nachrichten verschicken
-					$anzahl_deff++;
-					if ($data2['dorfuser']==$data2['user'])	//Besitzer des Dorfes
-					{
-						$temp3='<a href="spieler.php?name='.$data2['name'].'">'.$data2['name'].'</a> aus Dorf <a href="'.
-							'karte.php?do=show&x='.$data['ziel_x'].'&y='.$data['ziel_y'].'">'.$data2['dorfname'].'</a>';
-						$deff_string[$anzahl_deff]="1:Verteidiger:".$temp3.chr(13).
-							"3:".$volk.chr(13)."4:Einheiten:".$deff_truppen_string_start[$data2['user']].chr(13).
-							"4:Verluste:".$deff_truppen_verluste_string.chr(13);
-						$name_des_angegriffenen=$data2['name'];
-						$name_des_dorfes=$data2['dorfname'];
-					}
-					else	//Unterstützungen sonst
-					{
-						$temp4='<a href="spieler.php?name='.$data2['name'].'">'.$data2['name'].'</a>';
-						$deff_string[$anzahl_deff]="1:Unterstützung:von ".$temp4.chr(13).
-							"3:".$volk.chr(13)."4:Einheiten:".$deff_truppen_string_start[$data2['user']].chr(13).
-							"4:Verluste:".$deff_truppen_verluste_string.chr(13);
-
-						$sql3="INSERT INTO `tr".ROUND_ID."_msg` (`an`,`typ`,`zeit`,`betreff`,`text`) VALUES
-							( '".$data2['name']."','2','".$data['ziel_zeit']."','Unterstützung in ".$data2['dorfname'].
-							" wurde angegriffen','4".chr(13)."1:".$name.":Hat eine Ihrer Unterstützungen angegriffen".chr(13).
-							"3:".$volk.chr(13)."4:Einheiten:".$deff_truppen_string_start[$data2['user']].chr(13).
-							"4:Verluste:".$deff_truppen_verluste_string."');";
-						$result3=mysql_query($sql3);
-					}
-
+				if ($schlachtFeld->someOffSurvived()) {
+					$truppe->setNumbers($schlachtFeld->getRemainingOff());
+					$truppe->turnBack();
 				}
-
-				//Nachricht an den Angegriffenen
-				$temp1='4';
-				for ($j=1;$j<=$anzahl_deff;$j++)
-					$temp1.=':4';
-
-				$temp2='<a href="spieler.php?name='.$name.'">'.$name.'</a> aus Dorf <a href="karte.php?do=show&x='.
-					$data['start_x'].'&y='.$data['start_y'].'">'.$angreiffendes_dorf.'</a>';
-
-				$sql3="INSERT INTO `tr".ROUND_ID."_msg` (`an`,`typ`,`zeit`,`betreff`,`text`) VALUES
-					( '$name_des_angegriffenen','3','".$data['ziel_zeit']."','$angreiffendes_dorf greift ".
-					$name_des_dorfes." an','$temp1".chr(13)."1:Angreifer:$temp2".chr(13).
-					"3:$volk".chr(13)."4:Einheiten:".$data['truppen'].chr(13).
-					"4:Verluste:$verluste_angreifer_string".chr(13);
-				for ($j=1;$j<=$anzahl_deff;$j++)
-					$sql3.=$deff_string[$j];
-				$sql3.="');";
-				$result3=mysql_query($sql3);
-
-				//Nachricht an den Angreiffer
-				if ($data['aktion']==3) $betreff='Angriff';
-				else $betreff='Raubzug';
-				$betreff.=' auf '.$name_des_dorfes;
-				if ($anz_angreifer==0) $text="5".chr(13)."1:Angreifer:Ihre Truppen".chr(13)."3:$volk".chr(13).
-					"4:Einheiten:".$data['truppen'].chr(13)."4:Verluste:$verluste_angreifer_string".chr(13).
-					"1:Info:Es sind keine Truppen zurückgekehrt";
 				else
-				{
-					$text="$temp1".chr(13)."1:Angreifer:Ihre Truppen".chr(13)."3:$volk".chr(13).
-						"4:Einheiten:".$data['truppen'].chr(13)."4:Verluste:$verluste_angreifer_string".chr(13);
-				for ($j=1;$j<=$anzahl_deff;$j++)
-					$text.=$deff_string[$j];
-				}
-				$sql3="INSERT INTO `tr".ROUND_ID."_msg` (`an`,`typ`,`zeit`,`betreff`,`text`) VALUES
-					('$name','3',NOW(),'$betreff','$text');";
-				$result3=mysql_query($sql3);*/
+					$truppe->delete();
+				
+				$deff_dorf->saveDeffInDb();
+				
+				$bericht = $schlachtFeld->getBericht();
+				//schickt den Bericht an alle Beteiligten
+				$users = $schlachtFeld->getUsers();
+				$betreff = $schlachtFeld->getBerichtBetreff();
+				$bericht->sendToUsers($users,$betreff,Bericht::TYPE_ANGRIFFE);
 			}
 		}
 	}

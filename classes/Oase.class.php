@@ -33,9 +33,10 @@ class Oase {
 		return explode(':',$this->get('bonus'));
 	}
 
-	public function tierGrenze() {
-		return explode(':',$this->get('tier_grenze'));
-	}
+	//XXX: remove if everything works without it
+	//public function tierGrenze() {
+	//	return explode(':',$this->get('tier_grenze'));
+	//}
 	
 	public function tierGrenzeIds() {
 		$nrs=explode(':',$this->get('tier_grenze'));

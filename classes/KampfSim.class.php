@@ -1,18 +1,18 @@
 <?php
 
-class DeffDorf {
+class KampfSim {
+	public static $save = FALSE;
 
 	protected $wall=array();	//Schutzmauern [$gid] => $stufe
 	protected $palace;		//Palast oder Residenz
 	protected $fallen;		//Fallen im Dorf
 
+	//TODO: refactor entry of hero to save a reference to an object
 	protected $deffTruppen;	//Array [$nr] => array ('user'=>$user, 'volk'=>$volk,
 							//'hero'=>0/1, 'heroboni'=>x%, $tid => $anz ...)
 
 	protected $deffBoni;
-	protected $dorf;
 	
-	//gespeicherte Daten für den letzten Angriff
 	protected $truppeAngreifer; //array('volk'=>wert,tid=>anz,'hero'=>0/1,'heroboni'=>in%)
 	protected $offboni;
 	protected $offWerte;		//array('infa'=>wert,'kava'=>wert,'total'=>wert)
@@ -25,57 +25,8 @@ class DeffDorf {
 	protected $damageLooser;	//in %
 	protected $deffWipe;		// Deff Truppen Verluste in %
 	protected $offWipe;			// Off Truppen Verluste in %
-	
-	protected $offPartySurvived;// did any soldier of the attack survive
 
-	public static $save = FALSE;
-
-	public function DeffDorf() {
-		$array = func_get_args();
-		if (sizeof($array)==1) $this->DeffDorf1($array[0]);
-		elseif (sizeof($array)==4) $this->DeffDorf4($array[0],$array[1],$array[2],$array[3]);
-		else x('DeffDorf aufruf ungültig, bitte Constructor Aufruf prüfen.');
-	}
-
-	public function DeffDorf1($dorf) {
-		//Dorf merken, damit später Veränderungen gespeichert werden können.
-		$this->dorf=$dorf;
-
-		$highest=$dorf->highest();
-		//Reisdenz
-		$this->palace=$highest[25];
-		//Palast
-		if ($this->palace==0) $this->palace=$highest[26];
-
-		for ($gid=31;$gid<=33;$gid++)
-			$this->wall[$gid]=$highest[$gid];
-
-		//Fallen
-		$this->fallen=$dorf->get('fallen');
-
-		//Truppen zusammenträllern
-		$this->deffTruppen=array();
-		$users=Truppe::getUsersByXY($dorf->get('x'),$dorf->get('y'));
-		foreach($users as $userid) {
-			$truppe=Truppe::getByXYU($dorf->get('x'),$dorf->get('y'),$userid);
-			$soldaten=$truppe->soldatenId();
-			$volk=$truppe->volk();
-			$this->deffTruppen[$userid]= array_merge( array('volk'=>$volk), $soldaten );
-			if ($this->deffTruppen[$userid]['hero']==1) {
-				$held=Held::getByUser($userid);
-				if ($held===NULL) {
-					new Errorlog('DeffDorf::__construct Dorf erstellt, Held gefunden in der Truppe. Könnte ihn aber anhand der userid
-						nicht ausfindig machen. userid:'.$userid.', truppe:'.$truppe.', soldaten:'.$soldaten);
-				}
-				else {
-					$this->deffTruppen[$userid]['heroboni']=$held->deffBoni();
-				}
-			}
-		}
-	}
-
-	//$wall an array with $gid => $stufe
-	public function DeffDorf4($palace,$wall,$fallen,$deffTruppen) {
+	public function KampfSim($palace,$wall,$fallen,$deffTruppen) {
 		$this->palace=$palace;
 		$this->wall=$wall;
 		$this->fallen=$fallen;
@@ -254,18 +205,13 @@ class DeffDorf {
 		//Angreiffer auslöschen soviel wie ausgerechnet
 		$volk=$this->truppeAngreifer['volk'];
 		$einheiten = TruppenTyp::getIdsByVolk($volk);
-		$this->offPartySurvived=false;
 		foreach($einheiten as $tid) {
 			if (isset($this->truppeAngreifer[$tid]) and $this->truppeAngreifer[$tid]>0) {
 				$this->truppeAngreifer[$tid] = round((100-$this->offWipe)/100 * $this->truppeAngreifer[$tid],0);
-				if($this->truppeAngreifer[$tid]>0)
-					$this->offPartySurvived=true;
 			}
 		}
 		if (@$this->truppeAngreifer['hero']==1){
 			$this->truppeAngreifer['herolive']= -$this->offWipe;
-			if ($this->truppeAngreifer['herolive']>0)
-				$this->offPartySurvived=true;
 		}
 	}
 
@@ -290,15 +236,10 @@ class DeffDorf {
 		$this->killSomeDeffTroops();
 		$this->killSomeOffTroops();
 		
-		//TODO: implement schlachtfeld
+		//erstellt das Schlachtfeld mit den übriggebliebenen Truppen
 		$sf=new SchlachtFeld($this->truppeAngreifer,$this->deffTruppen);
 		
 		return $sf;
 	}
 	
-	public function hasOffPartlySurvived() {
-		return $this->offPartySurvived;
-	}
-
-
 }

@@ -101,9 +101,6 @@ if (($gid<19) or ($gid>18 AND $id>0)) {
 	$nachste_stufe=$stufe+1;
 	$max_stufe=$gebeude->get('stufen');
 	
-	//TODO: remove if present when everything else finished
-	//if ($build==-1) $nachste_stufe++;
-
 	//Ausserhalb HD ist nur bis 10 baubar auf Land
 	if ($gid<19 and $login_dorf->get('grosse')==0) {
 		$smax=Diverses::get('max_ausbau_nicht_hd');
@@ -322,12 +319,10 @@ if (($gid<19) or ($gid>18 AND $id>0)) {
 		echo'<p class="c">Das Gebäude wurde
 			noch nicht fertiggestellt</p><br>';
 
-
 	//Admintools
-	//TODO: remove functionality or make sure it is only possible with admintools
 	if (ADMINTOOLS) {
-	//	echo'<br><a href="?page=admintools&do=delgeb&gid='.$gid.'">
-	//		Gebäude löschen</a>';
+		echo'<br><a href="?page=admintools&do=delgeb&gid='.$gid.'">
+			Gebäude löschen</a>';
 	}
 
 	//Ausbau des Gebäudes

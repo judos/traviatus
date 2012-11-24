@@ -20,6 +20,12 @@ class Bericht {
 	const PART_SUPPLY     =   5;
 	const PART_NEW_TABLE  = 100;
 	
+	const TYPE_ALLE           = 0;
+	const TYPE_HANDEL         = 1;
+	const TYPE_UNTERSTUETZUNG = 2;
+	const TYPE_ANGRIFFE       = 3;
+	const TYPE_SONSTIGE       = 4;
+	
 	protected function Bericht($id,$data) {
 		$this->id=$id;
 		$this->data=$data;
@@ -144,10 +150,10 @@ class Bericht {
 		return self::$objekte[$id];
 	}
 	
-	//Stellt alle Berichte eines Types zusammen (0=alle)
+	//Stellt alle Berichte eines Types zusammen
 	public static function getAll($typ) {
 		if (!self::$all_loaded) self::loadAll();
-		if ($typ==0) return self::$objekte;
+		if ($typ==self::TYPE_ALLE) return self::$objekte;
 		else {
 			$result=array();
 			foreach(self::$objekte as $id => $bericht) {

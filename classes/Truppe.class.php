@@ -1,7 +1,8 @@
 <?php
 
 
-class Truppe {
+class Truppe extends Soldaten {
+	public static $save=true;
 
 	//Key
 	private $x;
@@ -10,7 +11,6 @@ class Truppe {
 	private $gefangen;
 
 	private $data;
-	private $changed;
 	private $created;
 
 	protected static $objekte;	// [$x][$y][$userid][$gefangen]
@@ -19,7 +19,6 @@ class Truppe {
 	protected static $db_key=array('x','y','user','gefangen');
 	protected static $db_table='truppen';
 
-	public static $save=true;
 
 	protected function Truppe($x,$y,$userid,$gefangen,$data) {
 		$this->x = $x;
@@ -29,108 +28,46 @@ class Truppe {
 		$this->changed=false;
 		$this->gefangen=$gefangen;
 		self::$objekte[$x][$y][$userid][$gefangen]=$this;
-	}
-
-	public function get($att) {
-		return $this->data[$att];
-	}
-
-	public function set($att,$value) {
-		$this->data[$att]=$value;
-		$this->changed=true;
+		$this->initTruppe();
 	}
 	
-	public function volk() {
-		if($this->userid>0) {
+	private function initTruppe() {
+		if($this->userid > 0){
 			$user=Spieler::getById($this->userid);
 			$volk=$user->get('volk');
 		}
 		else
 			$volk=4;
-		return $volk;
-	}
-
-	public function anzSoldaten() {
-		$soldaten=explode(':',$this->get('troops'));
-		return array_sum($soldaten);
-	}
-
-	public function soldatenId() {
-		$volk=$this->volk();
-		$soldaten=explode(':',$this->get('troops'));
-		foreach ($soldaten as $nr => $anz) {
-			$id=$nr+1+($volk-1)*10;
-			if ($nr==10) $id='hero';
-			$result[$id]=$anz;
+		$soldaten=explode(':',$this->data['troops']);
+		if (isset($soldaten[10]) && $soldaten[10]!=0){
+			$held=$user->held();
 		}
-		return $result;
+		else
+			$held=null;
+		parent::__construct($volk,$soldaten,$held);
 	}
 
-	public function soldatenNr() {
-		$soldaten=explode(':',$this->get('troops'));
-		return $soldaten;
+	public function get($att) {
+		if ($att=='truppen')
+			return parent::soldatenString();
+		return $this->data[$att];
 	}
 
-	public function leer() {
-		return $this->anzSoldaten()==0;
-	}
-
-	public function getVersorgung() {
-		return TruppenTyp::getVersorgung($this->soldatenId());
-	}
-
-	public function hinzufugen($soldaten) {
-		$aktuell=explode(':',$this->get('troops'));
-		if (is_array($soldaten)) {
-			foreach ($soldaten as $id => $anzahl) {
-				if ($id=='hero')
-					$nr=10;
-				else
-					$nr=($id-1)%10;
-				if (!isset($aktuell[$nr])) $aktuell[$nr]=0;
-				$aktuell[$nr]+=$anzahl;
-			}
-		}
-		if (is_string($soldaten)) {
-			$soldaten_arr=explode(':',$soldaten);
-			foreach($soldaten_arr as $nr => $anzahl) {
-				$aktuell[$nr]+=$anzahl;
-			}
-		}
-		$this->set('troops',implode(':',$aktuell));
+	public function set($att,$value) {
+		if ($att=='troops')
+			x('Not allowed to change troops attribute for object of class Truppe');
+		$this->data[$att]=$value;
 		$this->changed=true;
 	}
-
-	public function entfernen($soldaten) {
-		$aktuell=explode(':',$this->get('troops'));
-		if (is_array($soldaten)) {
-			foreach ($soldaten as $id => $anzahl) {
-				if ($id=='hero')
-					$nr=10;
-				else
-					$nr=($id-1)%10;
-				if (!isset($aktuell[$nr])) $aktuell[$nr]=0;
-				$aktuell[$nr]-=$anzahl;
-			}
-		}
-		if (is_string($soldaten)) {
-			$soldaten_arr=explode(':',$soldaten);
-			foreach($soldaten_arr as $nr => $anzahl) {
-				$aktuell[$nr]-=$anzahl;
-			}
-		}
-		$this->set('troops',implode(':',$aktuell));
-		$this->changed=true;
-	}
-
+	
 	public function __toString() {
 		if ($this->get('user')!=0)
 			$name=Spieler::getById($this->get('user'))->get('name');
 		else
-			$name='Natur ('.$this->get('user').')';
+			$name='Natur';
 		return 'Truppe: von '.$name.',
 			Standort: ('.$this->get('x').' | '.$this->get('y').'),
-			Soldaten: '.$this->get('troops').', Gefangen: '.$this->get('gefangen').',
+			Soldaten: '.parent::__toString().', Gefangen: '.$this->get('gefangen').',
 			Ursprung: ('.$this->get('ursprung_x').' | '.$this->get('ursprung_y').')';
 	}
 	
@@ -158,6 +95,7 @@ class Truppe {
 
 	public function save() {
 		if ($this->created==false) {
+			$this->data['troops']=$this->get('troops');
 			$sql="UPDATE tr".ROUND_ID."_".self::$db_table." SET ";
 			foreach($this->data as $key => $value) {
 				$sql.="$key='$value',";
@@ -173,6 +111,7 @@ class Truppe {
 		else {
 			unset($keys,$values);
 			$keys='';$values='';
+			$this->data['troops']=$this->get('troops');
 			foreach($this->data as $key => $value) {
 				$keys.=$key.',';
 				$values.="'$value',";
@@ -183,21 +122,6 @@ class Truppe {
 				($keys) VALUES ($values);";
 		}
 		mysql_query($sql);
-	}
-
-	public static function getString($soldatenId) {
-		foreach($soldatenId as $id=>$anz) {
-			if ($id!='hero')
-				$soldaten[($id-1)%10]=$anz;
-		}
-		for ($i=0;$i<10;$i++){
-			if(!isset($soldaten[$i])) {
-				$soldaten[$i]=0;
-			}
-		}
-		ksort($soldaten);
-		$soldaten[11]=$soldatenId['hero'];
-		return implode(':',$soldaten);
 	}
 
 	public static function saveAll() {
