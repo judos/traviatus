@@ -4,17 +4,14 @@ class KampfSim {
 	public static $save = FALSE;
 
 	protected $wall=array();	//Schutzmauern [$gid] => $stufe
-	protected $palace;		//Palast oder Residenz
-	protected $fallen;		//Fallen im Dorf
+	protected $palace;			//Palast oder Residenz
+	protected $fallen;			//Fallen im Dorf
 
-	//TODO: refactor entry of hero to save a reference to an object
-	protected $deffTruppen;	//Array [$nr] => array ('user'=>$user, 'volk'=>$volk,
-							//'hero'=>0/1, 'heroboni'=>x%, $tid => $anz ...)
-
-	protected $deffBoni;
+	protected $deffTruppen;		//array($userid => $soldaten)
+	protected $deffBoni;		//boni in percent for deff
 	
 	protected $truppeAngreifer; //array('volk'=>wert,tid=>anz,'hero'=>0/1,'heroboni'=>in%)
-	protected $offboni;
+	protected $offboni;			//boni in percent for off
 	protected $offWerte;		//array('infa'=>wert,'kava'=>wert,'total'=>wert)
 	protected $deffAufteilung;	//array('infa'=>wert[0,1], 'kava'=>wert[0,1])
 	protected $deffWerte;		//array('infa'=>wert,'kava'=>wert,'total'=>wert)
@@ -33,13 +30,6 @@ class KampfSim {
 		$this->deffTruppen=$deffTruppen;
 	}
 
-	public function deffBoni() {
-		if ($this->deffboni===null)
-			calcDeffBoni();
-		return $this->deffboni;
-	}
-
-
 	private function calcDeffBoni() {
 		$deffboni=0;
 
@@ -47,11 +37,12 @@ class KampfSim {
 		foreach($this->wall as $gid => $stufe) {
 			$deffboni+=GebeudeTyp::mauerSchutzBonus($gid,$stufe);
 		}
-
+		
 		//Durch Held gewonnene Boni
 		foreach($this->deffTruppen as $nr => $truppe) {
-			if (@$truppe['hero']==1)
-				$deffboni+=$truppe['heroboni'];
+			$held=$truppe->held();
+			if ($held!=null)
+				$deffboni+=$held->deffWert();
 		}
 
 		$this->deffBoni=$deffboni;
@@ -64,31 +55,20 @@ class KampfSim {
 	
 	//Liefert die DeffBoni zurück
 	public function getDeffBoni() {
-		$this->calcDeffBoni();
+		if ($this->deffBoni===null)
+			$this->calcDeffBoni();
 		return $this->deffBoni;
 	}
 	
 	protected function calcOffBoni($truppeAngreifer) {
 		$this->offboni=0;
-		if (@$truppeAngreifer['hero']==1)
-			$this->offboni+=$truppeAngreifer['heroboni'];
+		if ($truppeAngreifer->held()!=null)
+			$this->offboni+=$truppeAngreifer->held()->offWert();
 	}
 	
 	protected function calcOffValues($truppeAngreifer) {
 		//Offwerte ausrechnen
-		$this->offWerte=array('infa'=>0,'kava'=>0);	// ( 'infa'=>$wert, 'kava'=>$wert );
-		$volkAngreifer=$truppeAngreifer['volk'];
-		$einheiten = TruppenTyp::getByVolk($volkAngreifer);
-		foreach($einheiten as $tid => $einheit) {
-			if (isset($truppeAngreifer[$tid]) and $truppeAngreifer[$tid]>0) {
-				$werte=$einheit->werte();
-				$anzahl=$truppeAngreifer[$tid];
-				if ($einheit->get('typ')==2)
-					$this->offWerte['kava']+= $anzahl*$werte[0];
-				else
-					$this->offWerte['infa']+= $anzahl*$werte[0];
-			}
-		}
+		$this->offWerte=$truppeAngreifer->getOffWerte(); // ( 'infa'=>$wert, 'kava'=>$wert );
 		
 		$this->offWerte['total']=$this->offWerte['infa']+$this->offWerte['kava'];
 		//Offboni hinzuzählen
@@ -107,16 +87,9 @@ class KampfSim {
 	
 	protected function calcDeffValues() {
 		//Deffwerte ausrechnen
-		$this->deffWerte=array('infa'=>0,'kava'=>0); // ( 'infa'=>$wert, 'kava'=>$wert );
-		foreach($this->deffTruppen as $nr => $truppe) {
-			$volk=$truppe['volk'];
-			$einheiten = TruppenTyp::getByVolk($volk);
-			foreach($einheiten as $tid=>$einheit) {
-				$werte=$einheit->werte();
-				$anzahl=$truppe[$tid];
-				$this->deffWerte['infa']+= $anzahl*$werte[1];
-				$this->deffWerte['kava']+= $anzahl*$werte[2];
-			}
+		$this->deffWerte=array('infa'=>0,'kava'=>0);
+		foreach($this->deffTruppen as $nr => $soldaten) {
+			$this->deffWerte = array_add($this->deffWerte, $soldaten->getDeffWerte());
 		}
 		
 		//Deffwerte aufteilen
@@ -190,36 +163,26 @@ class KampfSim {
 	
 	protected function killSomeDeffTroops() {
 		//Deff auslöschen soviel wie ausgerechnet
-		foreach($this->deffTruppen as $nr => &$truppe) {
-			$volk=$truppe['volk'];
-			$einheiten = TruppenTyp::getIdsByVolk($volk);
-			foreach($einheiten as $tid) {
-				$truppe[$tid] = round((100-$this->deffWipe)/100 * $truppe[$tid],0);
-			}
-			if (@$truppe['hero']==1)
-				$truppe['herolive']= -$this->deffWipe;
-		}
+		foreach($this->deffTruppen as $nr => $truppe)
+			$truppe->killPercentage($this->deffWipe);
 	}
 	
 	protected function killSomeOffTroops() {
-		//Angreiffer auslöschen soviel wie ausgerechnet
-		$volk=$this->truppeAngreifer['volk'];
-		$einheiten = TruppenTyp::getIdsByVolk($volk);
-		foreach($einheiten as $tid) {
-			if (isset($this->truppeAngreifer[$tid]) and $this->truppeAngreifer[$tid]>0) {
-				$this->truppeAngreifer[$tid] = round((100-$this->offWipe)/100 * $this->truppeAngreifer[$tid],0);
-			}
-		}
-		if (@$this->truppeAngreifer['hero']==1){
-			$this->truppeAngreifer['herolive']= -$this->offWipe;
-		}
+		//Angreifer auslöschen soviel wie ausgerechnet
+		$this->truppeAngreifer->killPercentage($this->offWipe);
 	}
 
 	//Simuliert einen Angriff auf das verteidigende Dorf
 	//Gibt übrige Truppen des Angreifers zurück
-	//$truppeAngreifer = array('hero'=>0/1,'heroboni'=>in%,'volk'=>nr,tid=>anz
+	//$truppeAngreifer = object(Soldaten)
 	//$ktyp= 3Angriff 4Raubzug
 	public function attack($truppeAngreifer,$ktyp) {
+		//clone objects to stored previous values for report
+		$deffVorher=array();
+		foreach($this->deffTruppen as $nr=>$soldaten)
+			$deffVorher[$nr]=clone $soldaten;
+		$offVorher=clone $truppeAngreifer;
+		
 		$this->truppeAngreifer=$truppeAngreifer;
 		
 		//Deffboni ausrechnen fürs Dorf
@@ -237,9 +200,7 @@ class KampfSim {
 		$this->killSomeOffTroops();
 		
 		//erstellt das Schlachtfeld mit den übriggebliebenen Truppen
-		$sf=new SchlachtFeld($this->truppeAngreifer,$this->deffTruppen);
-		
-		return $sf;
+		return new SchlachtFeld($offVorher,$deffVorher,$this->truppeAngreifer,$this->deffTruppen);
 	}
 	
 }

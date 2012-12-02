@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ALL | E_WARNING);
 $load_time=microtime();
 
 //Falls ein externer Index (wie doku) diesen Index benützt muss $path gesetzt sein
@@ -15,6 +15,7 @@ include "includes/debug.func.php";
 include "includes/arrayobjects.func.php";
 include "includes/math.func.php";
 include "includes/string.func.php";
+include "includes/object.func.php";
 include "includes/vector4.php";
 include "includes/configs.php";
 include "includes/links.php";

@@ -3,7 +3,7 @@
 class Soldaten {
 	public static $save=false;
 	
-	//array($tid=>$count);
+	//array($tid=>$count ,'hero'=>$count);
 	protected $soldaten;
 	
 	//int (1=römer,2=germanen,3=gallier,4=natur)
@@ -16,7 +16,8 @@ class Soldaten {
 	
 	//$volk: int(1-4)
 	//$arr: array(0-9 => $anz)
-	//$held: object
+	//$held: object (? extends Held)
+	//$dorfHerkunft: object (? extends DorfSim)
 	public function Soldaten($volk,$arr,$held) {
 		$this->volk=$volk;
 		$this->held=$held;
@@ -24,12 +25,29 @@ class Soldaten {
 		$this->changed=false;
 	}
 	
+	public function getLink() {
+		$u=$this->getUser();
+		if ($u==null)
+			return null;
+		$result=$u->getLink();
+		$result.=' aus Dorf '.$this->getHerkunft()->getLink();
+		return $result;
+	}
+	
+	public function getUser() {
+		return null;
+	}
+	
+	public function getHerkunft() {
+		return null;
+	}
+	
 	private function initSoldaten($arr){
 		$this->soldaten=array();
 		for($i=0;$i<10;$i++){
 			$tid=($this->volk-1)*10+$i+1;
 			if (isset($arr[$i]))
-				$this->soldaten[$tid]=$arr[$i];
+				$this->soldaten[$tid]=(int)$arr[$i];
 			else
 				$this->soldaten[$tid]=0;
 		}
@@ -82,9 +100,71 @@ class Soldaten {
 	public function leer() {
 		return $this->anzSoldaten()==0;
 	}
+	
+	public function getDeffWerte() {
+		$result=array('infa'=>0,'kava'=>0);
+		foreach ($this->soldaten as $id => $anz) {
+			if ($id!='hero'){
+				$typ=TruppenTyp::getById($id);
+				$werte=$typ->werte();
+			}elseif($anz==1)
+				$werte=$this->held->werte();
+			else
+				$werte=array(0,0,0);
+			$result['infa']+=$werte[1]*$anz;
+			$result['kava']+=$werte[2]*$anz;
+		}
+		return $result;
+	}
+	
+	public function getOffWerte() {
+		$result=array('infa'=>0,'kava'=>0);
+		foreach ($this->soldaten as $id => $anz) {
+			if ($id!='hero'){
+				$typ=TruppenTyp::getById($id);
+				$werte=$typ->werte();
+			}elseif($anz==1){
+				$typ=$this->held->getTruppenTyp();
+				$werte=$this->held->werte();
+			}
+			if ($anz>0) {
+				if ($typ->get('typ')==2)
+					$result['kava']+=$werte[0]*$anz;
+				else
+					$result['infa']+=$werte[0]*$anz;
+			}
+		}
+		return $result;
+	}
 
 	public function getVersorgung() {
-		return TruppenTyp::getVersorgung($this->soldatenId());
+		$versorgung=0;
+		foreach ($this->soldaten as $id => $anz) {
+			if ($id!='hero'){
+				$typ=TruppenTyp::getById($id);
+				$food=$typ->get('versorgung');
+			}else
+				$food=6;
+			$versorgung+=$anz*$food;
+		}
+		return round($versorgung);
+	}
+	
+	public function killPercentage($per) {
+		//use reference for $anz, saves changes in array
+		foreach($this->soldaten as $id => &$anz) {
+			if ($id!='hero'){
+				$anz -= $per/100*$anz;
+				$anz = round($anz,0);
+			}
+			elseif ($anz==1){
+				$this->held->looseHealthPercentage($per);
+				if (!$this->held->isAlive()) {
+					$anz=0;
+					$this->held=null;
+				}
+			}
+		}
 	}
 	
 	public function hinzufugen($soldaten,$hero=null) {
@@ -116,11 +196,21 @@ class Soldaten {
 	}
 	
 	public function __toString() {
-		$s='';
-		foreach($this->soldaten as $tid=>$anz)
-			$s.=TruppenTyp::getById($tid)->imgSymbol().' '.$anz.', ';
+		$s='Soldaten: ';
+		foreach($this->soldaten as $tid=>$anz) {
+			if ($tid!='hero')
+				$s.=$anz.' '.TruppenTyp::getById($tid)->imgSymbol().', ';
+			else
+				$s.=$anz.' '.Held::imgSymbol().', ';
+		}
 		return substr($s,0,-2);
 	}
 	
+	public static function alleLeer($arr) {
+		foreach($arr as $soldaten)
+			if (!$soldaten->leer())
+				return false;
+		return true;
+	}
 
 }

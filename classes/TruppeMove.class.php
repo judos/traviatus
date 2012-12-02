@@ -40,6 +40,10 @@ class TruppeMove extends Soldaten{
 		parent::__construct($volk,$soldaten,$held);
 	}
 	
+	public function getHerkunft() {
+		return $this->startDorf();
+	}
+	
 	protected function addToReferences() {
 		$keyid=$this->keyid;
 		$d=$this->data;

@@ -1,6 +1,6 @@
 <?php
 
-class Dorf {
+class Dorf extends DorfSim {
 
 	private $x,$y;
 
@@ -29,6 +29,7 @@ class Dorf {
 			new Errorlog('new Dorf, Dorf existierte bereits.');
 		self::$objekte[$x][$y]=$this;
 		$this->update();
+		parent::__construct($this->data['name']);
 	}
 	
 	public function getLink() {

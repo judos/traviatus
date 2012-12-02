@@ -193,19 +193,6 @@ class TruppenTyp {
 		}
 		return $r;
 	}
-	
-	public static function getVersorgung($soldatenIds){
-		$versorgung=0;
-		foreach ($soldatenIds as $id => $anz) {
-			if ($id!='hero'){
-				$typ=TruppenTyp::getById($id);
-				$food=$typ->get('versorgung');
-			}else
-				$food=6;
-			$versorgung+=$anz*$food;
-		}
-		return round($versorgung);
-	}
 
 	public static function getById($id) {
 		if (!isset(self::$objekte[$id])) {

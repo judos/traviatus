@@ -46,6 +46,14 @@ class Truppe extends Soldaten {
 			$held=null;
 		parent::__construct($volk,$soldaten,$held);
 	}
+	
+	public function getHerkunft() {
+		return Dorf::getByXY($this->data['ursprung_x'],$this->data['ursprung_y']);
+	}
+	
+	public function getUser() {
+		return Spieler::getById($this->userid);
+	}
 
 	public function get($att) {
 		if ($att=='truppen')

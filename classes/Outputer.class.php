@@ -54,7 +54,7 @@ class Outputer {
 		foreach($typen as $typ){
 			$ou.='<td>'.$typ->imgSymbol().'</td>';
 		}
-		$ou.='<td><img src="img/un/u/hero.gif" title="Held"></td></tr>
+		$ou.='<td>'.Held::imgSymbol().'</td></tr>
 			<tr><td>Einheiten</td>';
 		foreach($typen as $tid=>$typ){
 			if ($units!=null){

@@ -53,3 +53,15 @@ function array_sub($arr1,$arr2) {
 	}
 	return $arr1;
 }
+
+function array_mul($arr1,$arg2) {
+	if (is_array($arg2)) {
+		foreach($arr1 as $key=>$value)
+			$arr1[$key]*=$arg2[$key];
+	}
+	else {
+		foreach($arr1 as $key=>$value)
+			$arr1[$key]*=$arg2;
+	}
+	return $arr1;
+}

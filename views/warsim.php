@@ -34,9 +34,10 @@ if (isset($_GET['a_v'])) {
 			foreach($ids as $tid)
 				$truppe[$tid]=saveGet('d_'.$tid, 0);
 			$truppe['hero']=0;
-			$deffTruppen[]=new Soldaten($volk,Soldaten::soldatenNr($truppe),null);
+			$deffTruppen[]=new Soldaten($volk,Soldaten::soldatenNr($truppe),null,new DorfSim("Verteidiger"));
 		}
 	}
+	unset($truppe);
 
 	//Deffheld
 	//TODO: implement held somehow
@@ -49,37 +50,29 @@ if (isset($_GET['a_v'])) {
 	$dorf=new KampfSim($pala,$wall,$fallen,$deffTruppen);
 
 	//Angreifer zusammenstellen
-	$offTruppen=array();
+	$truppe=array();
 	$volk=saveGet('a_v','1');
-	$offTruppen['volk']=$volk;
 	$ids=TruppenTyp::getIdsByVolk($volk);
 	foreach($ids as $tid) {
-		$offTruppen[$tid]=saveGet('a_'.$tid, 0);
+		$truppe[$tid]=saveGet('a_'.$tid, 0);
 	}
-  
+	$truppe['hero']=0;
+	$offTruppen=new Soldaten($volk,Soldaten::soldatenNr($truppe),null,new DorfSim("Angreifer"));
+ 
+	//TODO: implement simulated hero
 	//OffHeld
-	if ($hero_a>0) {
-		$offTruppen['hero']=1;
-		$offTruppen['heroboni']=$hero_a;
-	}
-  
+	//if ($hero_a>0) {
+	//	$offTruppen['hero']=1;
+	//	$offTruppen['heroboni']=$hero_a;
+	//}
 	//Angriff simulieren
 	$deffboni=$dorf->getDeffBoni();
-
-	$offTruppen2=$dorf->attack($offTruppen,$_GET['ktyp']);
-  
-	//Angreiffer ausgeben
-	print_volk($offTruppen['volk'],$offTruppen,$offTruppen2,1,'Angreifer');
-	
-	//Verbleibende DeffTruppen abfragen und ausgeben
-	$deffTruppen2=$dorf->getDeffTruppen();
-	$t='Verteidiger';
-	foreach($deffTruppen as $nr => $truppe) {
-		print_volk($truppe['volk'],$truppe,$deffTruppen2[$nr],2,$t);
-		$t='Unterst.';
-	}
-	
+	$schlachtfeld=$dorf->attack($offTruppen,$_GET['ktyp']);
+   
+	echo $schlachtfeld->getBericht()->toHtml();
+	echo '<br>';
 }
+
 
 /* Eingegebene Werte + Standardwerte */
 $volk=$login_user->get('volk');

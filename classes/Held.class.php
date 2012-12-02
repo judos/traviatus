@@ -69,6 +69,10 @@ class Held {
 		$vert_k=roundTo((2*$werte[2]/3+27.5/$verhaltniss)*$boni_ver + 5*$werte[2]/3,5);
 		return array($vert_i,$vert_k);
 	}
+	
+	public function werte() {
+		return array_merge(array(0=>$this->angriff()),$this->verteidigung());
+	}
 
 	public function offWert() {
 		$boni=$this->punkteVerteilt();
@@ -91,7 +95,20 @@ class Held {
 			$this->typWerte=$typ->werte();
 		}
 	}
-
+	
+	public function isAlive() {
+		return $this->get('lebt')==1;
+	}
+	
+	public function looseHealthPercentage($per) {
+		$hp = $this->get('hp');
+		$hp -= $per;
+		if ($hp<=0){
+			$hp=0;
+			$this->set('lebt',0);
+		}
+		$this->set('hp',$hp);
+	}
 
 	public function punkteVerteilt() {
 		return explode(':',$this->get('bonus'));
@@ -150,6 +167,10 @@ class Held {
 		}
 		$sql=substr($sql,0,-4);
 		mysql_query($sql);
+	}
+	
+	public static function imgSymbol() {
+		return '<img src="img/un/u/hero.gif" title="Held">';
 	}
 
 	public static function create($user,$tid) {

@@ -5,27 +5,20 @@ class SchlachtFeld {
 	
 	protected $off;
 	protected $deff;
+	protected $offVorher;
+	protected $deffVorher;
 	protected $bericht;
 	
-	public function SchlachtFeld($off,$deff) {
+	public function SchlachtFeld($offVorher,$deffVorher,$off,$deff) {
+		$this->offVorher=$offVorher;
+		$this->deffVorher=$deffVorher;
 		$this->off=$off;
 		$this->deff=$deff;
 		$this->writeBericht();
 	}
 	
 	public function someOffSurvived() {
-		$volk=$this->off['volk'];
-		$einheiten = TruppenTyp::getIdsByVolk($volk);
-		$offPartySurvived=false;
-		foreach($einheiten as $tid) {
-			if (isset($this->off[$tid]) and $this->off[$tid]>0)
-				$offPartySurvived=true;
-		}
-		if (@$this->off['hero']==1){
-			if ($this->off['herolive']>0)
-				$offPartySurvived=true;
-		}
-		return $offPartySurvived;
+		return $this->off->anzSoldaten()>0;
 	}
 	
 	//returns array ( $tid => $count);
@@ -61,33 +54,32 @@ class SchlachtFeld {
 	}
 	
 	protected function writeBericht() {
+		$angreifer = saveObject($this->off->getLink(),'');
 		//Bericht schreiben
 		$b=new InfoMessage();
-		$b->addPartTextTitle('Angreifer',
-			$angreifer->getLink().' aus Dorf '.$angreifer_dorf->getLink());
-		$b->addPartUnitTypes($angreifer->get('volk'));
-		$b->addPartUnitCount('Einheiten',$off);
-		$b->addPartUnitCount('Verluste',array_sub($off,$left));
-		$b->addPartUnitCount('Übrig',$left);
-		
-		//TODO: ab hier zahlen richtig anpassen
-		$deffTruppen2=$deff_dorf->getDeffTruppen();
+		$b->addPartTextTitle('Angreifer',$angreifer);
+		$b->addPartUnitTypes($this->off->volk());
+		$b->addPartUnitCount('Einheiten',$this->offVorher->soldatenId());
+		$this->offVorher->entfernen($this->off->soldatenId());
+		$b->addPartUnitCount('Verluste',$this->offVorher->soldatenId());
+		$b->addPartUnitCount('Übrig',$this->off->soldatenId());
+
 		$t='Verteidiger';
-		if (empty($deffTruppen2)){
+		if (empty($this->deffVorher) or Soldaten::alleLeer($this->deffVorher)) {
 			$b->addPartNewTable();
-			$b->addPartTextTitle($t,'');
-			$b->addPartUnitTypes($truppe['volk']);
-			$b->addPartUnitCount('Übrig',$truppe);
+			$b->addPartTextTitle($t,'Keine Truppen verteidigten das Dorf');
 		}
-		foreach($deffTruppen2 as $nr => $truppe) {
+		else foreach($this->deffVorher as $nr => $soldaten) {
 			$b->addPartNewTable();
-			$b->addPartTextTitle($t,'');
-			$b->addPartUnitTypes($truppe['volk']);
-			$b->addPartUnitCount('Übrig',$truppe);
+			$b->addPartTextTitle($t,saveObject($soldaten->getLink(),''));
+			$b->addPartUnitTypes($soldaten->volk());
+			$b->addPartUnitCount('Einheiten',$soldaten->soldatenId());
+			$soldaten->entfernen($this->deff[$nr]->soldatenId());
+			$b->addPartUnitCount('Verluste',$soldaten->soldatenId());
+			$b->addPartUnitCount('Übrig',$this->deff[$nr]->soldatenId());
 			$t='Unterst.';
 		}
 		
-		x($b->toHtml());
 		$this->bericht = $b;
 	}
 	
