@@ -30,6 +30,17 @@ class SchlachtFeld {
 		return $users;
 	}
 	
+	public function getAllianzen() {
+		$users=$this->getUsers();
+		$allianzen=array();
+		foreach($users as $user) {
+			$a=$user->getAllianz();
+			if ($a!=null && !in_array($a,$allianzen))
+				$allianzen[]=$a;
+		}
+		return $allianzen;
+	}
+	
 	public function getBericht() {
 		return $this->bericht;
 	}

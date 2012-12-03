@@ -33,6 +33,14 @@ class Spieler {
 		self::$objekte[$data['name']]=$this;
 	}
 	
+	public function getAllianz() {
+		$allyId=$this->get('ally');
+		if ($allyId==0)
+			return null;
+		else
+			return Allianz::getById($allyId);
+	}
+	
 	// [$bold:boolean]
 	public function getLink() {
 		$a=func_get_args();

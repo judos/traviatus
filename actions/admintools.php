@@ -27,7 +27,9 @@ if (ADMINTOOLS) {
 	if ($_GET['do']=='finishtodo') {
 		$keyid=$_GET['keyid'];
 		$sql="UPDATE tr".ROUND_ID."_todo
-			SET status='finished',fertig='".now()."' WHERE keyid=$keyid;";
+			SET status='finished',fertig='".now()."',
+				implemented_in='".VERSION."'
+			WHERE keyid=$keyid;";
 		mysql_query($sql);
 	}
 	if ($_GET['do']=='newtodo') {

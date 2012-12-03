@@ -313,8 +313,10 @@ class Updater {
 				$bericht = $schlachtFeld->getBericht();
 				//schickt den Bericht an alle Beteiligten
 				$users = $schlachtFeld->getUsers();
+				$allies = $schlachtFeld->getAllianzen();
 				$betreff = $angreifer_dorf->get('name').' greift '.$ziel_dorf->get('name').' an';
 				$bericht->sendToUsers($users,$betreff,Bericht::TYPE_ANGRIFFE);
+				$bericht->sendToAllianzen($allies,$betreff);
 			}
 		}
 	}

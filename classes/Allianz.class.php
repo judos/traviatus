@@ -39,6 +39,10 @@ class Allianz {
 	public function __toString() {
 		return 'Allianz: '.$this->get('name');
 	}
+	
+	public function getKampfe() {
+		return AllianzBericht::getByAlly($this);
+	}
 
 	public function getNews() {
 		if (!isset($this->news)) {

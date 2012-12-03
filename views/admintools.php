@@ -3,14 +3,12 @@ if (!$execute) die('');
 needed_login();
 $stview=1;
 
-if (isset($_GET['s']))
-	$s=$_GET['s'];
-else
-	$s=4;
+$s=saveGet('s',4);
+
 $c=' class="selected"';
 echo'<h1>Admintools</h1>
   <p class="txt_menue">
-    <a href="?page=admintools" '.($s==0?$c:'').'>Todo Liste</a> |
+    <a href="?page=admintools" '.($s==4?$c:'').'>Todo Liste</a> |
     <a href="?page=admintools&s=3"'.($s==3?$c:'').'>BUGs melden</a> | 
     <a href="?page=admintools&s=1"'.($s==1?$c:'').'>Neue Entwicklung</a> |
     <a href="?page=admintools&s=2"'.($s==2?$c:'').'>User bearbeiten</a> |
@@ -69,10 +67,10 @@ if ($s==4) {
 	echo'</tbody></table>';
 	//fertig gestellte sachen
 	echo'<br><table class="tbg" cellpadding="2" cellspacing="1">
-		<tbody><tr class="rbg"><td colspan=3>
+		<tbody><tr class="rbg"><td colspan=4>
 		<b>Fertig gestellte TODO\'s:</b></td></tr>
 		<tr><td>fertig gestellt:</td>
-		<td>Text:</td><td>Status:</td></tr>';
+		<td>Text:</td><td>Status:</td><td>Version:</td></tr>';
 	$sql="SELECT * FROM tr".ROUND_ID."_todo
 		WHERE status!=''
 		ORDER BY fertig DESC;";
@@ -82,7 +80,8 @@ if ($s==4) {
 		echo'<tr><td class="s7 f8">'.date('H:i d.m.Y',
 				strtotime($data['fertig'])).'</td>
 			<td class="s7 f8">'.t($data['text']).'</td>
-			<td class="s7 f8">'.$data['status'].'</td></tr>';
+			<td class="s7 f8">'.$data['status'].'</td>
+			<td class="s7 f8">'.$data['implemented_in'].'</td></tr>';
 	}
 	echo'</tbody></table>';
 }
