@@ -37,8 +37,7 @@ if ($do=='build') {
 if ($do=='builddel') {
 	$id=$_GET['id'];
 	$gid=$_GET['gid'];
-	if ($gid<19) {$stufe=$geb1_stufe[$gid-1];}
-	if ($gid>18) {$stufe=$geb2_stufe[$gid-19];}
+	
 
 	//Auftrag löschen
 	$x=$login_dorf->get('x');
@@ -56,14 +55,15 @@ if ($do=='builddel') {
 	$auftrag=$auftrage[0];
 	$auftrag->delete();
 
-	//Gebäude wegputzen
-	if ($gid>18) $login_dorf->gebeudeBau($gid,-1);
-
 	//Einwohner und Rohstoffe aktualisieren
-	if ($stufe<1) $stufe=1;
 	$gebeude=GebeudeTyp::getById($id);
+	$stufe=$login_dorf->gebeudeStufe($gid);
 	$kosten=$gebeude->bauKosten($stufe);
 	$login_dorf->addRess($kosten);
+	
+	//Remove building totally if stufe is 0
+	if ($stufe==0)
+		$login_dorf->gebeudeBau($gid,-1);
 
 	$einwohner=$login_dorf->get('einwohner')-
 							$gebeude->get('arbeiter');

@@ -180,8 +180,8 @@ class KampfSim {
 		//clone objects to stored previous values for report
 		$deffVorher=array();
 		foreach($this->deffTruppen as $nr=>$soldaten)
-			$deffVorher[$nr]=clone $soldaten;
-		$offVorher=clone $truppeAngreifer;
+			$deffVorher[$nr]= $soldaten->getRawCopy();
+		$offVorher= $truppeAngreifer->getRawCopy();
 		
 		$this->truppeAngreifer=$truppeAngreifer;
 		

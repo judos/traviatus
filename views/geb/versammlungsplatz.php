@@ -31,8 +31,6 @@ if ($s==0) {		//Truppen im Dorf
 	$truppenmove=TruppeMove::getByZiel($dx,$dy);
 	if (!empty($truppenmove)) {
 		echo'<p><b>Truppen unterwegs in dieses Dorf</b></p>';
-		$zielName=$login_dorf->get('name');
-
 		foreach($truppenmove as $truppe) {
 			echo $truppe->toHtmlBox($login_user,$login_dorf);
 		}
@@ -42,8 +40,6 @@ if ($s==0) {		//Truppen im Dorf
 	$truppenmove=TruppeMove::getByStart($dx,$dy);
 	if (!empty($truppenmove)) {
 		echo'<p><b>Truppen unterwegs von diesem Dorf</b></p>';
-		$startName=$login_dorf->get('name');
-		$volk=$login_user->get('volk');
 		foreach($truppenmove as $truppe) {
 			echo $truppe->toHtmlBox($login_user,$login_dorf);
 		}

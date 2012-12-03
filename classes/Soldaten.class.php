@@ -25,6 +25,12 @@ class Soldaten {
 		$this->changed=false;
 	}
 	
+	//generates a raw Soldaten object which is not represented in the db
+	public function getRawCopy() {
+		return new Soldaten($this->volk,self::soldatenNr($this->soldaten),null);
+	}
+	
+	//returns link with url to user and url to dorf
 	public function getLink() {
 		$u=$this->getUser();
 		if ($u==null)
@@ -150,6 +156,7 @@ class Soldaten {
 		return round($versorgung);
 	}
 	
+	//$per: double[0,100]
 	public function killPercentage($per) {
 		//use reference for $anz, saves changes in array
 		foreach($this->soldaten as $id => &$anz) {
@@ -164,6 +171,9 @@ class Soldaten {
 					$this->held=null;
 				}
 			}
+		}
+		if ($per!=0) {
+			$this->changed=true;
 		}
 	}
 	

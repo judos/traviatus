@@ -80,22 +80,21 @@ class Updater {
 		//Dorf über die Klasse Dorf instanziert wurde.
 		self::spielerAllies();
 		self::natur1h();
-
-		$user=$dorf->user();
-		$username=$user->get('name');
+		
 		$dorfx=$dorf->get('x');
 		$dorfy=$dorf->get('y');
 
 		$land=Land::getByXY($dorfx,$dorfy);
 		
-		self::dorfAuftrage($dorf,$user);
+		self::dorfAuftrage($dorf);
 		self::dorfHandler($dorf);
 		self::truppen();
 	}
 	
-	public static function dorfAuftrage($dorf,$user) {
+	public static function dorfAuftrage($dorf) {
 		$dorfx=$dorf->get('x');
 		$dorfy=$dorf->get('y');
+		$user=$dorf->user();
 		//Auftrage bearbeiten
 		$sql="SELECT * FROM tr".ROUND_ID."_others
 			WHERE x=$dorfx AND y=$dorfy AND zeit<='".now()."';";
@@ -275,7 +274,7 @@ class Updater {
 
 				//Soldaten einfügen
 				$zieltruppe=Truppe::getByXYU($zx,$zy,$dieserUser);
-				$zieltruppe->hinzufugen($truppe->get('truppen'));
+				$zieltruppe->hinzufugen($truppe);
 
 				//Ziel user
 				$zielUser=$ziel_dorf->user();
@@ -302,30 +301,19 @@ class Updater {
 				$angreifer_dorf=$start_dorf;
 
 				//Deff Truppen laden
-				$deff_dorf=new DeffDorf($ziel_dorf);
+				$kampf_dorf=new KampfDorf($ziel_dorf);
 				
-				$off=$truppe->soldatenId();
-				if ($off['hero']==1){
-					$held=Held::getByUser($angreifer);
-					$off['heroboni']=$held->offWert();
-				}
-				$off['volk']=$angreifer->get('volk');
-				//TODO: deffdorf can't know attack_user
-				$schlachtFeld=$deff_dorf->attack($off,$truppe->get('aktion'));
+				$schlachtFeld=$kampf_dorf->attack($truppe,$truppe->get('aktion'));
 				
-				if ($schlachtFeld->someOffSurvived()) {
-					$truppe->setNumbers($schlachtFeld->getRemainingOff());
+				if ($schlachtFeld->someOffSurvived())
 					$truppe->turnBack();
-				}
 				else
 					$truppe->delete();
-				
-				$deff_dorf->saveDeffInDb();
 				
 				$bericht = $schlachtFeld->getBericht();
 				//schickt den Bericht an alle Beteiligten
 				$users = $schlachtFeld->getUsers();
-				$betreff = $schlachtFeld->getBerichtBetreff();
+				$betreff = $angreifer_dorf->get('name').' greift '.$ziel_dorf->get('name').' an';
 				$bericht->sendToUsers($users,$betreff,Bericht::TYPE_ANGRIFFE);
 			}
 		}

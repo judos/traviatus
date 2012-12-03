@@ -27,7 +27,7 @@ connect();
 set_error_handler('handleError');
 
 //variablen zurücksetzen
-$action_forwarding=false;  //Ob nach einem Action automatisch weitergeleitet wird
+$action_forwarding=true;  //Ob nach einem Action automatisch weitergeleitet wird
                            //Spiel-Einstellung: true
 $error_output_fatal=true; //Falls ein Fatal_Error im PHP existiert sollte dies auf
                            // True umgeschalten werden um alle Fehler anzuzeigen

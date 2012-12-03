@@ -167,8 +167,6 @@ if ($typ==2) {	//Gebäude im Überblick
 		$para2='typ=2&gebs='.$nac_gebs;
 	}
 	if (!isset($gebs) AND isset($gid)) {	//Ein Gebäude anzeigen
-		xx($typ);
-		xx($_GET);
 		$g=GebeudeTyp::getById($gid);
 		$kosten=$g->baukosten(1);
 		echo'<h1><img class="unit" src="img/un/u/geb.gif"> '.

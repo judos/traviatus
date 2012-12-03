@@ -83,7 +83,7 @@ class Spieler {
 	//last_update wird aktualisiert falls login geprüft wird
 	// (bei jedem Aufruf einer Seite)
 	public function onlineStatus() {
-		$x=time()-strtotime($this->get('last_update'));
+		$x=time()-strtotime($this->get('last_online'));
 		if ($x<5*60) return 1;
 		if ($x<12*3600) return 2;
 		if ($x<3*24*3600) return 3;
@@ -386,7 +386,7 @@ class Spieler {
 		}
 		$data=mysql_fetch_assoc($result);
 		$spieler=Spieler::getById($data['id']);
-		$spieler->set('last_update',now());
+		$spieler->set('last_online',now());
 		return $spieler;
 	}
 

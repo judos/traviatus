@@ -76,13 +76,13 @@ class InfoMessage extends Bericht {
 			$name=$user;
 		else
 			throw new Warning("$user is not an object or string as expected");
-		$text=$this->toHtml();
+		$text=$this->data['text'];
 		$sql="INSERT INTO tr".ROUND_ID."_msg
 			(von,an,typ,zeit,betreff,text)
 			VALUES
 			('','$name','$typ','".now()."','$betreff','$text');";
 		mysql_query($sql);
 		$id=mysql_insert_id();
-		super::loadById($id);
+		parent::loadById($id);
 	}
 }

@@ -22,17 +22,24 @@ class KampfDorf extends KampfSim {
 		$fallen=$dorf->get('fallen');
 
 		//Truppen zusammenträllern
-		$truppen = findTruppenInDorf();
+		$truppen = $this->findTruppenInDorf();
 		
 		parent::__construct($palace,$wall,$fallen,$truppen);
 	}
 	
 	protected function findTruppenInDorf() {
 		$deffTruppen=array();
-		$users=Truppe::getUsersByXY($dorf->get('x'),$dorf->get('y'));
+		$dorf=$this->dorf;
+		$users=Truppe::getUsersByD($dorf,0,true);
 		foreach($users as $userid) {
-			$truppe=Truppe::getByXYU($dorf->get('x'),$dorf->get('y'),$userid);
+			$truppe=Truppe::getByDU($dorf,$userid);
 			$deffTruppen[$userid]=$truppe;
+		}
+		
+		if (empty($users)) {
+			$user=$dorf->user();
+			$truppe=Truppe::createEntry($dorf->get('x'),$dorf->get('y'),$user->get('id'),0);
+			$deffTruppen[$user->get('id')]=$truppe;
 		}
 		return $deffTruppen;
 	}

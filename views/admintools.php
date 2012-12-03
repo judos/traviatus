@@ -70,7 +70,7 @@ if ($s==4) {
 	//fertig gestellte sachen
 	echo'<br><table class="tbg" cellpadding="2" cellspacing="1">
 		<tbody><tr class="rbg"><td colspan=3>
-		<b>Fertig gestellte TODO Liste:</b></td></tr>
+		<b>Fertig gestellte TODO\'s:</b></td></tr>
 		<tr><td>fertig gestellt:</td>
 		<td>Text:</td><td>Status:</td></tr>';
 	$sql="SELECT * FROM tr".ROUND_ID."_todo
@@ -119,8 +119,10 @@ if ($s==5) {
 
 
 if ($s==3) {
+	if (isset($msg))
+		echo msg_ok($msg);
 ?>
-<form action="?page=admintools&do=newbug" method=post>
+<form action="?page=admintools&s=3&do=newbug" method=post>
 <table><tr><td>Titel/Name:</td>
 <td><input class="fm" name="titel"></td></tr>
 <tr><td>Text und Beschreibung:</td>

@@ -56,7 +56,7 @@ class Truppe extends Soldaten {
 	}
 
 	public function get($att) {
-		if ($att=='truppen')
+		if ($att=='troops')
 			return parent::soldatenString();
 		return $this->data[$att];
 	}
@@ -170,15 +170,15 @@ class Truppe extends Soldaten {
 
 	//Liefert User IDs von den Truppen
 	// (mit mindestens 1 Soldat) zurück
-	public static function getUsersByD($dorf,$gefangen=0) {
+	public static function getUsersByD($dorf,$gefangen=0,$getEmpty=false) {
 		$x=$dorf->get('x');
 		$y=$dorf->get('y');
-		return self::getUsersByXY($x,$y,$gefangen);
+		return self::getUsersByXY($x,$y,$gefangen,$getEmpty);
 	}
 
 	//Liefert User IDs von den Truppen
 	// (mit mindestens 1 Soldat) zurück
-	public static function getUsersByXY($x,$y,$gefangen=0) {
+	public static function getUsersByXY($x,$y,$gefangen=0,$getEmpty=false) {
 		if (@!self::$loaded[$x][$y]) {
 			self::loadEntry($x,$y);
 		}
@@ -186,18 +186,19 @@ class Truppe extends Soldaten {
 		$users=array_keys(self::$objekte[$x][$y]);
 		$result=array();
 		foreach($users as $userid) {
-			if (!Truppe::getByXYU($x,$y,$userid,$gefangen)->leer())
+			if (!Truppe::getByXYU($x,$y,$userid,$gefangen)->leer() or $getEmpty)
 				array_push($result,$userid);
 		}
 		return $result;
 	}
 
-	protected static function createEntry($x,$y,$userid,$gefangen=0) {
+	public static function createEntry($x,$y,$userid,$gefangen=0) {
 		if (!isset(self::$objekte[$x][$y][$userid][$gefangen])) {
 			$t=new Truppe($x,$y,$userid,$gefangen,
 				array('x'=>$x,'y'=>$y,'user'=>$userid,'gefangen'=>$gefangen,
 					  'troops'=>'0:0:0:0:0:0:0:0:0:0','ursprung_x'=>$x,'ursprung_y'=>$y));
 			$t->created=true;
+			return $t;
 		}
 	}
 

@@ -16,7 +16,7 @@ class TruppeMove extends Soldaten{
 	protected static $loaded_ziel=array();
 	protected static $loaded_id=array();
 
-	protected static $db_key=array('id');
+	protected static $db_key=array('keyid');
 	protected static $db_table='truppen_move';
 
 
@@ -49,10 +49,9 @@ class TruppeMove extends Soldaten{
 		$d=$this->data;
 		//Den 1. User hinzufügen
 		$user1=$this->startDorf()->get('user');
-		if (self::$objekte_user[$user1]===NULL)
+		if (!isset(self::$objekte_user[$user1]))
 			self::$objekte_user[$user1]=array();
-		if (!arrayObjectsContains(
-				self::$objekte_user[$user1],'keyid',$keyid))
+		if (!isset(self::$objekte_user[$user1][$keyid]))
 			array_push(self::$objekte_user[$user1],$this);
 
 		//Den 2. User hinzufügen
@@ -60,8 +59,7 @@ class TruppeMove extends Soldaten{
 			$user2=$this->zielDorf()->get('user');
 			if (!isset(self::$objekte_user[$user2]))
 				self::$objekte_user[$user2]=array();
-			if (!arrayObjectsContains(
-					self::$objekte_user[$user2],'keyid',$keyid))
+			if (!isset(self::$objekte_user[$user2][$keyid]))
 				array_push(self::$objekte_user[$user2],$this);
 		}
 
@@ -132,10 +130,10 @@ class TruppeMove extends Soldaten{
 		self::$objekte_id[$this->keyid]=null;
 		
 		$user1=$this->startDorf()->get('user');
-		self::$objekte_user[$user1][$this->keyid]=null;
+		unset(self::$objekte_user[$user1][$this->keyid]);
 		if ($this->zielDorf()!==NULL) {
 			$user2=$this->zielDorf()->get('user');
-			self::$objekte_user[$user1][$this->keyid]=null;
+			unset(self::$objekte_user[$user1][$this->keyid]);
 		}
 		$sx=$this->get('start_x');
 		$sy=$this->get('start_y');
@@ -152,21 +150,20 @@ class TruppeMove extends Soldaten{
 		$start_zeit=$this->get('ziel_zeit');
 		$ziel_zeit=date('Y-m-d H:i:s',2*$z-$s);
 		
-		$sql="UPDATE `tr".ROUND_ID."_truppen_move` 
-			SET start_x='{$this->get('ziel_x')}', 
-				start_y='{$this->get('ziel_y')}',
-				ziel_x='{$this->get('start_x')}',
-				ziel_y='{$this->get('start_y')}',
-				aktion='2',start_zeit='$start_zeit',
-				ziel_zeit='$ziel_zeit'
-			WHERE keyid='{$this->keyid}';";
-		mysql_query($sql);
+		//swap start with ziel
+		list($this->data['start_x'],$this->data['ziel_x']) =
+			array($this->data['ziel_x'],$this->data['start_x']);
+		list($this->data['start_y'],$this->data['ziel_y']) =
+			array($this->data['ziel_y'],$this->data['start_y']);
+		//change other values
+		$this->set('aktion',2);
+		$this->set('msg',0);
+		$this->set('start_zeit',$start_zeit);
+		$this->set('ziel_zeit',$ziel_zeit);
 		
-		$sql="SELECT * FROM `tr".ROUND_ID."_truppen_move`
-			WHERE keyid='".$this->keyid."';";
-		$result=mysql_query($sql);
-		$this->data=mysql_fetch_assoc($result);
 		$this->addToReferences();
+		//must save in order to prevent duplicated object is loaded via loadByStart/Ziel
+		$this->save();
 	}
 	
 	public function toHtmlBox($user_viewing,$dorf_viewing) {
@@ -281,8 +278,11 @@ class TruppeMove extends Soldaten{
 					$startDorf->subRess($ress);
 					//Einheiten abziehen
 					$truppe=Truppe::getByDU($startDorf,$user);
+					x($truppe);
+					
 					$truppe->entfernen($soldaten);
-					$tstring=Truppe::getString($soldaten);
+					x($truppe,$truppe->changed);
+					$tstring=implode(':',Soldaten::soldatenNr($soldaten));
 					
 					//Truppe losschicken
 					$sql="INSERT INTO `tr".ROUND_ID."_truppen_move`

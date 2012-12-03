@@ -9,6 +9,7 @@ class SchlachtFeld {
 	protected $deffVorher;
 	protected $bericht;
 	
+	//$off and $deff mustn't be modified!
 	public function SchlachtFeld($offVorher,$deffVorher,$off,$deff) {
 		$this->offVorher=$offVorher;
 		$this->deffVorher=$deffVorher;
@@ -21,32 +22,12 @@ class SchlachtFeld {
 		return $this->off->anzSoldaten()>0;
 	}
 	
-	//returns array ( $tid => $count);
-	public function getRemainingOff() {
-		$result=array();
-		$volk=$this->off['volk'];
-		$einheiten = TruppenTyp::getIdsByVolk($volk);
-		foreach($einheiten as $tid) {
-			if (isset($this->off[$tid]) and $this->off[$tid]>0)
-				$result[$tid]=$this->off[$tid];
-			else
-				$result[$tid]=0;
-		}
-		if (@$this->off['hero']==1 and $this->off['herolive']>0)
-			$result['hero']=1;
-		else
-			$result['hero']=0;
-		return $offPartySurvived;
-	}
-	
 	public function getUsers() {
-		//TODO: implement
-		return array();
-	}
-	
-	public function getBerichtBetreff() {
-		//TODO: implement
-		return '';
+		$users=array();
+		$users[]=$this->off->getUser();
+		foreach($this->deff as $nr=>$soldaten)
+			$users[]=$soldaten->getUser();
+		return $users;
 	}
 	
 	public function getBericht() {
@@ -65,18 +46,19 @@ class SchlachtFeld {
 		$b->addPartUnitCount('Übrig',$this->off->soldatenId());
 
 		$t='Verteidiger';
-		if (empty($this->deffVorher) or Soldaten::alleLeer($this->deffVorher)) {
+		if (empty($this->deffVorher)) {
 			$b->addPartNewTable();
 			$b->addPartTextTitle($t,'Keine Truppen verteidigten das Dorf');
 		}
-		else foreach($this->deffVorher as $nr => $soldaten) {
+		else foreach($this->deff as $nr => $soldaten) {
+			$vorher=$this->deffVorher[$nr];
 			$b->addPartNewTable();
 			$b->addPartTextTitle($t,saveObject($soldaten->getLink(),''));
 			$b->addPartUnitTypes($soldaten->volk());
-			$b->addPartUnitCount('Einheiten',$soldaten->soldatenId());
-			$soldaten->entfernen($this->deff[$nr]->soldatenId());
-			$b->addPartUnitCount('Verluste',$soldaten->soldatenId());
-			$b->addPartUnitCount('Übrig',$this->deff[$nr]->soldatenId());
+			$b->addPartUnitCount('Einheiten',$vorher->soldatenId());
+			$vorher->entfernen($soldaten->soldatenId());
+			$b->addPartUnitCount('Verluste',$vorher->soldatenId());
+			$b->addPartUnitCount('Übrig',$soldaten->soldatenId());
 			$t='Unterst.';
 		}
 		

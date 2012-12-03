@@ -71,6 +71,7 @@ function arrayObjectsSort_compare_att($a, $b) {
 
 //Looks if an array of objects contain at least one object where
 // a certain attribute has the given value
+//TODO: write better implementation for this function
 function arrayObjectsContains($arr,$att,$value) {
 	global $arrayObjectsContain_result;
 	global $arrayObjectsContain_att,$arrayObjectsContain_value;
@@ -82,7 +83,9 @@ function arrayObjectsContains($arr,$att,$value) {
 	unset($arrayObjectsContain_result);
 	return !empty($result);
 }
+
 //returns all objects that have the attribute with the given value
+//TODO: write better implementation for this function
 function arrayObjectsContaining($arr,$att,$value) {
 	global $arrayObjectsContain_result;
 	global $arrayObjectsContain_att,$arrayObjectsContain_value;
@@ -95,6 +98,8 @@ function arrayObjectsContaining($arr,$att,$value) {
 	unset($arrayObjectsContain_result);
 	return $result;
 }
+
+//TODO: write better implementation for this function
 function arrayObjectsContain_walk($object) {
 	global $arrayObjectsContain_att,$arrayObjectsContain_value;
 	global $arrayObjectsContain_result;

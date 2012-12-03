@@ -63,16 +63,13 @@ if (ADMINTOOLS) {
 		}
 	}
 	if ($_GET['do']=='newbug') {
-		$sql="SELECT `id` FROM `tr".ROUND_ID."_bugs`
-			ORDER BY `id` DESC LIMIT 1;";
-		$result=mysql_query($sql);
-		$data=mysql_fetch_array($result);
-		$id=$data['id']+1;
+		$titel=$_POST['titel'];
+		$text=$_POST['text'];
 
 		$sql="INSERT INTO `tr".ROUND_ID."_bugs`
-			(`id`,`titel`,`text`,`zeit`)
-				VALUES ('$id','$titel','$text',NOW());";
-		$result=mysql_query($sql);
+			(`titel`,`text`,`zeit`)
+			VALUES ('$titel','$text','".now()."');";
+		mysql_query($sql);
 		$msg='Bug gespeichert';
 	}
 	if ($_GET['do']=='deluser') {
