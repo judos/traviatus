@@ -275,6 +275,7 @@ class Updater {
 				//Soldaten einfügen
 				$zieltruppe=Truppe::getByXYU($zx,$zy,$dieserUser);
 				$zieltruppe->hinzufugen($truppe);
+				$ziel_dorf->addRess($truppe->getRess());
 
 				//Ziel user
 				$zielUser=$ziel_dorf->user();
@@ -282,6 +283,7 @@ class Updater {
 				if ($truppe->get('msg')==1){
 					$betreff=$start_dorf->get('name').' unterstützt '.
 						$ziel_dorf->get('name');
+					//XXX: refactor
 					$msg="1:Absender:".$dieserUser->get('name').
 						" aus Dorf ".$start_dorf->get('name').chr(13).
 						"3:".$dieserUser->get('volk').chr(13)."4:Einheiten:".
@@ -296,7 +298,8 @@ class Updater {
 			}
 			
 			//Angriff normal oder Raubzug
-			if ($truppe->get('aktion')==3 or $truppe->get('aktion')==4)	{
+			$typ=$truppe->get('aktion');
+			if ($typ==TruppeMove::TYP_ANGRIFF or $typ==TruppeMove::TYP_RAUBZUG)	{
 				$angreifer=$dieserUser;
 				$angreifer_dorf=$start_dorf;
 
@@ -304,9 +307,16 @@ class Updater {
 				$kampf_dorf=new KampfDorf($ziel_dorf);
 				
 				$schlachtFeld=$kampf_dorf->attack($truppe,$truppe->get('aktion'));
-				
-				if ($schlachtFeld->someOffSurvived())
+				$ress=null;
+				if ($schlachtFeld->someOffSurvived()) {
 					$truppe->turnBack();
+					$tragfahigkeit=$truppe->getTragFahigkeit();
+					if ($typ==TruppeMove::TYP_RAUBZUG)
+						$tragfahigkeit *= 0.5;
+					$ress=$ziel_dorf->stiehlRohstoffe($tragfahigkeit);
+					$truppe->addRess($ress);
+					$schlachtFeld->setAttackerLoot($ress);
+				}
 				else
 					$truppe->delete();
 				

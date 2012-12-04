@@ -79,26 +79,13 @@ class Truppe extends Soldaten {
 			Ursprung: ('.$this->get('ursprung_x').' | '.$this->get('ursprung_y').')';
 	}
 	
-	public function toHtmlBox($user_viewing,$dorf_viewing,$special=null) {
-		$dorf=Dorf::getByXY($this->x,$this->y);
-		$owner=Spieler::getById($this->userid);
-		if ($user_viewing==$owner) {
-			if ($dorf==$dorf_viewing)
-				$title="Eigene Truppen";
-			else {
-				$u=$dorf->user();
-				$title='Unterstützung für '.$u->getLink();
-			}
-		}
-		else{
-			$title='Truppen von '.$owner->getLink();
-		}
-		$volk=$this->volk();
-		$units=$this->soldatenId();
-		$supply=$this->getVersorgung();
-		$arrival=null;
-		$out=Outputer::truppenBox($dorf,$dorf_viewing,$title,$volk,$units,$supply,$arrival,$special);
-		return $out;
+	public function toHtmlBox() {
+		$b=new InfoMessage();
+		Outputer::troopTitle($this,$b);
+		$b->addPartUnitTypes($this->getUser()->get('volk'));
+		$b->addPartUnitCount('Einheiten',$this->soldaten);
+		$b->addPartSupply($this->getVersorgung());
+		return $b->toHtml();
 	}
 
 	public function save() {

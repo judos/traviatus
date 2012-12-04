@@ -8,6 +8,7 @@ class SchlachtFeld {
 	protected $offVorher;
 	protected $deffVorher;
 	protected $bericht;
+	protected $attackerLoot;
 	
 	//$off and $deff mustn't be modified!
 	public function SchlachtFeld($offVorher,$deffVorher,$off,$deff) {
@@ -15,7 +16,11 @@ class SchlachtFeld {
 		$this->deffVorher=$deffVorher;
 		$this->off=$off;
 		$this->deff=$deff;
-		$this->writeBericht();
+		$this->bericht==null;
+	}
+	
+	public function setAttackerLoot($ress) {
+		$this->attackerLoot=$ress;
 	}
 	
 	public function someOffSurvived() {
@@ -42,6 +47,8 @@ class SchlachtFeld {
 	}
 	
 	public function getBericht() {
+		if(!isset($this->bericht))
+			$this->writeBericht();
 		return $this->bericht;
 	}
 	
@@ -55,6 +62,9 @@ class SchlachtFeld {
 		$this->offVorher->entfernen($this->off->soldatenId());
 		$b->addPartUnitCount('Verluste',$this->offVorher->soldatenId());
 		$b->addPartUnitCount('Übrig',$this->off->soldatenId());
+		if (isset($this->attackerLoot))
+			$b->addPartRess('Beute',$this->attackerLoot);
+		
 
 		$t='Verteidiger';
 		if (empty($this->deffVorher)) {

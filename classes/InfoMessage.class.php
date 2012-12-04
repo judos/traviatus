@@ -3,13 +3,17 @@
 class InfoMessage {
 	public static $save=false;
 	
-	const PART_TEXT_ONLY  =   0;
-	const PART_TEXT_TITLE =   1;
-	const PART_RESS       =   2;
-	const PART_UNIT_TYPES =   3;
-	const PART_UNIT_COUNT =   4;
-	const PART_SUPPLY     =   5;
-	const PART_NEW_TABLE  = 100;
+	const PART_TEXT_ONLY     =   0;
+	const PART_TEXT_TITLE    =   1;
+	const PART_RESS          =   2;
+	const PART_UNIT_TYPES    =   3;
+	const PART_UNIT_COUNT    =   4;
+	const PART_SUPPLY        =   5;
+	const PART_TIME_ARRIVAL  =   6;
+	const PART_TIME_DURATION =   7;
+	const PART_NEW_TABLE     = 100;
+	
+	const SEPARATOR = '::';
 	
 	protected $text;
 	
@@ -18,11 +22,11 @@ class InfoMessage {
 	}
 	
 	public function toHtml() {
-		$alles=explode(chr(13),$this->get('text'));
+		$alles=explode(chr(13),$this->text);
 		$html='<table class="tbg" cellpadding="2" cellspacing="1"><tbody>';
 		for ($teil=0;$teil<sizeof($alles);$teil++) {
-			$zeile=explode(':',$alles[$teil]);
-			$html.=self::partToHtml($zeile);
+			$zeile=explode(self::SEPARATOR,$alles[$teil]);
+			$html.=self::partToHtml($zeile)."\n";
 		}
 		$html.='</tbody></table>';
 		return $html;
@@ -42,12 +46,45 @@ class InfoMessage {
 			return self::partUnitCountToHtml($arr);
 		elseif ($type==self::PART_SUPPLY)
 			return self::partSupplyToHtml($arr);
+		elseif ($type==self::PART_TIME_ARRIVAL)
+			return self::partTimeArrivalToHtml($arr);
+		elseif ($type==self::PART_TIME_DURATION)
+			return self::partTimeDurationToHtml($arr);
 		elseif ($type==self::PART_NEW_TABLE)
 			return self::partNewTableToHtml($arr);
 	}
 	
+	protected static function partTimeDurationToHtml($arr) {
+		global $timerNr;
+		$result='<tr class="cbg1"><td>'.$arr[1].'</td><td colspan="11">
+		<table cellspacing="0" cellpadding="0" class="tbg">
+		<tr><td width="50%">in '.zeit_dauer($arr[2]).' Std.</td>
+		<td width="50%">um <span id=tp2>'.
+		date('H:i:s',time()+$arr[2]).'</span><span> Uhr</span></td></tr>
+		</table></td></tr>';
+		return $result;
+	}
+	
+	protected static function partTimeArrivalToHtml($arr) {
+		global $timerNr;
+		$dauer=zeit_dauer(strtotime($arr[1])-time());
+		$akt=date('H:i:s',strtotime($arr[1]));
+		
+		$result='<tr class="cbg1"><td width="21%">Ankunft</td>
+			<td colspan=11>
+			<table class="f10" cellpadding="0" cellspacing="0" width="100%">
+				<tbody><tr align="center">
+				<td width="50%">&nbsp; in <span id="timer'.$timerNr.'">'.
+					$dauer.'</span> Std.</td>
+				<td width="50%">um '.$akt.'<span> Uhr</span>
+				</td></tr></tbody></table>
+			</td></tr>';
+		$timerNr++;
+		return $result;
+	}
+	
 	protected static function partTextOnlyToHtml($arr) {
-		return'<tr class="cbg1"><td width="100%" colspan="11">'.
+		return'<tr class="cbg1"><td width="100%" colspan="12">'.
 			$arr[1].'</td></tr>';
 	}
 	
@@ -55,20 +92,20 @@ class InfoMessage {
 		$html='<tr class="cbg1">';
 		if ($arr[1]=='Angreifer')
 			$html.='<td width="21%" class="c2 b">'.$arr[1].'</td>';
-		elseif($arr[1]=='Verteidiger')
+		elseif($arr[1]=='Verteidiger' or $arr[1]=='Unterstützung')
 			$html.='<td width="21%" class="c1 b">'.$arr[1].'</td>';
-		else //($arr[1]=='Unterstützung')
-			$html.='<td width="21%" class="c1 b">'.$arr[1].'</td>';
-		$html.='<td colspan=10 class="b">'.$arr[2].'</td></tr>';
+		else
+			$html.='<td width="21%" class="b">'.$arr[1].'</td>';
+		$html.='<td colspan=11 class="b">'.$arr[2].'</td></tr>';
 		return $html;
 	}
 	
 	protected static function partRessToHtml($arr) {
-		$html='<tr><td width="100" class="left">&nbsp;Rohstoffe</td><td class="s7">';
+		$html='<tr><td width="100">&nbsp;'.$arr[1].'</td><td class="s7" colspan="11">';
 		for ($i=1;$i<=4;$i++){
-			if ($arr[$i]=='')
-				$arr[$i]=0;
-			$html.='<img class="res" src="img/un/r/'.$i.'.gif">'.$arr[$i];
+			if ($arr[$i+1]=='')
+				$arr[$i+1]=0;
+			$html.='<img class="res" src="img/un/r/'.$i.'.gif">'.round($arr[$i+1],0);
 			if ($i<4)
 				$html.=' | ';
 		}
@@ -90,8 +127,8 @@ class InfoMessage {
 	
 	protected static function partUnitCountToHtml($arr) {
 		$html='<tr><td>'.$arr[1].'</td>';
-		for ($j=1;$j<=10;$j++) {
-			if ($arr[$j+1]>0)
+		for ($j=1;$j<=11;$j++) {
+			if (isset($arr[$j+1]) and $arr[$j+1]>0)
 				$html.='<td>'.$arr[$j+1].'</td>';
 			else
 				$html.='<td class="c">0</td>';
@@ -102,7 +139,7 @@ class InfoMessage {
 	
 	protected static function partSupplyToHtml($arr) {
 		return'<tr class="cbg1"><td>Unterhalt</td>
-			<td class="s7" colspan="10">'.$arr[1].
+			<td class="s7" colspan="11">'.$arr[1].
 				'<img class="res" src="img/un/r/4.gif">pro Stunde</td>
 				</tr>';
 	}
@@ -114,7 +151,7 @@ class InfoMessage {
 	}
 	
 	protected function addPart($type,$arr) {
-		$string=$type.':'.implode(':',$arr);
+		$string=$type. self::SEPARATOR .implode(self::SEPARATOR,$arr);
 		if ($this->text!='')
 			$this->text.=chr(13);
 		$this->text.=$string;
@@ -131,8 +168,8 @@ class InfoMessage {
 	}
 	
 	// $ress: array(0-3 => $amount: int)
-	public function addPartRess($ress) {
-		$this->addPart(self::PART_RESS,$ress);
+	public function addPartRess($text,$ress) {
+		$this->addPart(self::PART_RESS,array_merge(array($text),$ress));
 	}
 	
 	// $volk: int
@@ -151,17 +188,28 @@ class InfoMessage {
 				$nr= ($gid-1) % 10;
 				$u[$nr+1]=$count;
 			}
+			elseif ($gid=='hero')
+				$u[11]=$count;
 		}
 		//check that all indices 1-10 exist
-		for($i=1;$i<=10;$i++)
+		for($i=1;$i<=11;$i++)
 			if (!isset($u[$i]))
 				$u[$i]=0;
 		$this->addPart(self::PART_UNIT_COUNT,$u);
 	}
 	
+	public function addPartTimeDuration($text,$duration) {
+		$this->addPart(self::PART_TIME_DURATION,array($text,$duration));
+	}
+	
 	// $supply: int
 	public function addPartSupply($supply) {
 		$this->addPart(self::PART_SUPPLY,array($supply));
+	}
+	
+	// $datetimeArrival: datetime(Y-m-d H:i:s)
+	public function addPartTimeArrival($datetimeArrival) {
+		$this->addPart(self::PART_TIME_ARRIVAL,array($datetimeArrival));
 	}
 	
 	public function addPartNewTable() {

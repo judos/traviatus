@@ -24,7 +24,7 @@ if ($s==0) {		//Truppen im Dorf
 	}
 	foreach($user_ids as $user_id) {
 		$truppe=Truppe::getByXYU($dx,$dy,$user_id);
-		echo $truppe->toHtmlBox($login_user,$login_dorf);
+		echo $truppe->toHtmlBox();
 	}
 
 	//Truppen unterwegs in dieses dorf
@@ -32,7 +32,7 @@ if ($s==0) {		//Truppen im Dorf
 	if (!empty($truppenmove)) {
 		echo'<p><b>Truppen unterwegs in dieses Dorf</b></p>';
 		foreach($truppenmove as $truppe) {
-			echo $truppe->toHtmlBox($login_user,$login_dorf);
+			echo $truppe->toHtmlBox();
 		}
 	}
 
@@ -41,7 +41,7 @@ if ($s==0) {		//Truppen im Dorf
 	if (!empty($truppenmove)) {
 		echo'<p><b>Truppen unterwegs von diesem Dorf</b></p>';
 		foreach($truppenmove as $truppe) {
-			echo $truppe->toHtmlBox($login_user,$login_dorf);
+			echo $truppe->toHtmlBox();
 		}
 	}
 }
@@ -65,7 +65,8 @@ if ($s==1) {			//Truppen im Exil
 		$truppe=Truppe::getByXYU($x,$y,$userid);
 		$ruck='<a href="?page=build&gid=39&s=3&x='.$x.'&y='.$y.'">'.
 			'Zurückziehen</a>';
-		echo $truppe->toHtmlBox($login_user,$login_dorf,$ruck);
+		//TODO: implement link ^^
+		echo $truppe->toHtmlBox();
 	}
 }
 if ($s==2) {			//Truppen schicken

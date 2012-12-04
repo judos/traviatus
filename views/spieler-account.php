@@ -15,8 +15,6 @@ if (isset($_GET['msg'])) echo $_GET['msg'].'<br>';
 <table class="tbg" cellpadding="2" cellspacing="1">
 <tbody><tr>
 <td class="rbg" colspan="3">Direkt Links</td></tr>
-<tr><td class="s7" colspan="3">Eigene Links:</td></tr>
-<tr><td>Nr.</td><td>Linkname</td><td>Linkziel</td></tr>
 <tr><td class="s7" colspan="3">Links zu wichtigen Gebäuden:</td></tr>
 <?php
 $gebs=array(16,19,29,20,30,21,17,37,25,24);

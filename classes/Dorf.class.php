@@ -32,6 +32,24 @@ class Dorf extends DorfSim {
 		parent::__construct($this->data['name']);
 	}
 	
+	//$menge: int
+	//returns: array(0=>$holz,...,3=>$getreide)
+	public function stiehlRohstoffe($menge) {
+		$ressGestohlen=array();
+		$ress=$this->lager();
+		$total=array_sum($ress);
+		//Calc percentage of every Ressource
+		$percentages=array();
+		foreach($ress as $nr => $current)
+			$percentages[$nr] = $current / $total;
+		//Percentage for every Ressource of total capacity is taken
+		foreach($percentages as $nr => $percentage){
+			$ressGestohlen[$nr] = max(0,min($percentage * $menge,$ress[$nr]));
+		}
+		$this->subRess($ressGestohlen);
+		return $ressGestohlen;
+	}
+	
 	public function getLink() {
 		return '<a href="?page=karte-show&x='.$this->x.'&y='.$this->y.'">'.
 			$this->get('name').' ('.$this->x.'|'.$this->y.')</a>';
@@ -538,10 +556,12 @@ class Dorf extends DorfSim {
 		$this->set('lager',$lagerNeu);
 	}
 
+	//Aktuelle Menge Rohstoffe im Lager
 	public function lager() {
 		return explode(':',$this->get('lager'));
 	}
 
+	//Zeit bis genügend Rohstoffe für $kosten vorhanden sind
 	public function zeitGenugRess($kosten) {
 		$produktion=$this->produktion();
 		$lager=$this->lager();

@@ -2,6 +2,12 @@
 
 class TruppeMove extends Soldaten{
 	public static $save=true;
+	
+	const TYP_BESIEDLUNG     = 1;
+	const TYP_UNTERSTUETZUNG = 2;
+	const TYP_ANGRIFF        = 3;
+	const TYP_RAUBZUG        = 4;
+	const TYP_AUSSPAEHEN     = 5;
 
 	protected $keyid;
 	protected $data;
@@ -38,6 +44,19 @@ class TruppeMove extends Soldaten{
 		else
 			$held=null;
 		parent::__construct($volk,$soldaten,$held);
+	}
+	
+	public function getRess() {
+		if($this->get('ress')=='')
+			return array(0,0,0,0);
+		return explode(':',$this->get('ress'));
+	}
+	
+	public function addRess($additionalRess) {
+		$ress=$this->getRess();
+		foreach($ress as $nr=> $amount)
+			$ress[$nr] += $additionalRess[$nr];
+		$this->set('ress',implode(':',$ress));
 	}
 	
 	public function getHerkunft() {
@@ -166,48 +185,16 @@ class TruppeMove extends Soldaten{
 		$this->save();
 	}
 	
-	public function toHtmlBox($user_viewing,$dorf_viewing) {
-		$dorfs=$this->startDorf();
-		$dorfz=$this->zielDorf();
-		if ($dorf_viewing==$dorfs){
-			$dorf=$dorfz;
-			if ($dorf==null)
-				$zielName=array($this->get('ziel_x'),$this->get('ziel_y'));
-			$word=array('für','gegen','von');
-		}
-		else{
-			$dorf=$dorfs;
-			if ($dorf==null)
-				$zielName=array($this->get('start_x'), $this->get('start_y'));
+	public function toHtmlBox() {
+		$b=new InfoMessage();
+		Outputer::troopMoveTitle($this,$b);
+		$b->addPartUnitTypes($this->getUser()->get('volk'));
+		$b->addPartUnitCount('Einheiten',$this->soldaten);
+		if (array_sum($this->getRess())>0)
+			$b->addPartRess($this->getRess());
 			
-			$word=array('von','aus','aus');
-		}
-		
-		if ($dorf!=null){
-			$u = $dorf->user();
-			$zielName = $u->getLink();
-		}
-		else {
-			$x=$this->get('ziel_x');
-			$y=$this->get('ziel_y');
-			$dorf=array('x'=>$x,'y'=>$y);
-			$zielName='<a href="?page=karte-show&x='.$x.'&y='.$y.'">'.
-					'('.$x.'|'.$y.')</a>';
-		}
-		
-		switch($this->get('aktion')) {
-			case 1:$title="Neues Dorf gründen in $zielName";break;
-			case 2:$title="Unterstützung $word[0] $zielName";break;
-			case 3:$title="Angriff $word[1] $zielName";break;
-			case 4:$title="Raubzug $word[1] $zielName";break;
-			case 5:$title="Ausspähen $word[2] $zielName";break;
-		}
-		$volk=$this->getUser()->get('volk');
-		$units=$this->soldatenId();
-		$supply=$this->getVersorgung();
-		$arrival=$this->get('ziel_zeit');
-		$out=Outputer::truppenBox($dorf,$dorf_viewing,$title,$volk,$units,$supply,$arrival);
-		return $out;
+		$b->addPartTimeArrival($this->get('ziel_zeit'));
+		return $b->toHtml();
 	}
 
 	private function save() {
@@ -227,8 +214,7 @@ class TruppeMove extends Soldaten{
 	}
 	
 	public function __toString() {
-		global $login_user,$login_dorf;
-		return $this->toHtmlBox($login_user,$login_dorf);
+		return $this->toHtmlBox();
 	}
 
 	//Testet ob der User diese Aktion auf dieses Ziel ausführen

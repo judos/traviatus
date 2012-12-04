@@ -17,7 +17,7 @@ class TruppenTyp {
 		$this->data=$data;
 	}
 
-	public function toString() {
+	public function __toString() {
 		return 'TruppenTyp: '.$this->get('name').' (id '.$this->id.')';
 	}
 
@@ -182,6 +182,7 @@ class TruppenTyp {
 			$id=$i+($volk-1)*10;
 			$r[$id] = self::getById($id);
 		}
+		$r['hero']=new HeroSim("Held");
 		return $r;
 	}
 	
@@ -191,6 +192,7 @@ class TruppenTyp {
 			$id=$i+($volk-1)*10;
 			$r[]=$id;
 		}
+		$r[]='hero';
 		return $r;
 	}
 

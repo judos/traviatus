@@ -16,7 +16,7 @@ echo'<h1>Admintools</h1>
   </p>';
 
 
-if ($s==4) {
+if ($s==4) { //TODO's
 	$sql="SELECT COUNT(*) as anz1 FROM tr".ROUND_ID."_todo WHERE status='finished';";
 	$result=mysql_query($sql);
 	$data=mysql_fetch_assoc($result);
@@ -86,7 +86,7 @@ if ($s==4) {
 	echo'</tbody></table>';
 }
 
-if ($s==5) {
+if ($s==5) { //Terraforming
 	?>
 	<form method="post" action="?page=admintools&do=terra&s=5">
 	<table><tr>
@@ -117,7 +117,7 @@ if ($s==5) {
 }
 
 
-if ($s==3) {
+if ($s==3) { //Report Bugs
 	if (isset($msg))
 		echo msg_ok($msg);
 ?>
@@ -150,7 +150,7 @@ if (mysql_num_rows($result)>0) {
 
 }
 
-if ($s==1) {
+if ($s==1) { //Bericht senden
 ?>
 
 <form action="?page=admintools&do=sendreport&s=1" method="post">
@@ -168,7 +168,7 @@ if ($s==1) {
 <?php
 }
 
-if ($s==2) {
+if ($s==2) { //User bearbeiten
 	echo'<form action="?page=admintools&s=2&do=deluser" method="post">
     User löschen: <select name="uid">';
 	$sql="SELECT id,name FROM tr".ROUND_ID."_user ORDER BY name ASC;";

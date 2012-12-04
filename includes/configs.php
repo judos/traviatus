@@ -2,6 +2,6 @@
 
 define("ROUND_ID",1);
 define("ADMINTOOLS",true);
-define("VERSION",'beta 0.33');
+define("VERSION",'beta v0.34');
 
 ?>

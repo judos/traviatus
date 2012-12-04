@@ -24,6 +24,24 @@ class Soldaten {
 		$this->initSoldaten($arr);
 		$this->changed=false;
 	}
+		
+	public function getTragfahigkeit() {
+		$tragen=0;
+		foreach($this->soldaten as $tid => $anz) {
+			if ($tid!='hero') {
+				$typ=TruppenTyp::getById($tid);
+				$tragen += $anz * $typ->get('tragen');
+			}
+			elseif ($anz==1) {
+				if ($this->hero!=null) {
+					$typ = $this->hero->getTruppenTyp();
+					$faktor = Diverses::get('held_trag_faktor');
+					$tragen+= $typ->get('tragen') * $faktor;
+				}
+			}
+		}
+		return $tragen;
+	}
 	
 	//generates a raw Soldaten object which is not represented in the db
 	public function getRawCopy() {

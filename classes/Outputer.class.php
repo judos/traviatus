@@ -17,86 +17,67 @@ class Outputer {
 			$atts=$attsnew;
 		}
 		echo'<input value="'.$buttonValue.'" name="'.$name.'"
-		  src="img/de/b/'.$button.'1.gif"
-      onmousedown="btm1(\''.$name.'\',\'\',\'img/de/b/'.
-                        $button.'2.gif\',1)"
-      onmouseover="btm1(\''.$name.'\',\'\',\'img/de/b/'.
-                        $button.'3.gif\',1)"
-      onfocus="this.blur();"
-      onmouseup="btm0()" onmouseout="btm0()" border="0"
-      height="20" type="image" '.$atts.'>';
+			src="img/de/b/'.$button.'1.gif"
+			onmousedown="btm1(\''.$name.'\',\'\',\'img/de/b/'.
+				$button.'2.gif\',1)"
+			onmouseover="btm1(\''.$name.'\',\'\',\'img/de/b/'.
+				$button.'3.gif\',1)"
+			onfocus="this.blur();"
+			onmouseup="btm0()" onmouseout="btm0()" border="0"
+			height="20" type="image" '.$atts.'>';
 	}
 	
-	public static function truppenBox($dorf,$dorf_viewing,$title,$volk,$units,$supply,$arrival,$special=null) {
-		global $timerNr;
-		if (!isset($timerNr)) $timerNr=1;
-		$dout='';
-		if ($dorf!=$dorf_viewing){
-			if ($dorf instanceof Dorf){
-				$x=$dorf->get('x');
-				$y=$dorf->get('y');
-				$dname=$dorf->get('name');
-			}
-			else {
-				$x=$dorf['x'];
-				$y=$dorf['y'];
-				$dname='Unbekanntes Land';
-			}
-			$dout='<a href="?page=karte-show&x='.$x.'&y='.$y.'"><span class="c0">'.
-			$dname.'</span></a>';
-		}
-		$ou='<table class="tbg" cellpadding="2" cellspacing="1"><tbody>
-			<tr class="cbg1"><td width="21%">'.$dout.'
-			</td><td colspan="11" class="b">'.$title.'</td></tr>
-			<tr class="unit">
-			<td>&nbsp;</a></td>';
-		$typen=TruppenTyp::getByVolk($volk);
-		foreach($typen as $typ){
-			$ou.='<td>'.$typ->imgSymbol().'</td>';
-		}
-		$ou.='<td>'.Held::imgSymbol().'</td></tr>
-			<tr><td>Einheiten</td>';
-		foreach($typen as $tid=>$typ){
-			if ($units!=null){
-				if ($units[$tid]>0)
-					$ou.='<td>'.$units[$tid].'</td>';
-				else
-					$ou.='<td class="c">0</td>';
-			}
-			else
-				$ou.='<td class="c">?</td>';
-		}
-		if ($units!=null) {
-			if ($units['hero']!=0) $ou.='<td>1</td>';
-			else	$ou.='<td class="c">0</td>';
-		}
+	public static function troopTitle($troop,$report) {
+		global $login_user,$login_dorf;
+		//Informations of the user
+		if ($troop->getUser()==$login_user)
+			$tTitle='Eigene Truppen';
 		else
-			$ou.='<td class="c">?</td>';
-		$ou.='</tr>';
-		if ($supply!=null)
-			$ou.='<tr class="cbg1"><td>Unterhalt</td><td class="s7" colspan="11">'.$supply.
-				'<img class="res" src="img/un/r/4.gif">pro Stunde</td></tr>';
-		
-		if ($arrival!=null){
-			$dauer=zeit_dauer(strtotime($arrival)-time());
-			$akt=date('H:i:s',strtotime($arrival));
-			$ou.='<tr class="cbg1"><td>Ankunft</td><td colspan="11">
-				<table class="f10" cellpadding="0" cellspacing="0" width="100%">
-				<tbody><tr align="center">
-				<td width="50%">&nbsp; in <span id="timer'.$timerNr.'">'.
-					$dauer.'</span> Std.</td>
-				<td width="50%">um '.$akt.'<span> Uhr</span>
-				</td></tr></tbody></table></td></tr>';
-			$timerNr++;
-		}
-		if ($special!=null){
-			$ou.='<tr class="cbg1"><td></td><td colspan="11">'.
-				$special.'</td></tr>';
-		}
-		$ou.='</tbody></table><p></p>';
-		return $ou;
+			$tTitle = $troop->getUser()->getLink();
+		$d=$troop->getHerkunft();
+		if ($d!=$login_dorf)
+			$tText='Unterstützung von '.$d->getLink();
+		else
+			$tText='';
+		$report->addPartTextTitle($tTitle,$tText);
 	}
 	
+	public static function troopMoveTitle($troopMove,$report) {
+		global $login_user,$login_dorf;
+		//Informations of the user
+		if ($troopMove->getUser()==$login_user)
+			$tTitle='Eigene Truppen';
+		else
+			$tTitle = $troopMove->getUser()->getLink();
+		//Information of Action and target/source
+		if ($troopMove->zielDorf()==$login_dorf){
+			$word=array('von','aus','aus');
+			$tVillage=$troopMove->startDorf();
+			$tCoords=array($troopMove->get('start_x'),$troopMove->get('start_y'));
+		} elseif ($troopMove->startDorf()==$login_dorf) {
+			$word=array('für','gegen','von');
+			$tVillage=$troopMove->zielDorf();
+			$tCoords=array($troopMove->get('ziel_x'),$troopMove->get('ziel_y'));
+		} else {
+			new ErrorLog("TruppeMove::toHtmlBox, ziel und absender != aktuelles Dorf");
+		}
+		
+		if ($tVillage!=null)
+			$tText=$tVillage->getLink();
+		else
+			$tText='<a href="?page=karte-show&x='.$tCoords[0].'&y='.$tCoords[1].'">'.
+					'('.$tCoords[0].'|'.$tCoords[1].')</a>';
+		
+		switch($troopMove->get('aktion')) {
+			case TruppeMove::TYP_BESIEDLUNG: $tText="Neues Dorf gründen in $tText";break;
+			case TruppeMove::TYP_UNTERSTUETZUNG: $tText="Unterstützung $word[0] $tText";break;
+			case TruppeMove::TYP_ANGRIFF: $tText="Angriff $word[1] $tText";break;
+			case TruppeMove::TYP_RAUBZUG: $tText="Raubzug $word[1] $tText";break;
+			case TruppeMove::TYP_AUSSPAEHEN: $tText="Ausspähen $word[2] $tText";break;
+		}
+		
+		$report->addPartTextTitle($tTitle,$tText);
+	}
 	
 	public static function nachrichtenMenu() {
 		global $page;

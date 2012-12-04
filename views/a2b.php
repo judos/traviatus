@@ -76,8 +76,10 @@ if ($s=='') {
 	//Informationen für die Truppe sammeln
 	$spieler=$dorf->user();
 
-	$aktion_name=array(2=>'Unterstützung für',3=>'Angriff auf',
-	                   4=>'Raubzug gegen',5=>'Ausspähen von');
+	$aktion_name=array(TruppeMove::TYP_UNTERSTUETZUNG=>'Unterstützung für',
+					   TruppeMove::TYP_ANGRIFF =>'Angriff auf',
+	                   TruppeMove::TYP_RAUBZUG =>'Raubzug gegen',
+					   TruppeMove::TYP_AUSSPAEHEN =>'Ausspähen von');
 	//Weg berechnung
 	$weg=sqrt(pow($x-$sx,2)+pow($y-$sy,2));
 
@@ -95,8 +97,6 @@ if ($s=='') {
 		$speed_angabe.=' + '.round($speed/10*$highest[14],1);
 	$speed_angabe.=' Felder/Stunde';
 
-
-
 	//Ausgabe
 	echo'<h1>'.$aktion_name[$aktion].' '.$dorf->get('name').'</h1>
 		<form method="post" action="?page=a2b&do=sendtroops">
@@ -111,32 +111,18 @@ if ($s=='') {
 		<td class="s7">'.round($weg,2).' Felder</td></tr>
 		<tr><td width="11%">Geschwindigkeit:</td>
 		<td class="s7">'.$speed_angabe.'</td></tr>
-		</table></p><p>
+		</table></p>';
+	
+	$r=new InfoMessage();
+	$r->addPartTextTitle('Eigene Truppen',
+				$aktion_name[$aktion].' '.$dorf->getLink());
+	$r->addPartUnitTypes($login_user->get('volk'));
+	$r->addPartUnitCount('Einheit',$soldaten);
+	$r->addPartTimeDuration('Ankunft',$dauer);
+	
+	echo $r->toHtml();
 
-		<table  cellspacing="1" cellpadding="1" class="tbg">
-		<tr class="cbg1">
-		<td width="21%"><b>&nbsp;'.$login_dorf->get('name').'</b></td>
-		<td colspan="11"><b>'.$aktion_name[$aktion].
-		' '.$dorf->get('name').'</b></td></tr>
-		<tr class="unit"><td>&nbsp;</td>';
-	//Einheiten
-	foreach($einheiten as $id=>$einheit) {
-		echo'<td><img src="img/un/u/'.$id.'.gif"
-			title="'.$einheit->get('name').'"></td>';
-	}
-	echo'</tr><tr><td>Einheiten</td>';
-	foreach($einheiten as $id=>$einheit) {
-		if ($soldaten[$id]==0) echo'<td class="c">0</td>';
-		else echo'<td>'.$soldaten[$id].'</td>';
-	}
-	//Ankunft
-	echo'</tr><tr class="cbg1"><td>Ankunft</td><td colspan="11">
-		<table cellspacing="0" cellpadding="0" class="tbg">
-		<tr><td width="50%">in '.zeit_dauer($dauer).' Std.</td>
-		<td width="50%">um <span id=tp2>'.
-		date('H:i:s',time()+$dauer).'</span><span> Uhr</span></td></tr>
-		</table></td></tr></table></p>
-		<input type="hidden" name="aktion" value="'.$aktion.'">
+	echo'<input type="hidden" name="aktion" value="'.$aktion.'">
 		<input type="hidden" name="x" value="'.$x.'">
 		<input type="hidden" name="y" value="'.$y.'">
 		<input type="hidden" name="dauer" value="'.$dauer.'">';
