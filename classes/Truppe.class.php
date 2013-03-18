@@ -38,13 +38,14 @@ class Truppe extends Soldaten {
 		}
 		else
 			$volk=4;
-		$soldaten=explode(':',$this->data['troops']);
-		if (isset($soldaten[10]) && $soldaten[10]!=0){
+		$soldatenNr=explode(':',$this->data['troops']);
+		if (isset($soldatenNr[10]) && $soldatenNr[10]!=0)
 			$held=$user->held();
-		}
 		else
 			$held=null;
-		parent::__construct($volk,$soldaten,$held);
+		$soldatenIds = TruppenTyp:: arrIndexNrsToIds($soldatenNr,$volk);
+		
+		parent::__construct($volk,$soldatenIds,$held);
 	}
 	
 	public function getHerkunft() {
@@ -75,7 +76,7 @@ class Truppe extends Soldaten {
 			$name='Natur';
 		return 'Truppe: von '.$name.',
 			Standort: ('.$this->get('x').' | '.$this->get('y').'),
-			Soldaten: '.parent::__toString().', Gefangen: '.$this->get('gefangen').',
+			'.parent::__toString().', Gefangen: '.$this->get('gefangen').',
 			Ursprung: ('.$this->get('ursprung_x').' | '.$this->get('ursprung_y').')';
 	}
 	

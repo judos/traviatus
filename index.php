@@ -29,7 +29,7 @@ set_error_handler('handleError');
 //variablen zurücksetzen
 $action_forwarding=true;  //Ob nach einem Action automatisch weitergeleitet wird
                            //Spiel-Einstellung: true
-$error_output_fatal=true; //Falls ein Fatal_Error im PHP existiert sollte dies auf
+$error_output_fatal=false; //Falls ein Fatal_Error im PHP existiert sollte dies auf
                            // True umgeschalten werden um alle Fehler anzuzeigen
 						   //Spiel-Einstellung: false
 $title='Traviatus R'.ROUND_ID.' ('.VERSION.')'; //Titel der Runde
@@ -112,7 +112,7 @@ $execute=true;
 try {
 	require($page_path);
 } catch(Exception $e) {
-	x('Ein Fehler ist aufgetreten:',$e->getMessage());
+	x('Ein Fehler ist aufgetreten:',$e->getMessage(),$e->getTrace());
 }
 unset($execute);
 $content=ob_get_contents();

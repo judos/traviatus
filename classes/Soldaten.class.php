@@ -15,16 +15,54 @@ class Soldaten {
 	protected $changed;
 	
 	//$volk: int(1-4)
-	//$arr: array(0-9 => $anz)
+	//$arr: array($id => $anz, 'hero'=>$anz)
 	//$held: object (? extends Held)
-	//$dorfHerkunft: object (? extends DorfSim)
-	public function Soldaten($volk,$arr,$held) {
+	protected function Soldaten($volk,$arr,$held) {
+		if (!isset($arr['hero'])) $arr['hero']=0;
+		if ($arr['hero']!=0 and $held==null)
+			x("value for hero does not match in Soldaten::newFromIds()");
+		if ($arr['hero']>1)
+			x("value for hero cannot be greater than 1");
 		$this->volk=$volk;
 		$this->held=$held;
-		$this->initSoldaten($arr);
+		if (isset($arr[0]))
+			x("index 0 used for soldiers, invalid!");
+		$this->soldaten=$arr;
 		$this->changed=false;
 	}
-		
+	
+	public static function newFromIds($arr,$hero=null) {
+		list($volk,$arr) = self::idsToVolkIds($arr);
+		return new Soldaten($volk,$arr,$hero);
+	}
+	
+	protected static function idsToVolkIds($arr) {
+		$volk=self::getVolkByIds($arr);
+		$ids = TruppenTyp::getIdsByVolk($volk);
+		foreach($ids as $id)
+			if(!isset($arr[$id]))
+				$arr[$id]=0;
+		return array($volk,$arr);
+	}	
+	
+	//$arr = array(0-9 => $anz, 'hero'=>$anz)
+	//$hero: object (? extends Held)
+	public static function newFromNrs($volk,$arr,$hero=null) {
+		//nrsVolkToIds //TODO: implement helper function for inheritance
+		$ids=array();
+		foreach($arr as $nr => $anz) {
+			if ($nr!='hero')
+				$ids[$nr+1 + ($volk-1)*10] = $anz;
+			else
+				$ids[$nr] = $anz;
+		}
+		return new Soldaten($volk,$ids,$hero);
+	}
+	
+	public static function newFromString($volk,$string,$hero=null) {
+		return self::newFromNrs($volk,explode(':',$string),$hero);
+	}
+	
 	public function getTragfahigkeit() {
 		$tragen=0;
 		foreach($this->soldaten as $tid => $anz) {
@@ -45,7 +83,7 @@ class Soldaten {
 	
 	//generates a raw Soldaten object which is not represented in the db
 	public function getRawCopy() {
-		return new Soldaten($this->volk,self::soldatenNr($this->soldaten),null);
+		return new Soldaten($this->volk,$this->soldaten,$this->hero);
 	}
 	
 	//returns link with url to user and url to dorf
@@ -102,6 +140,8 @@ class Soldaten {
 	public function soldatenString() {
 		return implode(':',self::soldatenNr($this->soldaten));
 	}
+	
+	//TODO: constructors to create instances from string/arrayNr/arrayIds/$_GET easier
 	
 	public static function soldatenNr($soldaten) {
 		$result=array();
@@ -226,12 +266,24 @@ class Soldaten {
 	public function __toString() {
 		$s='Soldaten: ';
 		foreach($this->soldaten as $tid=>$anz) {
-			if ($tid!='hero')
-				$s.=$anz.' '.TruppenTyp::getById($tid)->imgSymbol().', ';
-			else
+			if ($tid==='hero')
 				$s.=$anz.' '.Held::imgSymbol().', ';
+			elseif ($tid>0) //TODO: change to else, as soon as id0 is not contained
+				$s.=$anz.' '.TruppenTyp::getById($tid)->imgSymbol().', ';
 		}
 		return substr($s,0,-2);
+	}
+	
+	protected static function getVolkByIds($arr) {
+		foreach($arr as $id=>$anz){
+			if($anz>0){
+				$volk = ($id - 1)/10;
+				break;
+			}
+		}
+		if (!isset($volk))
+			throw new Exception("could not find out volk by ids, no soldiers in array");
+		return $volk;
 	}
 	
 	public static function alleLeer($arr) {

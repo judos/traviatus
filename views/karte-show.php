@@ -229,7 +229,7 @@ if ($dorf===NULL) { //Kein Dorf darauf gebaut
       </tr><tr>';
     if ($highest[16]>0)
       echo'<td><a href="?page=build&x='.$px.'&y='.$py.
-        '&s=2&id='.$highestGid[16].
+        '&s=2&gid=39&c=4'.
         '">» Verlassenes Tal erkunden</a>';
     else
       echo'<td class="c">» kein Versammlungsplatz vorhanden';

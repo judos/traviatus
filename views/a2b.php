@@ -14,6 +14,7 @@ if ($s=='') {
 	$dname=$_POST['dname'];
 	$x=$_POST['x'];
 	$y=$_POST['y'];
+	$aktion=$_POST['c'];
 
 	$result=Dorf::searchByKoordsOrName($x,$y,$dname);
 	$msg=str_replace('+OBJECT_IS+','Die Truppen sind',$result['msg']);
@@ -21,21 +22,18 @@ if ($s=='') {
 	$y=$result['y'];
 	$dorf=$result['dorf'];
 
-	//Umleiten wenn Dorf nicht gefunden wurde oder Ziel ungültig ist
-	$_GET['va']=implode(':',$_POST);
-	$_GET['keys']=implode(':',array_keys($_POST));
-	
-	$aktion=$_POST['c'];
-	
 	if ($msg==''){
 		if ($dorf->user() == $login_user){
-			if ($aktion==3 or $aktion==4){
-				$msg='Du kannst nicht dein eigenes Dorf angreiffen!';
+			if (TruppeMove::aktionIsFeindlich($aktion)){
+				$msg='Du kannst nicht dein eigenes Dorf angreifen!';
 			}
 		}
 	}
 	
 	if ($msg!='') {
+		//Umleiten wenn Dorf nicht gefunden wurde oder Ziel ungültig ist
+		$_GET['va']=implode(':',$_POST);
+		$_GET['keys']=implode(':',array_keys($_POST));
 		gotoP('build&gid=39&s=2');
 	}
 	
@@ -50,7 +48,6 @@ if ($s=='') {
 	$einheiten=$login_user->truppenTypen();
 	
 	//Truppen zählen, Spionage möglichkeit testen
-	
 	foreach($einheiten as $id=>$einheit) {
 		$soldaten[$id]=(int)$_POST['t'.$id];
 		if ($id=='hero')

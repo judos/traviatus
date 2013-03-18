@@ -50,7 +50,7 @@ function x() {
 		if ($nr==4) $c='#B0B000';
 		if ($nr==5) $c='#A00000';
 		$nr= ($nr+1)%6;
-		$tmp.='<span style="color:'.$c.';">';
+		$tmp.='<span style="color:'.$c.'; display: block;">';
 		if (is_object($var) and is_callable(array($var,'toString')))
 			$tmp.=$var->toString();
 		elseif (is_object($var) and is_callable(array($var,'__toString')))
@@ -81,7 +81,7 @@ function x() {
 	}
 	$tmp=substr($tmp,0,-8);
   
-  //add stack trace to error log
+    //add stack trace to error log
 	$trace=debug_backtrace();
 	if (preg_match('/.+index.php/i',$trace[0]['file']))
 		unset($trace[0]);
@@ -93,14 +93,21 @@ function x() {
 		unset($trace[$key]['args']);
 		unset($trace[$key]['object']);
 	}
-	$h='<div style="background-color: #d6ffef; border: 1px solid #bbb; margin: 30px; padding: 7px; text-align: left">';
+	$traceTable='<table border="1" style="background-color: #d6ffef; border: 1px solid #aaa; padding: 7px; text-align: left; border-collapse:collapse;" cellspacing="2" cellpadding="5">';
+	$traceTable.='<tr style="font-weight:bold"><td>Stack</td><td>File</td><td>Line</td><td>Call</td></tr>';
 	foreach($trace as $nr => $value){
-		$h.=$nr.' '.@$value['file'].' <span style="color:blue; margin-left:10px;">line '.@$value['line'].'</span><br />'.
-			'&nbsp;&nbsp;&nbsp;<span style="color:green; font-weight:bold;">'.@$value['class'].' '.@$value['type'].' '.@$value['function'].
-			'</span><br /><br />';
+		$function = @$value['class'].' '.@$value['type'].' '.@$value['function'];
+		$file=str_replace('D:\\julian\\web php,js\\traviatus2012\\','',@$value['file']);
+		
+		$traceTable.='<tr><td>'.$nr.'</td><td><a href="file:///'.@$value['file'].'">'.$file.'</a></td>'.
+			'<td style="color:blue;text-align:right;">'.@$value['line'].'</td><td style="color:green;font-weight:bold;">'.$function.'</td></tr>';
 	}
-	$h.='</div></div>';
-	$tmp.=$h;
+	$traceTable.='</table>';
+
+	$scrollDiv='<div style="height: auto !important; max-height: 150px; '.
+		'margin: 10px; overflow:scroll; border:inset lightgray;overflow-x: hidden;display: inline-block">';
+	
+	$tmp.=$scrollDiv.$traceTable.'</div></div>';
 	if ($error_output_fatal)
 		echo $tmp;
 	else

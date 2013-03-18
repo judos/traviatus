@@ -9,7 +9,7 @@ Outputer::links();
 
 Outputer::blocks();
 Outputer::menu();
-add_link('phpMyAdmin','/phpmyadmin');
+add_link('phpMyAdmin','/phpmyadmin/',array('target'=>'_blank'));
 
 ?>
 

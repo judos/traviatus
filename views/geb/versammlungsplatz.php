@@ -140,7 +140,7 @@ if ($s==2) {			//Truppen schicken
 	$y=saveGet('y','');
 	if (isset($arr['dname'])) $_GET['dname']=$arr['dname'];
 	$dname=saveGet('dname','');
-	$c=2;
+	$c=saveGet('c',2);
 	if (isset($arr['c'])) $c=$arr['c'];
 	echo'<div class="f10"><input name="c" value="2" '.($c==2?'checked="checked"':'').'
       type="radio">Unterstützung</div>

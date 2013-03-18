@@ -4,7 +4,7 @@ needed_login();
 $stview=1;
 
 //scroll down in the div
-$body_onload.="dgei('allianz_chat').scrollTop = dgei('allianz_chat').scrollHeight;";
+$body_onload.="scrollDown();";
 
 
 $ally=Allianz::getById($login_user->get('ally'));
@@ -21,7 +21,6 @@ echo'<table cellpadding="2" cellspacing="1" class="tbg"><tbody>
   <tr class="rbg"><td colspan="2">Allianz-Chat</td></tr>
   <tr>
   <td><div class="allianz_chat" id="allianz_chat">';
-
 $sql="SELECT * FROM tr".ROUND_ID."_ally_chat WHERE ally_id=".$ally->get('id')." ORDER BY zeit ASC;";
 $result=mysql_query($sql);
 while($data=mysql_fetch_assoc($result)) {
@@ -30,8 +29,7 @@ while($data=mysql_fetch_assoc($result)) {
 	$lastmsg=$data['zeit'];
 }
 
-echo'</div></td>
-  </tr>
+echo'</div></td></tr>
 	</tbody></table><br>
 	<table width="100%"><tr><td width="100%">
 	<input type="text" id="text" class="fm" style="width:97%;" onKeyPress="send_msg2(this,event);" /></td><td>
@@ -57,13 +55,14 @@ function send_msg() {
 			res=ajax_answer(req).split('<br>');
 			lastmsg=res[0];
 			dgei('allianz_chat').innerHTML=dgei('allianz_chat').innerHTML+res[1];
-			dgei('allianz_chat').scrollTop = dgei('allianz_chat').scrollHeight;
+			scrollDown();
 		}
 		if (ajax_error(req)) {
 			alert(ajax_answer(req));
 		}
 	}
 }
+
 function send_msg2(ref,e) {
 	var keycode;
   if (window.event) keycode = window.event.keyCode;
@@ -75,6 +74,10 @@ function send_msg2(ref,e) {
 	}
   else
      return true;
+}
+
+function scrollDown() {
+	dgei('allianz_chat').scrollTop = dgei('allianz_chat').scrollHeight;
 }
 
 

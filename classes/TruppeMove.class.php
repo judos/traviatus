@@ -37,13 +37,14 @@ class TruppeMove extends Soldaten{
 	private function initTruppeMove() {
 		$user=Spieler::getById($this->get('user'));
 		$volk=$user->get('volk');
-		$soldaten=explode(':',$this->data['truppen']);
-		if (isset($soldaten[10]) && $soldaten[10]!=0){
+		$soldatenNr=explode(':',$this->data['truppen']);
+		if (isset($soldatenNr[10]) && $soldatenNr[10]!=0){
 			$held=$user->held();
 		}
 		else
 			$held=null;
-		parent::__construct($volk,$soldaten,$held);
+		$soldatenIds = TruppenTyp::arrIndexNrsToIds($soldatenNr,$volk);
+		parent::__construct($volk,$soldatenIds,$held);
 	}
 	
 	public function getRess() {
@@ -222,11 +223,11 @@ class TruppeMove extends Soldaten{
 	public static function zielbar($zx,$zy,$user,$aktion) {
 		$zielDorf=Dorf::getByXY($zx,$zy);
 		//Besiedeln
-		if ($aktion==1) {
+		if ($aktion==self::TYP_BESIEDLUNG) {
 			//kein Dorf vorhanden
 			if ($zielDorf!==NULL) return false;
 			$land=Land::getByXY($zx,$zy);
-			//Kein Ödland
+			//Land muss vorhanden sein, kein Ödland
 			if ($land===NULL) return false;
 			return true;
 		}
@@ -234,9 +235,20 @@ class TruppeMove extends Soldaten{
 		if ($zielDorf===NULL) return false;
 		//Angriff auf eigenes Dorf nicht möglich
 		if ($zielDorf->get('user')==$user->get('id')) {
-			if ($aktion>2) return false;
+			if (self::aktionIstFeindlich($aktion))
+				return false;
 		}
 		return true;
+	}
+	
+	public static function aktionIstFeindlich($aktion) {
+		if ($aktion==self::TYP_ANGRIFF)
+			return true;
+		if ($aktion==self::TYP_RAUBZUG)
+			return true;
+		if ($aktion==self::TYP_AUSSPAEHEN)
+			return true;
+		return false;
 	}
 
 	//User sollte ein Spieler sein

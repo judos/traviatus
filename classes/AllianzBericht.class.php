@@ -48,7 +48,7 @@ class AllianzBericht extends InfoMessage {
 	public static function loadByAlly($ally_id) {
 		global $login_user;
 		$sql="SELECT * FROM `tr".ROUND_ID."_".self::$db_table."`
-			WHERE `ally_id`='$ally_id'";
+			WHERE `ally_id`='$ally_id' ORDER BY datetime DESC;";
 		$result=mysql_query($sql);
 		if (mysql_num_rows($result)==0) return;
 		while(($data=mysql_fetch_array($result))!=null){

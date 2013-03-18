@@ -200,7 +200,23 @@ class TruppenTyp {
 		if (!isset(self::$objekte[$id])) {
 			self::loadEntry($id);
 		}
-		return self::$objekte[$id];
+		return @self::$objekte[$id];
+	}
+	
+	//converts the index numbers to troop ids
+	//$volk: array(0-9 => X;  10 => Hero)
+	//return: array($tid => X; 'hero' => Hero)
+	public static function arrIndexNrsToIds($arr,$volk) {
+		$result=array();
+		foreach($arr as $nr => $x){
+			if($nr<10)
+				$result[$nr+1+($volk-1)*10] = $x;
+			elseif ($nr==10)
+				$result['hero']=$x;
+			else
+				x("Index numbers above 10 not allowed.");
+		}
+		return $result;
 	}
 
 	protected static function loadEntry($id) {
