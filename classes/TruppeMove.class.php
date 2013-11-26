@@ -192,7 +192,7 @@ class TruppeMove extends Soldaten{
 		$b->addPartUnitTypes($this->getUser()->get('volk'));
 		$b->addPartUnitCount('Einheiten',$this->soldaten);
 		if (array_sum($this->getRess())>0)
-			$b->addPartRess($this->getRess());
+			$b->addPartRess("Rohstoffe",$this->getRess());
 			
 		$b->addPartTimeArrival($this->get('ziel_zeit'));
 		return $b->toHtml();

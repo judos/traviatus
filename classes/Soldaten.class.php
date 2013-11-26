@@ -10,7 +10,7 @@ class Soldaten {
 	protected $volk;
 	
 	//object held or null
-	protected $held;
+	protected $held=null;
 	
 	protected $changed;
 	
@@ -83,6 +83,8 @@ class Soldaten {
 	
 	//generates a raw Soldaten object which is not represented in the db
 	public function getRawCopy() {
+		if (!isset($this->hero))
+			$this->hero=null;
 		return new Soldaten($this->volk,$this->soldaten,$this->hero);
 	}
 	

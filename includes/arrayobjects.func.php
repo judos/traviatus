@@ -71,7 +71,6 @@ function arrayObjectsSort_compare_att($a, $b) {
 
 //Looks if an array of objects contain at least one object where
 // a certain attribute has the given value
-//TODO: write better implementation for this function
 function arrayObjectsContains($arr,$att,$value) {
 	global $arrayObjectsContain_result;
 	global $arrayObjectsContain_att,$arrayObjectsContain_value;
@@ -84,8 +83,13 @@ function arrayObjectsContains($arr,$att,$value) {
 	return !empty($result);
 }
 
+//TODO: test this function and replace old version
+function arrayObjectsContains2($arr,$att,$value) {
+	$result = arrayObjectsContaining2($arr,$att,$value);
+	return !empty($result);
+}
+
 //returns all objects that have the attribute with the given value
-//TODO: write better implementation for this function
 function arrayObjectsContaining($arr,$att,$value) {
 	global $arrayObjectsContain_result;
 	global $arrayObjectsContain_att,$arrayObjectsContain_value;
@@ -99,7 +103,17 @@ function arrayObjectsContaining($arr,$att,$value) {
 	return $result;
 }
 
-//TODO: write better implementation for this function
+//TODO: test this function and replace old version
+function arrayObjectsContaining2($arr,$att,$value) {
+	$result=array();
+	foreach($arr as $object) {
+		if ($object->get($att)==$value)
+			$result[]=$object;
+	}
+	return $result;
+}
+
+//TODO: remove this function if 2nd implementation works
 function arrayObjectsContain_walk($object) {
 	global $arrayObjectsContain_att,$arrayObjectsContain_value;
 	global $arrayObjectsContain_result;

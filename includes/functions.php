@@ -166,7 +166,7 @@ function connect() {
 	if (!$link)
 		die('Verbindung nicht möglich : ' . mysql_error());
 	if(!mysql_select_db($db))
-		die('Fehler Datenbank konnte nicht ausgewÃ¤hlt werden.');
+		die("Fehler Datenbank '$db' konnte nicht ausgewählt werden.");
 }
 
 function global_actions() {

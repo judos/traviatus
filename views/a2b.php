@@ -24,7 +24,7 @@ if ($s=='') {
 
 	if ($msg==''){
 		if ($dorf->user() == $login_user){
-			if (TruppeMove::aktionIsFeindlich($aktion)){
+			if (TruppeMove::aktionIstFeindlich($aktion)){
 				$msg='Du kannst nicht dein eigenes Dorf angreifen!';
 			}
 		}
