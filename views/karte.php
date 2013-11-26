@@ -5,8 +5,6 @@ $stview=1;
 
 Updater::Dorf($login_dorf);
 
-$volker=Diverses::get('völker');
-
 $size=Land::size();
 $size_x=$size[0];
 $size_y=$size[1];

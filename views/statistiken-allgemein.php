@@ -28,9 +28,15 @@ $data=array('Anzahl Spieler angemeldet'=>Spieler::anzahl(),
 	'Dörfer insgesamt'=>Dorf::anzahl());
 table('Allgemeine Statistiken',$data);
 
-$volker=Spieler::statistikVolker();
-$data=array('Römer'=>$volker[1],'Germanen'=>$volker[2],
-	'Gallier'=>$volker[3]);
+$volkerAnzahl=Spieler::statistikVolker();
+$volkerNamen=explode(':',Diverses::get('volker')); //beginnt mit index 0 (Römer sind aber id=1 in der Statistik)
+$data=array();
+foreach ($volkerAnzahl as $nr => $value){
+	$data[$volkerNamen[$nr-1]] = $value;
+}
+
+//$data=array('Römer'=>$volker[1],'Germanen'=>$volker[2],
+//	'Gallier'=>$volker[3]);
 table('Völker in Traviatus',$data);
 
 
