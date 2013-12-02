@@ -293,12 +293,19 @@ class Soldaten {
 	protected static function getVolkByIds($arr) {
 		foreach($arr as $id=>$anz){
 			if($anz>0){
-				$volk = ($id - 1)/10;
+				$volk = floor(($id - 1)/10) +1;
 				break;
 			}
 		}
-		if (!isset($volk))
-			throw new Exception("could not find out volk by ids, no soldiers in array");
+		if (!isset($volk)){
+			foreach($arr as $id=>$anz){
+				$volk= floor(($id-1)/10) +1;
+				break;
+			}
+		}
+		if (!isset($volk)){
+			x("could not find out volk by ids, no soldiers/keys in array",$arr);
+		}
 		return $volk;
 	}
 	

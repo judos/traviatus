@@ -34,7 +34,7 @@ if (isset($_GET['a_v'])) {
 			foreach($ids as $tid)
 				$truppe[$tid]=saveGet('d_'.$tid, 0);
 			$truppe['hero']=0;
-			$deffTruppen[]=new Soldaten($volk,Soldaten::soldatenNr($truppe),null,new DorfSim("Verteidiger"));
+			$deffTruppen[]=Soldaten::newFromIds($truppe,null); //TODO: use hero
 		}
 	}
 	unset($truppe);
@@ -57,7 +57,7 @@ if (isset($_GET['a_v'])) {
 		$truppe[$tid]=saveGet('a_'.$tid, 0);
 	}
 	$truppe['hero']=0;
-	$offTruppen=new Soldaten($volk,Soldaten::soldatenNr($truppe),null,new DorfSim("Angreifer"));
+	$offTruppen=Soldaten::newFromIds($truppe,null); //TODO: use hero
  
 	//TODO: implement simulated hero
 	//OffHeld
@@ -93,6 +93,7 @@ echo'<table class="tbg" cellpadding="2" cellspacing="1" width="90%">
 	<tr>';
 
 $truppen=TruppenTyp::getByVolk($a_v);
+unset($truppen['hero']);
 foreach($truppen as $tid => $einheit) {
 	echo'<td><img src="img/un/u/'.$tid.'.gif" title="'.$einheit->get('name').'"></td>';
 }
@@ -125,6 +126,7 @@ for ($volk=1;$volk<=4;$volk++) {
 	if ($d_v[$volk]==1) {
 		echo'<tr>';
 		$truppen=TruppenTyp::getByVolk($volk);
+		unset($truppen['hero']);
 		foreach($truppen as $tid => $einheit) {
 			echo'<td><img src="img/un/u/'.$tid.'.gif" title="'.$einheit->get('name').'"></td>';
 		}
@@ -143,7 +145,7 @@ echo'</table>';
 //Sonstiges
 $row2='';
 echo'<table class="tbg" cellpadding="2" cellspacing="1" width="90%">
-	<tr class="rbg"><td colspan="10">Sonstiges</td></tr><tr>';
+	<tr class="rbg"><td colspan="11">Sonstiges</td></tr><tr>';
 //Helden
 echo'<td><img src="img/un/a/hero_a.gif" title="Angriffsbonus in % - Held Angreifer"></td>
 	<td><img src="img/un/a/hero_v.gif" title="Verteidigungsbonus in % - Held Verteidiger"></td>';
@@ -169,7 +171,7 @@ $row2.='<td style="padding:0px;">
 //Angriff normal und Raubzug
 $ktyp=saveGet('ktyp',4);
 
-echo'<td colspan="3" style="width:142px;" rowspan="2" class="left"><input class="radio" name="ktyp" value="3"
+echo'<td colspan="4" style="width:142px;" rowspan="2" class="left"><input class="radio" name="ktyp" value="3"
 			'.($ktyp==3?$c:'').' type="radio"> Angriff Normal<br>
 		<input class="radio" name="ktyp" value="4"
 			'.($ktyp==4?$c:'').'type="radio"> Raubzug</td>

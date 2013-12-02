@@ -30,6 +30,8 @@ class Automessages {
 		if ($offNachher->getSpaher() >= 50) $known['troops']=true;
 		else $b->addPartTextOnly('Zuwenig Späher überlebten um die gesamte gegnerische Truppe auszukundschaften');
 		
+		$b -> addPartNewTable();
+		
 		foreach($deffTruppen as $nr => $truppe) {
 			$b -> addPartTextTitle('Verteidiger', saveObject($truppe->getLink(),'') );
 			$b -> addPartUnitTypes($truppe->volk());
