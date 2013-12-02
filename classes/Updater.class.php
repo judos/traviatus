@@ -220,10 +220,11 @@ class Updater {
 				//Inhalt der Nachricht
 				$text='1::'.$who_from_where.chr(13).'2:'.$data['ress'];
 
-				//Bericht erstatten fall nötig
-				Automessages::bericht($userVon,$betreff,$text);
-				if ($userVon->get('id')!=$userNach->get('id'))
-					Automessages::bericht($userNach,$betreff,$text);
+				//Bericht erstatten falls nötig
+				$zielZeit = $data['ziel'];
+				Automessages::bericht($userVon,$betreff,$text,$zielZeit);
+				if ($userVon->get('id') != $userNach->get('id'))
+					Automessages::bericht($userNach,$betreff,$text,$zielZeit);
 			}
 		}
 	}
@@ -245,9 +246,10 @@ class Updater {
 			$zy=$ziel_dorf->get('y');
 			
 			$dieserUser=$truppe->getUser();
-
+			$typ=$truppe->get('aktion');
+			
 			//Neues Dorf gründen
-			if ($truppe->get('aktion')==1)	{
+			if ($typ==TruppeMove::TYP_BESIEDLUNG)	{
 				//Falls Dorf noch frei ist
 				if (Dorf::isFree($zx,$zy)) {
 					//Truppe löschen
@@ -268,7 +270,7 @@ class Updater {
 				}
 			}
 			//Unterstützung
-			if ($truppe->get('aktion')==2)	{
+			if ($typ==TruppeMove::TYP_UNTERSTUETZUNG)	{
 				//Truppe löschen
 				$truppe->delete();
 
@@ -298,7 +300,6 @@ class Updater {
 			}
 			
 			//Angriff normal oder Raubzug
-			$typ=$truppe->get('aktion');
 			if ($typ==TruppeMove::TYP_ANGRIFF or $typ==TruppeMove::TYP_RAUBZUG)	{
 				$angreifer=$dieserUser;
 				$angreifer_dorf=$start_dorf;
@@ -327,6 +328,36 @@ class Updater {
 				$betreff = $angreifer_dorf->get('name').' greift '.$ziel_dorf->get('name').' an';
 				$bericht->sendToUsers($users,$betreff,Bericht::TYPE_ANGRIFFE);
 				$bericht->sendToAllianzen($allies,$betreff);
+			}
+			
+			// Spionageangriffe
+			if ($typ==TruppeMove::TYP_AUSSPAEHEN) {
+				$deffTruppen = $ziel_dorf -> getTruppenArrUsers();
+				//Späher zählen für eine Truppe
+				$getSpaherFnc =function($truppe) {
+					return $truppe -> getSpaher();
+				};
+				//Für jede Truppe (von jedem Spieler) Späher raussuchen
+				$spaher = array_map($getSpaherFnc,$deffTruppen);
+				//Alle Späher im Dorf zusammen
+				$deffSpaherAnz = array_sum($spaher);
+				$offSpaherAnz = $truppe -> getSpaher();
+				
+				$ratio = Diverses::get('spy_kill_ratio');
+				$possibleKills = min($offSpaherAnz , $deffSpaherAnz/$ratio);
+				$offDmg = $possibleKills / $offSpaherAnz;
+				$offVorher = $truppe->getRawCopy();
+				$offVorher -> setHerkunft($start_dorf);
+				$offVorher -> setUser($dieserUser);
+				$truppe->killPercentage($offDmg * 100);
+				$offNachher = $truppe;
+				
+				Automessages::spioBericht($start_dorf,$ziel_dorf,$offVorher,$offNachher,$deffTruppen);
+				
+				if ($truppe->leer())
+					$truppe->delete();
+				else
+					$truppe->turnBack();
 			}
 		}
 	}

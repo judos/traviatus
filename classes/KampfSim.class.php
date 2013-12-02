@@ -173,7 +173,7 @@ class KampfSim {
 	}
 
 	//Simuliert einen Angriff auf das verteidigende Dorf
-	//Gibt übrige Truppen des Angreifers zurück
+	//return: Ein Schlachtfeld objekt
 	//$truppeAngreifer = object(Soldaten)
 	//$ktyp= 3Angriff 4Raubzug
 	public function attack($truppeAngreifer,$ktyp) {
@@ -204,3 +204,5 @@ class KampfSim {
 	}
 	
 }
+
+?>

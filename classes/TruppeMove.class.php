@@ -250,6 +250,16 @@ class TruppeMove extends Soldaten{
 			return true;
 		return false;
 	}
+	
+	public function getSpaher() {
+		$sum=0;
+		$soldaten = $this->soldatenIdWithoutHero();
+		foreach($soldaten as $id => $anz) {
+			if (TruppenTyp::getById($id)->isSpy())
+				$sum+=$anz;
+		}
+		return $sum;
+	}
 
 	//User sollte ein Spieler sein
 	//Aktion: 1=Neues Dorf gründen 2=Unterstützen 3=normal 4=Raubzug

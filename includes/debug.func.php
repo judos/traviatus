@@ -1,6 +1,16 @@
 <?php
 
-function dumpS($x) {
+function xOn() {
+	global $error_log_on;
+	$error_log_on=true;
+}
+function xOff() {
+	global $error_log_on;
+	echo'fooo';
+	$error_log_on=false;
+}
+
+function dumpShort($x) {
 	return substr(dump($x),0,15);
 }
 
@@ -18,13 +28,16 @@ function handleError($errno, $errstr, $errfile, $errline, array $errcontext){
 	if (0 === error_reporting())
 		return false;
 		//Daten an die Fehlerfunktion weitergeben (function x() siehe includes/functions.php)
-	x('ERROR'.$errno.' '.$errstr);
+	xx('ERROR'.$errno.' '.$errstr);
 }
 //set_error_handler('handleError');
 
 //Zum debuggen verwendet
 //Call this function to get an error log with stacktrace in the bottom panel
 function xx() {
+	global $error_log_on;
+	if (isset($error_log_on) && $error_log_on==false)
+		return;
 	global $error, $error_output_fatal;
 	echo $error;
 	$error='';
@@ -32,6 +45,9 @@ function xx() {
 	x(func_get_args());
 }
 function x() {
+	global $error_log_on;
+	if (isset($error_log_on) && $error_log_on==false)
+		return;
 	global $error;
 	global $error_count;
 	global $error_output_fatal;
@@ -39,6 +55,7 @@ function x() {
 	$tmp='';
 	$nr=0;
 	$array = func_get_args();
+	
 	$c='DDD';
 	$tmp.='<div style="border:1px #999 solid; background-color:#'.$c.'; '.
 		'padding:5px 10px 5px 10px; margin:3px 30px 0px 10px;" align="center">';
@@ -83,12 +100,14 @@ function x() {
   
     //add stack trace to error log
 	$trace=debug_backtrace();
-	if (preg_match('/.+index.php/i',$trace[0]['file']))
-		unset($trace[0]);
+	//if (preg_match('/.+index.php/i',$trace[0]['file']))
+	//	unset($trace[0]);
 	$firstKey=array_keys($trace);
-	$firstKey=$firstKey[0];
-	if (!isset($trace[$firstKey]['file']) and !isset($trace[$firstKey]['line']))
-		unset($trace[$firstKey]);
+	if (sizeof($firstKey)>0) {
+		$firstKey=$firstKey[0];
+		if (!isset($trace[$firstKey]['file']) and !isset($trace[$firstKey]['line']))
+			unset($trace[$firstKey]);
+	}
 	foreach($trace as $key=>$value){
 		unset($trace[$key]['args']);
 		unset($trace[$key]['object']);

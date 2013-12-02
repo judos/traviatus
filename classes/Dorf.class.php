@@ -673,6 +673,23 @@ class Dorf extends DorfSim {
 		if ($getreide<0) $getreide=0;
 		return $getreide;
 	}
+	
+	// returns: array(userId => Truppe)
+	public function getTruppenArrUsers() {
+		$deffTruppen=array();
+		$users=Truppe::getUsersByD($this,0,true);
+		foreach($users as $userid) {
+			$truppe=Truppe::getByDU($this,$userid);
+			$deffTruppen[$userid]=$truppe;
+		}
+		
+		if (empty($users)) {
+			$user=$this->user();
+			$truppe=Truppe::createEntry($this->get('x'),$this->get('y'),$user->get('id'),0);
+			$deffTruppen[$user->get('id')]=$truppe;
+		}
+		return $deffTruppen;
+	}
 
 	public function lagerGrosse() {
 		//Lagergrösse der Stufen

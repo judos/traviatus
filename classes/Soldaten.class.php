@@ -3,6 +3,9 @@
 class Soldaten {
 	public static $save=false;
 	
+	protected $herkunft;
+	protected $user;
+	
 	//array($tid=>$count ,'hero'=>$count);
 	protected $soldaten;
 	
@@ -18,6 +21,9 @@ class Soldaten {
 	//$arr: array($id => $anz, 'hero'=>$anz)
 	//$held: object (? extends Held)
 	protected function Soldaten($volk,$arr,$held) {
+		$this->herkunft=null;
+		$this->user=null;
+		
 		if (!isset($arr['hero'])) $arr['hero']=0;
 		if ($arr['hero']!=0 and $held==null)
 			x("value for hero does not match in Soldaten::newFromIds()");
@@ -29,6 +35,14 @@ class Soldaten {
 			x("index 0 used for soldiers, invalid!");
 		$this->soldaten=$arr;
 		$this->changed=false;
+	}
+	
+	public function setHerkunft($herkunft) {
+		$this->herkunft = $herkunft;
+	}
+	
+	public function setUser($user) {
+		$this->user = $user;
 	}
 	
 	public static function newFromIds($arr,$hero=null) {
@@ -99,11 +113,11 @@ class Soldaten {
 	}
 	
 	public function getUser() {
-		return null;
+		return $this->user;
 	}
 	
 	public function getHerkunft() {
-		return null;
+		return $this->herkunft;
 	}
 	
 	private function initSoldaten($arr){
@@ -296,3 +310,5 @@ class Soldaten {
 	}
 
 }
+
+?>

@@ -128,7 +128,9 @@ class InfoMessage {
 	protected static function partUnitCountToHtml($arr) {
 		$html='<tr><td>'.$arr[1].'</td>';
 		for ($j=1;$j<=11;$j++) {
-			if (isset($arr[$j+1]) and $arr[$j+1]>0)
+			if (isset($arr[$j+1]) and $arr[$j+1]=='?')
+				$html.='<td class="c">?</td>';
+			elseif (isset($arr[$j+1]) and $arr[$j+1]>0)
 				$html.='<td>'.$arr[$j+1].'</td>';
 			else
 				$html.='<td class="c">0</td>';
@@ -175,6 +177,20 @@ class InfoMessage {
 	// $volk: int
 	public function addPartUnitTypes($volk) {
 		$this->addPart(self::PART_UNIT_TYPES,array($volk));
+	}
+	
+	// $known = array('spaher'=>bool,'troops'=>bool);
+	public function addPartUnitCountOrUnknown($text,$units,$known) {
+		foreach($units as $tid => $count) {
+			$typ=TruppenTyp::getById($tid);
+			if ($typ!=null){
+				$show=$typ->isSpy() && @$known['spaher']==true;
+				$show|= @$known['troops']==true;
+				if (! $show)
+					$units[$tid]='?';
+			}
+		}
+		$this->addPartUnitCount($text,$units,$known);
 	}
 	
 	// $text: string
@@ -233,11 +249,11 @@ class InfoMessage {
 			$ally=$ally->get('id');
 		elseif (is_int($ally)){}
 		else
-			throw new Warning("$ally is not an object or int as exptected");
+			new Errorlog("$ally is not an object or int as exptected");
 		$sql="INSERT INTO tr".ROUND_ID."_ally_kampfe
 			(ally_id,datetime,betreff,text)
 			VALUES
-			('$ally','".now()."','$betreff','".$this->text."');";
+			('$ally','".now()."','$betreff','".utf8_encode($this->text)."');";
 		mysql_query($sql);
 	}
 	
@@ -249,11 +265,13 @@ class InfoMessage {
 		elseif (is_string($user))
 			$name=$user;
 		else
-			throw new Warning("$user is not an object or string as expected");
+			new Errorlog("$user is not an object or string as expected");
 		$sql="INSERT INTO tr".ROUND_ID."_msg
 			(von,an,typ,zeit,betreff,text)
 			VALUES
-			('','$name','$typ','".now()."','$betreff','".$this->text."');";
+			('','$name','$typ','".now()."','$betreff','".utf8_encode($this->text)."');";
 		mysql_query($sql);
 	}
 }
+
+?>

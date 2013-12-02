@@ -87,3 +87,6 @@ class SchlachtFeld {
 	}
 	
 }
+
+
+?>

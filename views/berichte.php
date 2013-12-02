@@ -33,6 +33,7 @@ echo'<form method="post"
 <?php
 
 $berichte=Bericht::getAll($tab);
+$perPage = Diverses::get('berichte_pro_seite');
 
 if (empty($berichte)) {
 	echo'<tr><td colspan="4" class="c">Es sind keine Berichte
@@ -55,6 +56,7 @@ else {
 					date('d.m.y H:i',strtotime($bericht->get('zeit'))).
 				'</td>
 				</tr>';
+			if ($nr==$perPage) break;
 			$nr++;
 		}
 	}
@@ -74,12 +76,12 @@ if ($anz>0)
 echo'</td><td class="r7">';
 
 if ($start>0)
-	echo'<a href="?page=berichte&t='.$tab.'&s='.($start-10).'">«</a>';
+	echo'<a href="?page=berichte&t='.$tab.'&s='.($start-$perPage).'">«</a>';
 else
 	echo'<span class="c"><b>«</b></span>';
 
-if ($start+10<$anz)
-	echo'<a href="?page=berichte&t='.$tab.'&s='.($start+10).'">»</a>';
+if ($start+$perPage<$anz)
+	echo'<a href="?page=berichte&t='.$tab.'&s='.($start+$perPage).'">»</a>';
 else
 	echo'<span class="c"><b>»</b></span>';
 ?>

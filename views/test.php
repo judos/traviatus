@@ -1,29 +1,46 @@
 <?php
-
-
 $stview=1;
 
+testeBoolOperator();
 
-$text='Hi mein Profil, hier mal ein kurzer Travian text zu [Spieler]judos[/spieler] hihihi hahaha
-	und hier noch [Spieler]asdf jklö[/spieler]<br>
-	Allianz [Allianz]asdf[/allianz] <br>
-	[Allianz]qwer[/allianz]';
-
-echo insert_tra_tags($text);
-
-
+function testeBoolOperator() {
+	$a=false;
+	$a |= true; // $a hat nun den wert 1 (int)
+	x($a == true);
+}
 
 
-/*
-$ally=Allianz::getById(17);
 
-x($ally->getNews());
+//testDorfGetSpaher();
 
-$ally->insertNews('Ich ist in die Allianz eingetreten');
+function testDorfGetSpaher() {
+	$dorf = Dorf::getByXY(3,1);
+	$truppen = $dorf->getTruppenArrUsers();
+	$getSpaherFnc =function($truppe) {
+		return $truppe -> getSpaher();
+	};
+	$spaher = array_map($getSpaherFnc,$truppen);
+	$spaherAnz = array_sum($spaher);
+	x($truppen);
+	x($spaherAnz);
+}
 
-x($ally->getNews());
 
-*/
+function testTravianTags() {
+	$text='Hi mein Profil, hier mal ein kurzer Travian text zu [Spieler]judos[/spieler] hihihi hahaha
+		und hier noch [Spieler]asdf jklö[/spieler]<br>
+		Allianz [Allianz]asdf[/allianz] <br>
+		[Allianz]qwer[/allianz]<br>
+		[Allianz]2[/allianz]';
+	echo insert_tra_tags($text);
+}
+
+function testAllianzNews() {
+	$ally=Allianz::getById(17);
+	x($ally->getNews());
+	$ally->insertNews('Ich ist in die Allianz eingetreten');
+	x($ally->getNews());
+}
 
 
 /*

@@ -48,12 +48,24 @@ class Truppe extends Soldaten {
 		parent::__construct($volk,$soldatenIds,$held);
 	}
 	
+	//returns: Dorf
 	public function getHerkunft() {
 		return Dorf::getByXY($this->data['ursprung_x'],$this->data['ursprung_y']);
 	}
 	
+	//returns: Spieler
 	public function getUser() {
 		return Spieler::getById($this->userid);
+	}
+	
+	public function getSpaher() {
+		$sum=0;
+		$soldaten = $this->soldatenIdWithoutHero();
+		foreach($soldaten as $id => $anz) {
+			if (TruppenTyp::getById($id)->isSpy())
+				$sum+=$anz;
+		}
+		return $sum;
 	}
 
 	public function get($att) {

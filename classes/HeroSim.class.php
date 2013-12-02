@@ -13,7 +13,7 @@ class HeroSim {
 		if ($att=='name')
 			return $this->name;
 		else
-			throw new Warning("Can't find any attribute for object HeroSim");
+			new Errorlog("Can't find any attribute for object HeroSim");
 	}
 	
 }

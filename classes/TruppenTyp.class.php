@@ -100,6 +100,10 @@ class TruppenTyp {
 			break;
 		}
 	}
+	
+	public function isSpy() {
+		return $this->get('spio')==1;
+	}
 
 	public function needs() {
 		$needs=explode(':',$this->get('needs'));

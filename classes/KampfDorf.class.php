@@ -45,3 +45,5 @@ class KampfDorf extends KampfSim {
 	}
 
 }
+
+?>

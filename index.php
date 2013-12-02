@@ -27,14 +27,16 @@ connect();
 set_error_handler('handleError');
 
 //variablen zurücksetzen
-$action_forwarding=true;  //Ob nach einem Action automatisch weitergeleitet wird
-                           //Spiel-Einstellung: true
-$error_output_fatal=false; //Falls ein Fatal_Error im PHP existiert sollte dies auf
-                           // True umgeschalten werden um alle Fehler anzuzeigen
-						   //Spiel-Einstellung: false
+$action_forwarding=true;  	//Ob nach einem Action automatisch weitergeleitet wird
+							//Spiel-Einstellung: true
+$error_output_fatal=false; 	//Falls ein Fatal_Error im PHP existiert sollte dies auf
+							// True umgeschalten werden um alle Fehler anzuzeigen
+							//Spiel-Einstellung: false
 $title='Traviatus R'.ROUND_ID.' ('.VERSION.')'; //Titel der Runde
+//xOff();					//Versteckt alle Fehlermeldungen
+	//Wichtige Bereiche beim Debuggen mit xOn(); und xOff(); umschreiben
 
-$blocks_shown=array();     //HTML-Template-Blocks die angezeigt wurden
+$blocks_shown=array();		//HTML-Template-Blocks die angezeigt wurden
 $blocks_hidden=array();    //HTML-Template-Blocks die verborgen wurden
 $body_onload='';           //Javascript das beim Laden ausgeführt wird
 $error='';                 //Hier werden Fehlermeldungen gespeichert
