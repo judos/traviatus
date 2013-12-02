@@ -250,11 +250,24 @@ class InfoMessage {
 		elseif (is_int($ally)){}
 		else
 			new Errorlog("$ally is not an object or int as exptected");
+			
+		//insert message
 		$sql="INSERT INTO tr".ROUND_ID."_ally_kampfe
 			(ally_id,datetime,betreff,text)
 			VALUES
 			('$ally','".now()."','$betreff','".utf8_encode($this->text)."');";
 		mysql_query($sql);
+		
+		//don't overfill database, count tuples for this alliance
+		$r=mysql_query("SELECT COUNT(*) as anz FROM tr".ROUND_ID."_ally_kampfe WHERE ally_id='$ally';");
+		$d=mysql_fetch_assoc($r);
+		$anz = $d['anz'];
+		
+		$maxAnz = Diverses::get('allianz_max_anz_berichte');
+		if ($anz>$maxAnz) {
+			$delRows = $anz - $maxAnz;
+			mysql_query("DELETE FROM tr1_ally_kampfe WHERE ally_id=$ally ORDER BY datetime ASC LIMIT $delRows;");
+		}
 	}
 	
 	// $user: string, or Spieler-object

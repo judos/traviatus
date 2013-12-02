@@ -1,0 +1,10 @@
+// add tag:
+ git tag %newName
+
+// show list of tags:
+ git tag 
+
+// push tags online
+ git push --tags
+// or push only one tag:
+ git push origin %tagName
