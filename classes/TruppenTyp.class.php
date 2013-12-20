@@ -20,6 +20,10 @@ class TruppenTyp {
 	public function __toString() {
 		return 'TruppenTyp: '.$this->get('name').' (id '.$this->id.')';
 	}
+	
+	public function isSiedler() {
+		return $this->id % 10 == 0 && $this->id <= 30;
+	}
 
 	public function get($att) {
 		if ($att=='mehrzahl' && $this->data[$att]=='')

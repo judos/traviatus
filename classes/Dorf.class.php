@@ -228,8 +228,16 @@ class Dorf extends DorfSim {
 
 	public function anzahlSiedler() {
 		$truppe=Truppe::getByXYU($this->x,$this->y,$this->get('user'));
-		$soldaten=$truppe->soldatenNr();
-		return $soldaten[9];
+		$soldaten=$truppe->soldatenId();
+		$totalAnz=0;
+		foreach($soldaten as $id => $anz) {
+			if ($id!='hero'){
+				$typ = TruppenTyp::getById($id);
+				if ($typ->isSiedler())
+					$totalAnz+=$anz;
+			}
+		}
+		return $totalAnz;
 	}
 
 	public function deinDorf() {

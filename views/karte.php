@@ -84,6 +84,9 @@ for ($y=-3;$y<=3;$y++) {
       $bild=$land->get('typ');
       echo'<img class="mt'.$nr.'" src="img/un/m/o'.$bild.'.gif">';
     }
+	elseif ($land->get('ww')==1) {
+		echo'<img class="mt'.$nr.'" src="img/un/m/o99.gif">';
+	}
     else {
       $dorf=Dorf::getByXY($x+$px,$y+$py);
       if ($dorf!==NULL) {

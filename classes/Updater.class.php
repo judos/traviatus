@@ -240,10 +240,10 @@ class Updater {
 			$truppe=TruppeMove::getById($data['keyid']);
 			$start_dorf=$truppe->startDorf();
 			$ziel_dorf=$truppe->zielDorf();
-			$sx=$start_dorf->get('x');
-			$sy=$start_dorf->get('y');
-			$zx=$ziel_dorf->get('x');
-			$zy=$ziel_dorf->get('y');
+			$sx=$truppe->get('start_x');
+			$sy=$truppe->get('start_y');
+			$zx=$truppe->get('ziel_x');
+			$zy=$truppe->get('ziel_y');
 			
 			$dieserUser=$truppe->getUser();
 			$typ=$truppe->get('aktion');

@@ -104,6 +104,9 @@ for ($y=-8;$y<=8;$y++) {
       $bild=$land->get('typ');
       echo'src="'.$imgpath.'/o'.$bild.'.gif">';
     }
+	elseif ($land->get('ww')==1) {
+		echo'src="'.$imgpath.'/o99.gif">';
+	}
     else {
       $dorf=Dorf::getByXY($x+$px,$py-$y);
       if ($dorf!==NULL) {

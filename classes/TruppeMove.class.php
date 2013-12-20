@@ -286,10 +286,8 @@ class TruppeMove extends Soldaten{
 					$startDorf->subRess($ress);
 					//Einheiten abziehen
 					$truppe=Truppe::getByDU($startDorf,$user);
-					x($truppe);
 					
 					$truppe->entfernen($soldaten);
-					x($truppe,$truppe->changed);
 					$tstring=implode(':',Soldaten::soldatenNr($soldaten));
 					
 					//Truppe losschicken
