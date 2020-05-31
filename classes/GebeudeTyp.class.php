@@ -107,6 +107,12 @@ class GebeudeTyp {
 		//Aussen sonst nichts bauen
 		if ($gid==40 and ($this->id<31 or $this->id>33))
 			$allowed=-1;
+			
+		//Weltwunderbauplatz
+		if (WW::isWWDorf($dorf) and $gid==WW::getField() and $this->id == WW::getWWGebId())
+			$allowed=1;
+		elseif (WW::isWWDorf($dorf) and $gid==WW::getField())
+			$allowed=-1;
 
 		return (($this->anforderungenOk($dorf) or $allowed==1)
 				and $allowed!=-1);

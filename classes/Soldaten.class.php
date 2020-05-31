@@ -1,5 +1,4 @@
 <?php
-
 class Soldaten {
 	public static $save=false;
 	
@@ -161,6 +160,8 @@ class Soldaten {
 	
 	public static function soldatenNr($soldaten) {
 		$result=array();
+		for($i=0;$i<10;$i++)
+			$result[$i]=0;
 		foreach($soldaten as $id=>$anz) {
 			if ($id=='hero')
 				$i=10;
@@ -169,7 +170,6 @@ class Soldaten {
 			$result[$i]=$anz;
 		}
 		ksort($result);
-		$result[10]=$soldaten['hero'];
 		return $result;
 	}
 	
@@ -216,7 +216,6 @@ class Soldaten {
 		}
 		return $result;
 	}
-
 	public function getVersorgung() {
 		$versorgung=0;
 		foreach ($this->soldaten as $id => $anz) {
@@ -315,7 +314,5 @@ class Soldaten {
 				return false;
 		return true;
 	}
-
 }
-
 ?>

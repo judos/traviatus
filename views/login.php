@@ -4,6 +4,7 @@ if (!$execute) die('');
 outgame_links();
 outgame_blocks();
 
+$body_onload .= 'snd.name.focus(); ';
 ?>
 
 

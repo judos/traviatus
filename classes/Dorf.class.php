@@ -653,13 +653,13 @@ class Dorf extends DorfSim {
 			foreach($array as $index => $soldaten) {
 				$tid=$soldaten['typ'];
 				if ($tid!='hero') {
-				  $typ=TruppenTyp::getById($tid);
-          $ver=$typ->get('versorgung');
-        }
-        else $ver=6;
-        $total_versorgung=$soldaten['anz']*$ver;
-        if ($grosste_versorgung===FALSE or $total_versorgung>$grosste_versorgung)
-           $grosste_versorgung=$index;
+					$typ=TruppenTyp::getById($tid);
+					$ver=$typ->get('versorgung');
+				}
+				else $ver=6;
+				$total_versorgung=$soldaten['anz']*$ver;
+				if ($grosste_versorgung===FALSE or $total_versorgung>$grosste_versorgung)
+					$grosste_versorgung=$index;
 			}
 			if ($grosste_versorgung!==FALSE and $array[$grosste_versorgung]['anz']>0) {
 				$tid=$array[$grosste_versorgung]['typ'];
@@ -668,7 +668,7 @@ class Dorf extends DorfSim {
 					$baukosten=$typ->baukosten();
 				}
 				else {
-					$baukosten=100;
+					$baukosten=array(3=>100);
 				}
 				$getreide+=$baukosten[3];
 				$array[$grosste_versorgung]['anz']--;
@@ -836,12 +836,19 @@ class Dorf extends DorfSim {
 		if (is_object($user))
 			$user=$user->get('id');
 		
-		//Gebï¿½ude zusammen setzen
+		//Gebäude zusammen setzen
 		$geb1=strRepeatSep('0',18,':');
 		$geb2=array_fill(0,22,0);
 		$geb2t=array_fill(0,22,0);
-		$geb2[7]=1;
-		$geb2t[7]=15;
+		
+		$feld=7; //Mittleres Feld im Dorf für das Hauptgebäude
+		$land = Land::getByXY($x,$y);
+		if ($land->get('ww')==1)
+			$feld=4; //Feld rechts oben ausserhalb des Zentrums
+		
+		$geb2[$feld]=1;
+		$geb2t[$feld]=15;
+		
 		$geb2=implode(':',$geb2);
 		$geb2t=implode(':',$geb2t);
 

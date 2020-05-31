@@ -415,12 +415,17 @@ table.map_infobox_grey tr {background-color: #FFF;}
 
 /* Div Layer fuer Dorfhintergrund */
 .d2_x {position:absolute; width:540px; height:448px; z-index:1; left:5px; top:30px;}
-.d2_0 {background-image:url(img/un/g/bg0.jpg);}
-.d2_1 {background-image:url(img/un/g/bg1.jpg);}		/* Palisade (Gallier) */
-.d2_11 {background-image:url(img/un/g/bg11.jpg);}	/* Stadtmauer (Roemer) */
-.d2_12 {background-image:url(img/un/g/bg12.jpg);}	/* Erdwall (Germanen) */
-.d2_2 {background-image:url(img/un/g/bg2.jpg);}
-.d2_3 {background-image:url(img/un/g/bg3.jpg);}
+.d2_0 {background-image:url(img/un/g/bg0.jpg);}		/* Stadt mit Graben */
+.d2_1 {background-image:url(img/un/g/bg1.jpg);}		/* Stadtmauer (Roemer) */
+.d2_2 {background-image:url(img/un/g/bg2.jpg);}		/* Erdwall (Germanen) */
+.d2_3 {background-image:url(img/un/g/bg3.jpg);}		/* Palisade (Gallier) */
+
+.d2_0ww {background-image:url(img/un/g/bg0-ww.png);}	/* Weltwunderdorf mit Graben */
+.d2_1ww {background-image:url(img/un/g/bg1-ww.png);}	/* Weltwunderdorf mit Mauer */
+.d2_2ww {background-image:url(img/un/g/bg2-ww.png);}	/* Weltwunderdorf mit Erdwall */
+.d2_3ww {background-image:url(img/un/g/bg3-ww.png);}	/* Weltwunderdorf mit Palisade */
+
+.d2_ww_iso { background-image:url(img/un/g/bg-ww-bauplatz.png);} /* Bauplatz anzeige des WW */
 
 /* Position der Gebaeude im Dorfzentrum */
 .d1{position:absolute; z-index:6; left:121px; top:82px;}
@@ -431,6 +436,7 @@ table.map_infobox_grey tr {background-color: #FFF;}
 
 .d6{position:absolute; z-index:11; left:86px; top:121px;}
 .d7{position:absolute; z-index:12; left:167px; top:128px;}
+.dww{position:absolute; z-index:12; left:162px; top:158px;}
 .d8{position:absolute; z-index:13; left:253px; top:111px;}
 .d9{position:absolute; z-index:14; left:401px; top:152px;}
 .d10{position:absolute; z-index:15; left:72px; top:191px;}
@@ -446,6 +452,7 @@ table.map_infobox_grey tr {background-color: #FFF;}
 .d18{position:absolute; z-index:23; left:292px; top:277px;}
 .d19{position:absolute; z-index:24; left:150px; top:297px;}
 .d20{position:absolute; z-index:25; left:266px; top:306px;}
+
 .dx1 {position:absolute; z-index:5; left:318px; top:232px;}
 .dx2 {position:absolute; z-index:5; left:237px; top:383px;}
 

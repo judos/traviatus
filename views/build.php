@@ -19,6 +19,15 @@ if (isset($_GET['highest'])) {
 	if ($gid==0) unset($gid);
 }
 
+// Prüfe auf Weltwunderbauplatz
+$ww = false;
+if (WW::isWWDorf($login_dorf)) {
+	if (in_array($gid, WW::getExcludeFields())){
+		$gid = WW::getField();
+		$ww = true;
+	}
+}
+
 if (!isset($gid)) gotoP('dorf1');
 
 //Gebäude ID und Grid ID und Stufe finden

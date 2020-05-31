@@ -10,8 +10,15 @@ outgame_blocks();
 
 <ul>
 <?php
-$arr=array('actions','classes','doku','includes','stammindex','template','views');
-foreach($arr as $link) {
-	echo'<li><a href="?page='.$link.'">'.ucwords($link).'</a></li>';
+
+$exclude=array('index.php','overview.php' ,'.','..');
+
+$dir=opendir('.');
+while( ($file=readdir($dir)) !== false) {
+	if (in_array($file,$exclude))
+		continue;
+	$link = substr($file,0,-4);
+	echo '<li><a href="?page='.$link.'">'.ucwords($link).'</a></li>';
 }
+
 ?>

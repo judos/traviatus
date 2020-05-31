@@ -190,7 +190,7 @@ class Outputer {
 		}
 	}
 
-	public static function dorf2Karte($beschriftung) {
+	public static function dorf2Karte($beschriftung,$ww,$wwFelderAuslassen) {
 		//Map für das Anwählen von Bauplätzen oder Gebäuden (inklusive Stadtmauer)
 		echo'<div class="d2_x" style="z-index:50;">
 			<img usemap="#map3" style="z-index:10000;" src="img/un/a/x.gif" border="0" height="450" width="540">
@@ -222,10 +222,17 @@ class Outputer {
 			);
 		
 		for($i=19;$i<=40;$i++){
+			if (! ($ww and array_search($i,$wwFelderAuslassen)!==false))
 			if(isset($coords[$i]))
 				echo'<area href="?page=build&gid='.$i.'" title="'.$beschriftung[$i].'"
 					coords="'.$coords[$i].'" shape="poly">';
 		}
+		//Weltwunderbauplatz
+		$feld = WW::getField();
+		if ($ww)
+			echo'<area href="?page=build&gid='.$feld.'" title="'.$beschriftung[$feld].'"
+				coords="222,150,283,142,340,163,348,199,318,244,300,277,279,291,228,284,172,245,156,221,157,189,194,158" shape="poly">';
+		
 		echo'</map>
 			</div>';
 	}

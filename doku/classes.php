@@ -28,7 +28,7 @@ TEXT;
 			echo'<td><a href="?page=classes&s='.$c[$i+$j].'">'.$c[$i+$j].'</a></td>';
 		echo'</tr>';
 	}
-	echo'</table><br>--> <a href="?">Zurück</a>';
+	echo'</table><br> <a href="?">Zurück</a>';
 }
 
 else {

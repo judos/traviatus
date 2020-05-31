@@ -25,7 +25,7 @@ if ($_GET['do']=='newvillage') {
 	$y=$_POST['y'];
 	$volk=$login_user->get('volk');
 	//Einfach 3 Siedler
-	$soldaten=array($volk*10=>3);
+	$soldaten=array( $volk*10 => 3);
 	//Kosten bzw Ress (von allem 750)
 	$ress=array_fill(0,4,750);
 	TruppeMove::create($login_dorf,$x,$y,$login_user,1,
