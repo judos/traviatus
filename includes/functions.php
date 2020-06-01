@@ -132,11 +132,14 @@ function zeit_dauer($stamp) {
 function serverzeit($load_time) {
 	$start=Diverses::get('rundenstart');
 	$d=floor((time()-strtotime($start))/86400);
-	$result=array('CALC_MS'=> round((microtime()-$load_time)*1000),
+	$calc_ms = round((microtime(true)-$load_time)*1000);
+	
+	$result= [
+		'CALC_MS'=> $calc_ms,
 		'CALC_TIME'=> date('H:i:s',time()),
 		'CALC_RUNDAYS'=> $d,
-		'CALC_RUNTIME'=> zeit_dauer(time()
-			-strtotime($start)-$d*86400) );
+		'CALC_RUNTIME'=> zeit_dauer(time()-strtotime($start)-$d*86400)
+	];
 	if ($result['CALC_MS']<0) $result['CALC_MS']+=1000;
 	return $result;
 }

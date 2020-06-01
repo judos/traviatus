@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL | E_WARNING);
-$load_time=microtime();
+$load_time=microtime(true);
 
 //Falls ein externer Index (wie doku) diesen Index benützt muss $path gesetzt sein
 //um den Pfad der existierenden Links (z.b. Menu links) gültig anzuzeigen.

@@ -178,6 +178,9 @@ class Land {
 		$wtot=100;
 		$anz=sizeof(self::$land_typen);
 		foreach($typen as $typ => $wkeit) {
+			if (!is_numeric($wkeit)) {
+				$wkeit = floatval($wkeit);
+			}
 			$wtot-=$wkeit;
 			$anz--;
 		}

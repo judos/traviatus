@@ -12,7 +12,7 @@ class Spieler {
 	protected $anzDorfer;
 	protected $einladungen;
 
-	protected static $objekte;	// [$id] => $spieler  oder auch [$name] => $spieler
+	protected static $objekte = array();	// [$id] => $spieler  oder auch [$name] => $spieler
 	protected static $db_key=array('id');
 	protected static $db_table='user';
 
@@ -331,7 +331,7 @@ class Spieler {
 	}
 
 	public static function statistikVolker() {
-		if (!isset(self::$volker)) {
+		if (!@isset(self::$volker)) {
 			$sql="SELECT COUNT(*) as anz,volk
 				FROM `tr".ROUND_ID."_".self::$db_table."`
 				GROUP BY volk;";
@@ -339,13 +339,13 @@ class Spieler {
 			while($data=mysql_fetch_assoc($result))
 				self::$volker[$data['volk']]=$data['anz'];
 			for($i=1;$i<=3;$i++)
-				if (!isset(self::$volker[$i])) self::$volker[$i]=0;
+				if (!@isset(self::$volker[$i])) self::$volker[$i]=0;
 		}
 		return self::$volker;
 	}
 
 	public static function anzahl() {
-		if (!isset(self::$anz)) {
+		if (!@isset(self::$anz)) {
 			$sql="SELECT Count(*) as anz
 				FROM `tr".ROUND_ID."_".self::$db_table."`;";
 			$result=mysql_query($sql);
@@ -356,21 +356,21 @@ class Spieler {
 	}
 
 	public static function getById($id) {
-		if (!isset(self::$objekte[$id])) {
+		if (!array_key_exists($id, self::$objekte)) {
 			self::loadEntry($id);
 		}
 		return self::$objekte[$id];
 	}
 
 	public static function getByName($name) {
-		if (!isset(self::$objekte[$name])) {
+		if (!array_key_exists($name, self::$objekte)) {
 			self::loadEntry($name,'name');
 		}
-		return @self::$objekte[$name];
+		return self::$objekte[$name];
 	}
 
 	protected static function loadEntry($id,$att='id') {
-		if (!isset(self::$objekte[$id])) {
+		if (!array_key_exists($id, self::$objekte)) {
 			$sql="SELECT * FROM tr".ROUND_ID."_".self::$db_table."
 				WHERE $att='$id';";
 			$result=mysql_query($sql);

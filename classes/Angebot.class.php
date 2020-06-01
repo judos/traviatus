@@ -9,7 +9,7 @@ class Angebot {
 	protected static $objekte;   // [$x][$y]
 	protected static $ob_id;     // [$id]
 	protected static $loaded;    // [$x][$y]
-	protected static $loaded_id; // [$id]
+	protected static $loaded_id = []; // [$id]
 	protected static $db_key=array('keyid');
 	protected static $db_table='angebote';
 
@@ -203,7 +203,7 @@ class Angebot {
 				WHERE ursprung_x=$x AND ursprung_y=$y;";
 			$result=mysql_query($sql);
 			while ($data=mysql_fetch_assoc($result)) {
-				if (!self::$loaded_id[$data['keyid']])
+				if (!array_key_exists($data['keyid'], self::$loaded_id))
 					new Angebot($data['keyid'],$data);
 			}
 			self::$loaded[$x][$y]=true;

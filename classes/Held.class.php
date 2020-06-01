@@ -13,7 +13,7 @@ class Held {
 	protected static $objekte;
 	protected static $loaded;
 	protected static $ob_user; //[$user] -> array of heroes
-	protected static $loaded_user;
+	protected static $loaded_user = array();
 
 	protected static $db_key=array('keyid');
 	protected static $db_table='hero';
@@ -212,21 +212,21 @@ class Held {
 			x('Held::getByUser, user id nicht herausgefunden',$user);
 			return false;
 		}
-		if (!self::$loaded_user[$id]) {
+		if (!array_key_exists($id, self::$loaded_user)) {
 			self::loadByUser($id);
 		}
 		return self::$ob_user[$id];
 	}
 
 	public static function loadByUser($user) {
-		if (!self::$loaded_user[$user]) {
+		if (!array_key_exists($user, self::$loaded_user)) {
 			$sql="SELECT * FROM tr".ROUND_ID."_".self::$db_table."
 				WHERE user=$user;";
 			$result=mysql_query($sql);
 			self::$ob_user[$user]=array();
 			while ($data=mysql_fetch_assoc($result)) {
 				$id=$data['keyid'];
-				if (!self::$loaded[$id]) {
+				if (!@self::$loaded[$id]) {
 					new Held($id,$data);
 				}
 			}

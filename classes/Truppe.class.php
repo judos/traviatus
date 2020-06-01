@@ -179,10 +179,12 @@ class Truppe extends Soldaten {
 	//Liefert User IDs von den Truppen
 	// (mit mindestens 1 Soldat) zurück
 	public static function getUsersByXY($x,$y,$gefangen=0,$getEmpty=false) {
-		if (@!self::$loaded[$x][$y]) {
+		if (!@self::$loaded[$x][$y]) {
 			self::loadEntry($x,$y);
 		}
-		if (!isset(self::$objekte[$x][$y])) return array();
+		if (!isset(self::$objekte[$x][$y])) {
+			return array();
+		}
 		$users=array_keys(self::$objekte[$x][$y]);
 		$result=array();
 		foreach($users as $userid) {

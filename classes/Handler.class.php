@@ -167,14 +167,14 @@ class Handler {
 	public static function getByZ($dorf) {
 		$x=$dorf->get('x');
 		$y=$dorf->get('y');
-		if (!self::$ob_ziel_loaded[$x][$y]) {
+		if (!@self::$ob_ziel_loaded[$x][$y]) {
 			self::loadByZ($x,$y);
 		}
 		return self::$ob_ziel[$x][$y];
 	}
 
 	protected static function loadByZ($x,$y) {
-		if (!self::$ob_ziel_loaded[$x][$y]) {
+		if (!@self::$ob_ziel_loaded[$x][$y]) {
 			$sql="SELECT * FROM tr".ROUND_ID."_".self::$db_table."
 				WHERE nach_x=$x AND nach_y=$y;";
 			$result=mysql_query($sql);

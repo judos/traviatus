@@ -7,6 +7,9 @@ function wkeitVerteilung($chancen) {
 	$zahl=mt_rand(0,99)+0.001*mt_rand(0,999);
 	$i=0;
 	foreach($chancen as $key => $chance) {
+		if (!is_numeric($chance)) {
+			$chance = floatval($chance);
+		}
 		if ($zahl<=$chance) return $key;
 		$zahl-=$chance;
 	}
