@@ -1,11 +1,21 @@
--- PHP SQL Dump
--- Version 1.1
--- Gemacht von Julian Schelker
+-- phpMyAdmin SQL Dump
+-- version 5.0.2
+-- https://www.phpmyadmin.net/
 --
--- User Host: root@localhost
--- Erstellungszeit: 26. Dec 2013 um 16:37
--- PHP-Version: 5.3.8
--- MySQL-Version: 5.5.16
+-- Host: 127.0.0.1
+-- Erstellungszeit: 01. Jun 2020 um 14:40
+-- Server-Version: 10.4.11-MariaDB
+-- PHP-Version: 7.4.6
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Datenbank: `traviatus`
@@ -14,66 +24,75 @@
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur f�r Tabelle `tr1_ally`
+-- Tabellenstruktur für Tabelle `tr1_ally`
 --
 
 CREATE TABLE `tr1_ally` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL,
   `tag` varchar(4) NOT NULL DEFAULT '',
   `name` varchar(16) NOT NULL DEFAULT '',
   `beschreibung` text NOT NULL,
   `beschreibung2` text NOT NULL,
-  `einwohner` mediumint(9) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+  `einwohner` mediumint(9) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Daten f�r Tabelle `tr1_ally`
+-- Daten für Tabelle `tr1_ally`
 --
 
-INSERT INTO `tr1_ally` (`id`, `tag`, `name`, `beschreibung`, `beschreibung2`, `einwohner`) VALUES 
+INSERT INTO `tr1_ally` (`id`, `tag`, `name`, `beschreibung`, `beschreibung2`, `einwohner`) VALUES
 (2, 'asdf', 'qwer', '', '', 758);
 
+-- --------------------------------------------------------
+
 --
--- Tabellenstruktur f�r Tabelle `tr1_ally_chat`
+-- Tabellenstruktur für Tabelle `tr1_ally_chat`
 --
 
 CREATE TABLE `tr1_ally_chat` (
-  `ally_id` int(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
+  `ally_id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
   `zeit` datetime NOT NULL,
-  `text` text NOT NULL,
-  PRIMARY KEY (`ally_id`,`user_id`,`zeit`)
+  `text` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Tabellenstruktur f�r Tabelle `tr1_ally_einladungen`
+-- Daten für Tabelle `tr1_ally_chat`
+--
+
+INSERT INTO `tr1_ally_chat` (`ally_id`, `user_id`, `zeit`, `text`) VALUES
+(2, 1, '2020-06-01 13:56:09', 'test');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `tr1_ally_einladungen`
 --
 
 CREATE TABLE `tr1_ally_einladungen` (
-  `ally_id` int(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`ally_id`,`user_id`)
+  `ally_id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
 --
--- Tabellenstruktur f�r Tabelle `tr1_ally_kampfe`
+-- Tabellenstruktur für Tabelle `tr1_ally_kampfe`
 --
 
 CREATE TABLE `tr1_ally_kampfe` (
-  `keyid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ally_id` int(10) unsigned NOT NULL,
+  `keyid` int(10) UNSIGNED NOT NULL,
+  `ally_id` int(10) UNSIGNED NOT NULL,
   `datetime` datetime NOT NULL,
   `betreff` text NOT NULL,
-  `text` text NOT NULL,
-  PRIMARY KEY (`keyid`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+  `text` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Daten f�r Tabelle `tr1_ally_kampfe`
+-- Daten für Tabelle `tr1_ally_kampfe`
 --
 
-INSERT INTO `tr1_ally_kampfe` (`keyid`, `ally_id`, `datetime`, `betreff`, `text`) VALUES 
+INSERT INTO `tr1_ally_kampfe` (`keyid`, `ally_id`, `datetime`, `betreff`, `text`) VALUES
 (1, 2, '2012-12-04 00:23:39', 'Kolonie greift Neues Dorf an', '1:Angreifer:<a href=\"?page=spieler&name=judos\">judos</a> aus Dorf <a href=\"?page=karte-show&x=3&y=1\">Kolonie (3|1)</a>\r3:3\r4:Einheiten:0:0:0:165:0:0:0:0:0:0\r4:Verluste:0:0:0:0:0:0:0:0:0:0\r4:'),
 (2, 2, '2012-12-04 09:58:12', 'Kolonie greift Neues Dorf an', '1:Angreifer:<a href=\"?page=spieler&name=judos\">judos</a> aus Dorf <a href=\"?page=karte-show&x=3&y=1\">Kolonie (3|1)</a>\r3:3\r4:Einheiten:0:0:0:165:0:0:0:0:0:0\r4:Verluste:0:0:0:0:0:0:0:0:0:0\r4:'),
 (3, 2, '2012-12-04 14:48:06', 'Kolonie greift Neues Dorf an', '1:Angreifer:<a href=\"?page=spieler&name=judos\">judos</a> aus Dorf <a href=\"?page=karte-show&x=3&y=1\">Kolonie (3|1)</a>\r3:3\r4:Einheiten:0:0:0:165:0:0:0:0:0:0\r4:Verluste:0:0:0:0:0:0:0:0:0:0\r4:'),
@@ -85,22 +104,23 @@ INSERT INTO `tr1_ally_kampfe` (`keyid`, `ally_id`, `datetime`, `betreff`, `text`
 (9, 2, '2012-12-04 20:55:57', 'Kolonie greift Neues Dorf an', '1::Angreifer::<a href=\"?page=spieler&name=judos\">judos</a> aus Dorf <a href=\"?page=karte-show&x=3&y=2\">Neues Dorf (3|2)</a>\r3::3\r4::Einheiten::0::0::0::165::0::0::0::0::0::0::0\r4::Verluste::0::0::0::0::0::0::0::0::0::0::0\r4::'),
 (10, 2, '2012-12-04 20:59:51', 'Kolonie greift Neues Dorf an', '1::Angreifer::<a href=\"?page=spieler&name=judos\">judos</a> aus Dorf <a href=\"?page=karte-show&x=3&y=2\">Neues Dorf (3|2)</a>\r3::3\r4::Einheiten::0::0::0::165::0::0::0::0::0::0::0\r4::Verluste::0::0::0::0::0::0::0::0::0::0::0\r4::');
 
+-- --------------------------------------------------------
+
 --
--- Tabellenstruktur f�r Tabelle `tr1_ally_news`
+-- Tabellenstruktur für Tabelle `tr1_ally_news`
 --
 
 CREATE TABLE `tr1_ally_news` (
-  `ally_id` int(10) unsigned NOT NULL,
+  `ally_id` int(10) UNSIGNED NOT NULL,
   `news` text NOT NULL,
-  `datum` datetime NOT NULL,
-  PRIMARY KEY (`ally_id`,`datum`)
+  `datum` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Daten f�r Tabelle `tr1_ally_news`
+-- Daten für Tabelle `tr1_ally_news`
 --
 
-INSERT INTO `tr1_ally_news` (`ally_id`, `news`, `datum`) VALUES 
+INSERT INTO `tr1_ally_news` (`ally_id`, `news`, `datum`) VALUES
 (2, '[spieler]1[/spieler] hat [spieler]5[/spieler] in die Allianz eingeladen.', '2012-10-25 15:26:02'),
 (2, '[spieler]5[/spieler] hat die Einladung abgelehnt.', '2012-10-25 15:26:51'),
 (2, '[spieler]1[/spieler] hat [spieler]5[/spieler] in die Allianz eingeladen.', '2012-10-25 15:26:54'),
@@ -109,13 +129,15 @@ INSERT INTO `tr1_ally_news` (`ally_id`, `news`, `datum`) VALUES
 (2, '[spieler]1[/spieler] hat [spieler]5[/spieler] in die Allianz eingeladen.', '2012-10-25 15:35:39'),
 (2, '[spieler]5[/spieler] ist in die Allianz eingetreten.', '2012-10-25 15:35:43');
 
+-- --------------------------------------------------------
+
 --
--- Tabellenstruktur f�r Tabelle `tr1_ally_range`
+-- Tabellenstruktur für Tabelle `tr1_ally_range`
 --
 
 CREATE TABLE `tr1_ally_range` (
-  `ally_id` int(10) unsigned NOT NULL,
-  `rang_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ally_id` int(10) UNSIGNED NOT NULL,
+  `rang_id` int(10) UNSIGNED NOT NULL,
   `rang_name` text NOT NULL,
   `user_einladen` tinyint(1) NOT NULL,
   `rang_vergeben` tinyint(1) NOT NULL,
@@ -124,23 +146,24 @@ CREATE TABLE `tr1_ally_range` (
   `rundmail` tinyint(1) NOT NULL,
   `ally_diplomatie` tinyint(1) NOT NULL,
   `ally_forum` tinyint(1) NOT NULL,
-  `ally_auflosen` tinyint(1) NOT NULL,
-  PRIMARY KEY (`rang_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+  `ally_auflosen` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Daten f�r Tabelle `tr1_ally_range`
+-- Daten für Tabelle `tr1_ally_range`
 --
 
-INSERT INTO `tr1_ally_range` (`ally_id`, `rang_id`, `rang_name`, `user_einladen`, `rang_vergeben`, `user_entlassen`, `beschreibung_andern`, `rundmail`, `ally_diplomatie`, `ally_forum`, `ally_auflosen`) VALUES 
+INSERT INTO `tr1_ally_range` (`ally_id`, `rang_id`, `rang_name`, `user_einladen`, `rang_vergeben`, `user_entlassen`, `beschreibung_andern`, `rundmail`, `ally_diplomatie`, `ally_forum`, `ally_auflosen`) VALUES
 (2, 12, 'Gr', 1, 1, 1, 1, 1, 1, 1, 1);
 
+-- --------------------------------------------------------
+
 --
--- Tabellenstruktur f�r Tabelle `tr1_angebote`
+-- Tabellenstruktur für Tabelle `tr1_angebote`
 --
 
 CREATE TABLE `tr1_angebote` (
-  `keyid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `keyid` int(10) UNSIGNED NOT NULL,
   `user` varchar(16) NOT NULL DEFAULT '',
   `ursprung_x` int(11) NOT NULL,
   `ursprung_y` int(11) NOT NULL,
@@ -148,41 +171,50 @@ CREATE TABLE `tr1_angebote` (
   `angebot` int(11) NOT NULL,
   `nachfrage_id` tinyint(4) NOT NULL,
   `nachfrage` int(11) NOT NULL,
-  `handler` tinyint(4) NOT NULL DEFAULT '0',
-  `maxzeit` tinyint(4) NOT NULL DEFAULT '0',
-  `ally` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`keyid`)
+  `handler` tinyint(4) NOT NULL DEFAULT 0,
+  `maxzeit` tinyint(4) NOT NULL DEFAULT 0,
+  `ally` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Tabellenstruktur f�r Tabelle `tr1_bugs`
+-- Daten für Tabelle `tr1_angebote`
+--
+
+INSERT INTO `tr1_angebote` (`keyid`, `user`, `ursprung_x`, `ursprung_y`, `angebot_id`, `angebot`, `nachfrage_id`, `nachfrage`, `handler`, `maxzeit`, `ally`) VALUES
+(7, '1', 5, 1, 1, 200, 2, 200, 1, 2, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `tr1_bugs`
 --
 
 CREATE TABLE `tr1_bugs` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL,
   `titel` varchar(24) NOT NULL DEFAULT '',
   `text` tinytext NOT NULL,
-  `zeit` datetime NOT NULL DEFAULT NOW(),
-  `status` tinytext NOT NULL,
-  PRIMARY KEY (`id`)
+  `zeit` datetime NOT NULL DEFAULT current_timestamp(),
+  `status` tinytext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
 --
--- Tabellenstruktur f�r Tabelle `tr1_diverses`
+-- Tabellenstruktur für Tabelle `tr1_diverses`
 --
 
 CREATE TABLE `tr1_diverses` (
   `id` varchar(32) NOT NULL DEFAULT '',
   `value` tinytext NOT NULL,
-  `comment` text NOT NULL,
-  PRIMARY KEY (`id`)
+  `comment` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Daten f�r Tabelle `tr1_diverses`
+-- Daten für Tabelle `tr1_diverses`
 --
 
-INSERT INTO `tr1_diverses` (`id`, `value`, `comment`) VALUES 
+INSERT INTO `tr1_diverses` (`id`, `value`, `comment`) VALUES
+('berichte_pro_seite', '20', 'Anzahl Berichte pro Seite aufgelistet'),
 ('db_version', '10', 'zahl\r\nDie versionsnummer wird benützt um backups einer geänderten Datenbank zu erstellen. Unbedingt ändern bei neuer Struktur in der Datenbank (z.B. neue Tabelle oder neue Felder)'),
 ('fallen', '10:20:30:40:50:60:70:80:90:100:110:120:130:140:150:160:170:180:190:200', 'zahl1:zahl2\r\nAnzahl Fallen die gebaut werden können in Abhängigkeit der Stufe des Fallenstellers'),
 ('fallen_bauzeit', '300:0.9', 'startZeit:faktor\r\nDie Zeit in Sekunden die für den Bau einer Falle benötigt wird. Mit jeder weiteren Stufe die der Fallensteller ausgebaut wird multipliziert sie sich mit dem Faktor.'),
@@ -195,7 +227,7 @@ INSERT INTO `tr1_diverses` (`id`, `value`, `comment`) VALUES
 ('lager', '12:17:23:31:40:50:63:78:96:118:144:176:214:259:313:379:457:551:664:800', 'zahl1:zahl2:...\r\nLagerkapazität des Lagers in hundert Einheiten. Stufe1 umfasst so 1200, Stufe2 1700 etc. Einheiten.'),
 ('mauer_schutz_max', '80:50:65', 'schutzVolk1:schutzVolk2:schutzVolk3\r\nPronzentualer Schutz der mit Stufe 20 des Verteidigungsgebäudes erreicht werden kann pro Volk'),
 ('max_ausbau_nicht_hd', '10', 'zahl\r\nMaximale Ausbaustufe der Rohstofffelder, wenn das Dorf nicht das Hauptdorf ist.'),
-('natur_last_update', '2013-12-26 16:25:35', 'datum zeit\r\nLetzte Aktualisierung der Natur (Tiere in Oasen regenerieren sich)'),
+('natur_last_update', '2020-06-01 14:20:32', 'datum zeit\r\nLetzte Aktualisierung der Natur (Tiere in Oasen regenerieren sich)'),
 ('neue_dorfer', '2:8:20:39:65:99:141:191:251:319:397:486:584:692:811', 'zahl1:zahl2:...\r\nKulturpunkte die benötigt werden für das nächste Dorf in tausend Einheiten'),
 ('produktion', '2:5:9:15:22:33:55:70:100:145:200:280:375:495:635:800:1000:1250:1600:2100:2800:3800:5400:7800:12000:18000:27500', 'zahl1:zahl2:...\r\nRohstoffproduktion in Einheiten pro Stunde begonnen bei Stufe 0'),
 ('register', '1', 'might be 1 or a text explaining why no register is possible anymore'),
@@ -206,42 +238,45 @@ INSERT INTO `tr1_diverses` (`id`, `value`, `comment`) VALUES
 ('versteck', '100:150:230:340:500:750:1100:1700:2600:3800:5800:8600:13000:20000:30000', 'kapStufe1:kapStufe2:...\r\nLagerkapazität des Verstecks für jede Stufe einzeln'),
 ('volker', 'Römer:Germanen:Gallier:Natur', 'name1:name2:...\r\nDie Namen aller Völker, Reihenfolge wichtig\r\nVolk 1 sind Römer, dann Germanen, Gallier und Natur');
 
+-- --------------------------------------------------------
+
 --
--- Tabellenstruktur f�r Tabelle `tr1_dorfer`
+-- Tabellenstruktur für Tabelle `tr1_dorfer`
 --
 
 CREATE TABLE `tr1_dorfer` (
-  `x` tinyint(4) NOT NULL DEFAULT '0',
-  `y` tinyint(4) NOT NULL DEFAULT '0',
+  `x` tinyint(4) NOT NULL DEFAULT 0,
+  `y` tinyint(4) NOT NULL DEFAULT 0,
   `name` varchar(16) NOT NULL DEFAULT 'Neues Dorf',
-  `user` tinyint(4) NOT NULL DEFAULT '0',
-  `einwohner` int(11) NOT NULL DEFAULT '2',
-  `grosse` tinyint(4) NOT NULL DEFAULT '0',
-  `zustimmung` tinyint(4) NOT NULL DEFAULT '100',
+  `user` tinyint(4) NOT NULL DEFAULT 0,
+  `einwohner` int(11) NOT NULL DEFAULT 2,
+  `grosse` tinyint(4) NOT NULL DEFAULT 0,
+  `zustimmung` tinyint(4) NOT NULL DEFAULT 100,
   `expansion` varchar(19) NOT NULL DEFAULT '0',
   `lager` tinytext NOT NULL,
   `geb1` tinytext NOT NULL,
   `geb2` tinytext NOT NULL,
   `geb2t` tinytext NOT NULL,
   `fallen` int(11) NOT NULL,
-  `lastupdate` datetime NOT NULL DEFAULT NOW(),
-  PRIMARY KEY (`x`,`y`)
+  `lastupdate` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Daten f�r Tabelle `tr1_dorfer`
+-- Daten für Tabelle `tr1_dorfer`
 --
 
-INSERT INTO `tr1_dorfer` (`x`, `y`, `name`, `user`, `einwohner`, `grosse`, `zustimmung`, `expansion`, `lager`, `geb1`, `geb2`, `geb2t`, `fallen`, `lastupdate`) VALUES 
-(1, 2, 'ropeko', 5, 14, 1, 100, '0', '80000:80000:80000:80000', '20:25:25:25:25:25:25:25:25:25:25:25:25:25:25:25:25:25', '0:20:20:1:0:0:1:34:0:0:0:0:0:0:0:0:0:0:0:0:1:0', '0:10:11:5:0:0:18:15:0:0:0:0:0:0:0:0:0:0:0:0:16:0', 0, '2013-12-26 16:25:35'),
-(2, 2, 'WW Dorf', 1, 7, 0, 100, '0', '6998.4749999999:4297.0850000001:1232.7800000001:65482.684166666', '0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0', '1:20:20:0:33:0:0:4:0:0:0:0:0:0:0:0:0:0:0:0:1:0', '38:11:10:0:15:0:0:40:0:0:0:0:0:0:0:0:0:0:0:0:16:0', 0, '2013-12-26 16:37:25'),
-(3, 1, 'Kolonie', 1, 104, 0, 100, '0', '29539.448888898:29001.255:29619.86722223:1995.6958333334', '0:10:4:0:0:1:1:6:8:0:0:1:1:0:0:0:0:0', '15:2:2:3:4:1:15:33:0:0:15:1:0:0:1:0:0:0:0:0:1:0', '11:17:37:19:22:8:10:15:0:0:23:25:0:0:23:0:0:0:0:0:16:0', 0, '2013-12-26 16:25:35'),
-(3, 2, 'Neues Dorf', 6, 2, 1, 100, '0', '800:800:800:800', '0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:15:0:0:0:0:0:0:0:0:0:0:0:0:0:0', 0, '2013-12-26 16:25:35'),
-(4, 4, 'Neues Dorf', 4, 2, 1, 100, '0', '800:800:800:800', '0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:15:0:0:0:0:0:0:0:0:0:0:0:0:0:0', 0, '2013-12-26 16:25:35'),
-(5, 1, 'Hauptdorf', 1, 633, 1, 100, '2:3:1:2:2', '83600:83600:83600:83600', '20:20:20:20:20:20:20:20:20:20:20:20:20:20:20:20:20:20', '16:1:10:10:19:1:20:33:10:1:20:20:2:1:14:1:6:2:5:2:15:1:1', '26:38:24:22:19:37:10:15:20:21:11:17:18:39:36:14:28:29:34:35:16:33:17', 10, '2013-12-26 16:25:35');
+INSERT INTO `tr1_dorfer` (`x`, `y`, `name`, `user`, `einwohner`, `grosse`, `zustimmung`, `expansion`, `lager`, `geb1`, `geb2`, `geb2t`, `fallen`, `lastupdate`) VALUES
+(1, 2, 'ropeko', 5, 14, 1, 100, '0', '80000:80000:80000:80000', '20:25:25:25:25:25:25:25:25:25:25:25:25:25:25:25:25:25', '0:20:20:1:0:0:1:34:0:0:0:0:0:0:0:0:0:0:0:0:1:0', '0:10:11:5:0:0:18:15:0:0:0:0:0:0:0:0:0:0:0:0:16:0', 0, '2020-06-01 14:02:22'),
+(2, 2, 'WW Dorf', 1, 7, 0, 100, '0', '9257.4911111102:6637.4911111102:3126.8683333336:65287.179722214', '0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0', '1:20:20:0:33:0:0:5:0:0:0:0:0:0:0:0:0:0:0:0:1:0', '38:11:10:0:15:0:0:40:0:0:0:0:0:0:0:0:0:0:0:0:16:0', 0, '2020-06-01 14:20:32'),
+(3, 1, 'Kolonie', 1, 104, 0, 100, '0', '31300:31300:31300:31300', '0:10:4:0:0:1:1:6:8:0:0:1:1:0:0:0:0:0', '15:2:2:3:4:1:15:33:0:0:15:1:0:0:1:0:0:0:0:0:1:0', '11:17:37:19:22:8:10:15:0:0:23:25:0:0:23:0:0:0:0:0:16:0', 0, '2020-06-01 14:20:32'),
+(3, 2, 'Neues Dorf', 6, 2, 1, 100, '0', '800:800:800:800', '0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:15:0:0:0:0:0:0:0:0:0:0:0:0:0:0', 0, '2020-06-01 14:02:22'),
+(4, 4, 'Neues Dorf', 4, 2, 1, 100, '0', '800:800:800:800', '0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:15:0:0:0:0:0:0:0:0:0:0:0:0:0:0', 0, '2020-06-01 14:02:22'),
+(5, 1, 'Hauptdorf', 1, 633, 1, 100, '2:3:1:2:2', '83600:83600:83600:83600', '20:20:20:20:20:20:20:20:20:20:20:20:20:20:20:20:20:20', '16:1:10:10:19:1:20:33:10:1:20:20:2:1:14:1:6:2:5:2:15:1:1', '26:38:24:22:19:37:10:15:20:21:11:17:18:39:36:14:28:29:34:35:16:33:17', 10, '2020-06-01 14:39:24');
+
+-- --------------------------------------------------------
 
 --
--- Tabellenstruktur f�r Tabelle `tr1_errorlog`
+-- Tabellenstruktur für Tabelle `tr1_errorlog`
 --
 
 CREATE TABLE `tr1_errorlog` (
@@ -250,30 +285,31 @@ CREATE TABLE `tr1_errorlog` (
   `time` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
 --
--- Tabellenstruktur f�r Tabelle `tr1_gebeude`
+-- Tabellenstruktur für Tabelle `tr1_gebeude`
 --
 
 CREATE TABLE `tr1_gebeude` (
-  `id` tinyint(4) NOT NULL DEFAULT '0',
+  `id` tinyint(4) NOT NULL DEFAULT 0,
   `name` varchar(25) NOT NULL DEFAULT '',
   `besch` mediumtext NOT NULL,
-  `typ` tinyint(4) NOT NULL DEFAULT '0',
+  `typ` tinyint(4) NOT NULL DEFAULT 0,
   `baukosten` tinytext NOT NULL,
-  `arbeiter` tinyint(4) NOT NULL DEFAULT '0',
-  `stufen` tinyint(4) NOT NULL DEFAULT '0',
-  `rebuild` tinyint(4) NOT NULL DEFAULT '0',
+  `arbeiter` tinyint(4) NOT NULL DEFAULT 0,
+  `stufen` tinyint(4) NOT NULL DEFAULT 0,
+  `rebuild` tinyint(4) NOT NULL DEFAULT 0,
   `bauzeit` tinytext NOT NULL,
   `needs` tinytext NOT NULL,
-  `volksvorteile` text NOT NULL,
-  PRIMARY KEY (`id`)
+  `volksvorteile` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Daten f�r Tabelle `tr1_gebeude`
+-- Daten für Tabelle `tr1_gebeude`
 --
 
-INSERT INTO `tr1_gebeude` (`id`, `name`, `besch`, `typ`, `baukosten`, `arbeiter`, `stufen`, `rebuild`, `bauzeit`, `needs`, `volksvorteile`) VALUES 
+INSERT INTO `tr1_gebeude` (`id`, `name`, `besch`, `typ`, `baukosten`, `arbeiter`, `stufen`, `rebuild`, `bauzeit`, `needs`, `volksvorteile`) VALUES
 (1, 'Holzfäller', 'Der Holzfäller fällt Bäume, um daraus Holz zu gewinnen. Je weiter der Holzfäller ausgebaut wird, desto mehr Holz produziert er.', 1, '40:100:50:60:1.67', 2, 25, 0, '260:360:1.6', '-1', ''),
 (2, 'Lehmgrube', 'Aus der Lehmgrube wird der Rohstoff Lehm gewonnen. Je höher die Lehmgrube ausgebaut ist desto mehr Lehm kann produziert werden.', 1, '80:40:80:50:1.67', 2, 25, 0, '220:330:1.6', '-1', ''),
 (3, 'Eisenmine', 'Aus den Eisenminen gewinnen die Bergleute den wertvollen Rohstoff Eisen. Je weiter die Eisenmine ausgebaut ist, desto mehr Eisen wird jede Stunde produziert.', 1, '100:80:30:60:1.67', 2, 25, 0, '450:470:1.6', '-1', ''),
@@ -287,7 +323,7 @@ INSERT INTO `tr1_gebeude` (`id`, `name`, `besch`, `typ`, `baukosten`, `arbeiter`
 (11, 'Kornspeicher', 'Im Kornspeicher wird das Getreide der Getreidefarmen gelagert. Je weiter der Kornspeicher ausgebaut wird, desto mehr Getreide kann eingelagert werden.', 1, '80:100:70:20:1.28', 1, 20, 15, '1600:560:1.16', '0', ''),
 (12, 'Waffenschmiede', 'In den Schmelzöfen der Waffenschmiede werden die Waffen der Krieger verbessert. Je weiter das Gebäude ausgebaut ist, desto besser können die Waffen geschmiedet werden.', 2, '170:200:380:130:1.28', 3, 20, 0, '2000:620:1.161', '1:22:3', ''),
 (13, 'Rüstungsschmiede', 'In den Schmelzöfen der Rüstungsschmiede werden die Rüstungen der Krieger verbessert. Je weiter das Gebäude ausgebaut ist, desto bessere Rüstungen können geschmiedet werden.', 2, '130:210:410:130:1.28', 2, 20, 0, '2000:620:1.161', '1:22:1', ''),
-(14, 'Turnierplatz', 'Am Turnierplatz k', 2, '1750:2250:1530:240:1.28', 2, 20, 0, '3400:960:1.019', '1:16:15', ''),
+(14, 'Turnierplatz', 'Am Turnierplatz können deine Truppen ihre Ausdauer trainieren. Je weiter dieses Gebäude ausgebaut ist, desto schneller sind deine Einheiten bei Entfernungen über 30 Feldern.', 2, '1750:2250:1530:240:1.28', 2, 20, 0, '3400:960:1.019', '1:16:15', ''),
 (15, 'Hauptgebäude', 'Im Hauptgebäude wohnen die Baumeister des Dorfes. Je weiter das Hauptgebäude ausgebaut wird, desto schneller können andere Gebäude gebaut werden.', 3, '70:40:60:20:1.28', 2, 20, 0, '2000:620:1.16', '-1', ''),
 (16, 'Versammlungsplatz', 'Am Versammlungsplatz treffen sich die Soldaten des Dorfes. Von dort aus können die Truppen zum Unterstützen, Plündern oder Erobern, zu einem anderen Dorf geschickt werden.', 2, '110:160:90:70:1.28', 1, 20, 0, '2000:620:1.161', '0', ''),
 (17, 'Marktplatz', 'Am Marktplatz kann man mit anderen Spielern Rohstoffe tauschen. Je weiter der Marktplatz ausgebaut ist, desto mehr Händler stehen dir zur Verfügung.', 3, '80:70:120:70:1.28', 2, 20, 0, '1800:590:1.16', '3:15:3:10:1:11:1', ''),
@@ -315,65 +351,141 @@ INSERT INTO `tr1_gebeude` (`id`, `name`, `besch`, `typ`, `baukosten`, `arbeiter`
 (39, 'Grosser Kornspeicher', 'Im großen Kornspeicher wird das Getreide der Getreidefarmen gelagert. Je weiter der große Kornspeicher ausgebaut wird, desto mehr Getreide kann eingelagert werden. Der große Kornspeicher fasst dreimal so viel Getreide wie der normale Kornspeicher.', 1, '400:500:350:100:1.28', 2, 20, 10, '7000:1420:1.159', '1:11:20', ''),
 (40, 'Weltwunder', 'Das Weltwunder stellt die Krönung einer Zivilisation dar. Nur die Mächtigsten und Reichsten sind in der Lage solch ein Meisterwerk der Baukunst zu errichten und vor neidischen Feinden zu schützen. ', 3, '66700:69050:72200:13200:1.0275', 0, 20, 0, '18000:850:1.016', '-1', '');
 
+-- --------------------------------------------------------
+
 --
--- Tabellenstruktur f�r Tabelle `tr1_handler`
+-- Tabellenstruktur für Tabelle `tr1_handler`
 --
 
 CREATE TABLE `tr1_handler` (
-  `keyid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `keyid` int(10) UNSIGNED NOT NULL,
   `user` varchar(16) NOT NULL DEFAULT '',
-  `ursprung_x` int(11) NOT NULL DEFAULT '0',
-  `ursprung_y` int(11) NOT NULL DEFAULT '0',
-  `von_x` int(11) NOT NULL DEFAULT '0',
+  `ursprung_x` int(11) NOT NULL DEFAULT 0,
+  `ursprung_y` int(11) NOT NULL DEFAULT 0,
+  `von_x` int(11) NOT NULL DEFAULT 0,
   `von_y` int(11) NOT NULL,
   `nach_x` int(11) NOT NULL,
   `nach_y` int(11) NOT NULL,
-  `start` datetime NOT NULL DEFAULT NOW(),
-  `ziel` datetime NOT NULL DEFAULT NOW(),
-  `handler` tinyint(4) NOT NULL DEFAULT '0',
+  `start` datetime NOT NULL DEFAULT current_timestamp(),
+  `ziel` datetime NOT NULL DEFAULT current_timestamp(),
+  `handler` tinyint(4) NOT NULL DEFAULT 0,
   `speed` tinyint(4) NOT NULL,
-  `ress` tinytext NOT NULL,
-  PRIMARY KEY (`keyid`)
+  `ress` tinytext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
 --
--- Tabellenstruktur f�r Tabelle `tr1_hero`
+-- Tabellenstruktur für Tabelle `tr1_hero`
 --
 
 CREATE TABLE `tr1_hero` (
-  `keyid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user` int(10) unsigned NOT NULL,
+  `keyid` int(10) UNSIGNED NOT NULL,
+  `user` int(10) UNSIGNED NOT NULL,
   `name` tinytext NOT NULL,
   `lebt` tinyint(1) NOT NULL,
-  `troop_id` int(10) unsigned NOT NULL,
-  `erfahrung` int(10) unsigned NOT NULL,
-  `hp` int(10) unsigned NOT NULL,
-  `bonus` text NOT NULL,
-  PRIMARY KEY (`keyid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
---
--- Daten f�r Tabelle `tr1_hero`
---
-
-INSERT INTO `tr1_hero` (`keyid`, `user`, `name`, `lebt`, `troop_id`, `erfahrung`, `hp`, `bonus`) VALUES 
-(1, 1, 'Lord Julius der Dritte', 1, 21, 0, 100, '0:1:2:2:0');
-
---
--- Tabellenstruktur f�r Tabelle `tr1_land_typen`
---
-
-CREATE TABLE `tr1_land_typen` (
-  `typ` tinyint(4) NOT NULL DEFAULT '0',
-  `geb` tinytext NOT NULL,
-  PRIMARY KEY (`typ`)
+  `troop_id` int(10) UNSIGNED NOT NULL,
+  `erfahrung` int(10) UNSIGNED NOT NULL,
+  `hp` int(10) UNSIGNED NOT NULL,
+  `bonus` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Daten f�r Tabelle `tr1_land_typen`
+-- Daten für Tabelle `tr1_hero`
 --
 
-INSERT INTO `tr1_land_typen` (`typ`, `geb`) VALUES 
+INSERT INTO `tr1_hero` (`keyid`, `user`, `name`, `lebt`, `troop_id`, `erfahrung`, `hp`, `bonus`) VALUES
+(1, 1, 'Lord Julius der Dritte', 1, 21, 0, 100, '0:1:2:2:0');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `tr1_lander`
+--
+
+CREATE TABLE `tr1_lander` (
+  `x` tinyint(4) NOT NULL DEFAULT 0,
+  `y` tinyint(4) NOT NULL DEFAULT 0,
+  `oase` tinyint(4) NOT NULL DEFAULT 0,
+  `typ` tinyint(4) NOT NULL DEFAULT 0,
+  `aussehen` tinyint(4) NOT NULL DEFAULT 0,
+  `annektiert_user` int(10) UNSIGNED NOT NULL,
+  `annektiert_x` int(10) UNSIGNED NOT NULL,
+  `annektiert_y` int(10) UNSIGNED NOT NULL,
+  `ww` tinyint(3) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `tr1_lander`
+--
+
+INSERT INTO `tr1_lander` (`x`, `y`, `oase`, `typ`, `aussehen`, `annektiert_user`, `annektiert_x`, `annektiert_y`, `ww`) VALUES
+(1, 1, 1, 1, 0, 0, 0, 0, 0),
+(1, 2, 0, 5, 9, 0, 0, 0, 0),
+(1, 3, 0, 3, 7, 0, 0, 0, 0),
+(1, 4, 0, 4, 5, 0, 0, 0, 0),
+(1, 5, 0, 5, 3, 0, 0, 0, 0),
+(1, 6, 0, 2, 6, 0, 0, 0, 0),
+(1, 7, 0, 1, 1, 0, 0, 0, 0),
+(2, 1, 0, 11, 0, 0, 0, 0, 0),
+(2, 2, 0, 7, 6, 0, 0, 0, 1),
+(2, 3, 0, 12, 2, 0, 0, 0, 0),
+(2, 4, 0, 5, 8, 0, 0, 0, 0),
+(2, 5, 0, 1, 1, 0, 0, 0, 0),
+(2, 6, 0, 14, 5, 0, 0, 0, 0),
+(2, 7, 0, 5, 5, 0, 0, 0, 0),
+(3, 1, 0, 13, 3, 0, 0, 0, 0),
+(3, 2, 0, 1, 2, 0, 0, 0, 0),
+(3, 3, 0, 2, 9, 0, 0, 0, 0),
+(3, 4, 0, 10, 9, 0, 0, 0, 0),
+(3, 5, 0, 10, 0, 0, 0, 0, 0),
+(3, 6, 0, 4, 3, 0, 0, 0, 0),
+(3, 7, 0, 9, 8, 0, 0, 0, 0),
+(4, 1, 0, 12, 9, 0, 0, 0, 0),
+(4, 2, 0, 12, 5, 0, 0, 0, 0),
+(4, 3, 1, 3, 0, 0, 0, 0, 0),
+(4, 4, 0, 12, 1, 0, 0, 0, 0),
+(4, 5, 0, 6, 4, 0, 0, 0, 0),
+(4, 6, 0, 11, 0, 0, 0, 0, 0),
+(4, 7, 0, 2, 3, 0, 0, 0, 0),
+(5, 1, 0, 6, 4, 0, 0, 0, 0),
+(5, 2, 0, 3, 9, 0, 0, 0, 0),
+(5, 3, 0, 9, 1, 0, 0, 0, 0),
+(5, 4, 0, 13, 6, 0, 0, 0, 0),
+(5, 5, 0, 11, 2, 0, 0, 0, 0),
+(5, 6, 0, 5, 6, 0, 0, 0, 0),
+(5, 7, 0, 6, 4, 0, 0, 0, 0),
+(6, 1, 0, 12, 9, 0, 0, 0, 0),
+(6, 2, 0, 1, 3, 0, 0, 0, 0),
+(6, 3, 0, 1, 6, 0, 0, 0, 0),
+(6, 4, 0, 1, 1, 0, 0, 0, 0),
+(6, 5, 0, 8, 8, 0, 0, 0, 0),
+(6, 6, 0, 11, 6, 0, 0, 0, 0),
+(6, 7, 0, 5, 6, 0, 0, 0, 0),
+(7, 1, 0, 14, 6, 0, 0, 0, 0),
+(7, 2, 0, 2, 7, 0, 0, 0, 0),
+(7, 3, 0, 8, 1, 0, 0, 0, 0),
+(7, 4, 0, 4, 0, 0, 0, 0, 0),
+(7, 5, 0, 6, 4, 0, 0, 0, 0),
+(7, 6, 0, 8, 6, 0, 0, 0, 0),
+(7, 7, 0, 11, 3, 0, 0, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `tr1_land_typen`
+--
+
+CREATE TABLE `tr1_land_typen` (
+  `typ` tinyint(4) NOT NULL DEFAULT 0,
+  `geb` tinytext NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `tr1_land_typen`
+--
+
+INSERT INTO `tr1_land_typen` (`typ`, `geb`) VALUES
 (1, '4:4:1:4:4:2:3:4:4:3:3:4:4:1:4:2:1:2'),
 (2, '3:4:1:3:2:2:3:4:4:3:3:4:4:1:4:2:1:2'),
 (3, '1:4:1:3:2:2:3:4:4:3:3:4:4:1:4:2:1:2'),
@@ -389,99 +501,28 @@ INSERT INTO `tr1_land_typen` (`typ`, `geb`) VALUES
 (13, '1:4:1:3:2:2:3:2:4:3:3:1:3:1:4:2:1:2'),
 (14, '1:1:1:3:2:2:3:2:4:3:3:1:3:1:2:2:1:2');
 
---
--- Tabellenstruktur f�r Tabelle `tr1_lander`
---
-
-CREATE TABLE `tr1_lander` (
-  `x` tinyint(4) NOT NULL DEFAULT '0',
-  `y` tinyint(4) NOT NULL DEFAULT '0',
-  `oase` tinyint(4) NOT NULL DEFAULT '0',
-  `typ` tinyint(4) NOT NULL DEFAULT '0',
-  `aussehen` tinyint(4) NOT NULL DEFAULT '0',
-  `annektiert_user` int(10) unsigned NOT NULL,
-  `annektiert_x` int(10) unsigned NOT NULL,
-  `annektiert_y` int(10) unsigned NOT NULL,
-  `ww` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`x`,`y`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- --------------------------------------------------------
 
 --
--- Daten f�r Tabelle `tr1_lander`
---
-
-INSERT INTO `tr1_lander` (`x`, `y`, `oase`, `typ`, `aussehen`, `annektiert_user`, `annektiert_x`, `annektiert_y`, `ww`) VALUES 
-(1, 1, 1, 7, 0, 0, 0, 0, 0),
-(1, 2, 0, 3, 6, 0, 0, 0, 0),
-(1, 3, 1, 1, 0, 0, 0, 0, 0),
-(1, 4, 1, 11, 0, 0, 0, 0, 0),
-(1, 5, 1, 4, 0, 0, 0, 0, 0),
-(1, 6, 1, 10, 0, 0, 0, 0, 0),
-(1, 7, 1, 11, 0, 0, 0, 0, 0),
-(2, 1, 0, 13, 0, 0, 0, 0, 0),
-(2, 2, 0, 5, 0, 0, 0, 0, 1),
-(2, 3, 0, 3, 0, 0, 0, 0, 1),
-(2, 4, 0, 6, 4, 0, 0, 0, 0),
-(2, 5, 1, 3, 0, 0, 0, 0, 0),
-(2, 6, 1, 7, 0, 0, 0, 0, 0),
-(2, 7, 1, 9, 0, 0, 0, 0, 0),
-(3, 1, 0, 9, 8, 0, 0, 0, 0),
-(3, 2, 0, 3, 5, 0, 0, 0, 0),
-(3, 3, 1, 3, 0, 0, 0, 0, 0),
-(3, 4, 1, 9, 0, 0, 0, 0, 0),
-(3, 5, 1, 3, 0, 0, 0, 0, 0),
-(3, 6, 0, 8, 0, 0, 0, 0, 0),
-(3, 7, 1, 12, 0, 0, 0, 0, 0),
-(4, 1, 1, 10, 0, 0, 0, 0, 0),
-(4, 2, 1, 4, 0, 0, 0, 0, 0),
-(4, 3, 1, 1, 0, 0, 0, 0, 0),
-(4, 4, 0, 3, 0, 0, 0, 0, 0),
-(4, 5, 1, 3, 0, 0, 0, 0, 0),
-(4, 6, 1, 8, 0, 0, 0, 0, 0),
-(4, 7, 1, 5, 0, 0, 0, 0, 0),
-(5, 1, 0, 7, 2, 0, 0, 0, 0),
-(5, 2, 1, 10, 0, 0, 0, 0, 0),
-(5, 3, 1, 2, 0, 0, 0, 0, 0),
-(5, 4, 1, 1, 0, 0, 0, 0, 0),
-(5, 5, 1, 1, 0, 0, 0, 0, 0),
-(5, 6, 1, 11, 0, 0, 0, 0, 0),
-(5, 7, 1, 3, 0, 0, 0, 0, 0),
-(6, 1, 1, 12, 0, 0, 0, 0, 0),
-(6, 2, 1, 2, 0, 0, 0, 0, 0),
-(6, 3, 1, 10, 0, 0, 0, 0, 0),
-(6, 4, 1, 3, 0, 0, 0, 0, 0),
-(6, 5, 1, 10, 0, 0, 0, 0, 0),
-(6, 6, 1, 3, 0, 0, 0, 0, 0),
-(6, 7, 0, 2, 0, 0, 0, 0, 0),
-(7, 1, 0, 3, 2, 0, 0, 0, 0),
-(7, 2, 1, 5, 0, 0, 0, 0, 0),
-(7, 3, 1, 6, 0, 0, 0, 0, 0),
-(7, 4, 1, 3, 0, 0, 0, 0, 0),
-(7, 5, 0, 1, 3, 0, 0, 0, 0),
-(7, 6, 0, 9, 7, 0, 0, 0, 0),
-(7, 7, 1, 7, 0, 0, 0, 0, 0);
-
---
--- Tabellenstruktur f�r Tabelle `tr1_msg`
+-- Tabellenstruktur für Tabelle `tr1_msg`
 --
 
 CREATE TABLE `tr1_msg` (
-  `keyid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `keyid` int(10) UNSIGNED NOT NULL,
   `von` varchar(16) NOT NULL DEFAULT '',
   `an` varchar(16) NOT NULL DEFAULT '',
-  `typ` tinyint(4) NOT NULL DEFAULT '0',
-  `neu` tinyint(4) NOT NULL DEFAULT '1',
+  `typ` tinyint(4) NOT NULL DEFAULT 0,
+  `neu` tinyint(4) NOT NULL DEFAULT 1,
   `zeit` datetime NOT NULL,
   `betreff` varchar(36) NOT NULL DEFAULT '',
-  `text` text NOT NULL,
-  PRIMARY KEY (`keyid`)
-) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8;
+  `text` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Daten f�r Tabelle `tr1_msg`
+-- Daten für Tabelle `tr1_msg`
 --
 
-INSERT INTO `tr1_msg` (`keyid`, `von`, `an`, `typ`, `neu`, `zeit`, `betreff`, `text`) VALUES 
+INSERT INTO `tr1_msg` (`keyid`, `von`, `an`, `typ`, `neu`, `zeit`, `betreff`, `text`) VALUES
 (63, '', 'bla', 3, 1, '2012-12-03 22:54:23', 'Kolonie greift Neues Dorf an', '1:Angreifer:<a href=\"?page=spieler&name=judos\">judos</a> aus Dorf <a href=\"?page=karte-show&x=3&y=1\">Kolonie (3|1)</a>\r3:3\r4:Einheiten:0:0:0:165:0:0:0:0:0:0\r4:Verluste:0:0:0:0:0:0:0:0:0:0\r4:'),
 (65, '', 'bla', 3, 1, '2012-12-03 23:01:30', 'Kolonie greift Neues Dorf an', '1:Angreifer:<a href=\"?page=spieler&name=judos\">judos</a> aus Dorf <a href=\"?page=karte-show&x=3&y=1\">Kolonie (3|1)</a>\r3:3\r4:Einheiten:0:0:0:165:0:0:0:0:0:0\r4:Verluste:0:0:0:0:0:0:0:0:0:0\r4:'),
 (67, '', 'bla', 3, 1, '2012-12-03 23:05:45', 'Kolonie greift Neues Dorf an', '1:Angreifer:<a href=\"?page=spieler&name=judos\">judos</a> aus Dorf <a href=\"?page=karte-show&x=3&y=1\">Kolonie (3|1)</a>\r3:3\r4:Einheiten:0:0:0:165:0:0:0:0:0:0\r4:Verluste:0:0:0:0:0:0:0:0:0:0\r4:'),
@@ -502,22 +543,23 @@ INSERT INTO `tr1_msg` (`keyid`, `von`, `an`, `typ`, `neu`, `zeit`, `betreff`, `t
 (90, '', 'judos', 3, 0, '2012-12-04 20:59:51', 'Kolonie greift Neues Dorf an', '1::Angreifer::<a href=\"?page=spieler&name=judos\">judos</a> aus Dorf <a href=\"?page=karte-show&x=3&y=2\">Neues Dorf (3|2)</a>\r3::3\r4::Einheiten::0::0::0::165::0::0::0::0::0::0::0\r4::Verluste::0::0::0::0::0::0::0::0::0::0::0\r4::'),
 (91, '', 'bla', 3, 1, '2012-12-04 20:59:51', 'Kolonie greift Neues Dorf an', '1::Angreifer::<a href=\"?page=spieler&name=judos\">judos</a> aus Dorf <a href=\"?page=karte-show&x=3&y=2\">Neues Dorf (3|2)</a>\r3::3\r4::Einheiten::0::0::0::165::0::0::0::0::0::0::0\r4::Verluste::0::0::0::0::0::0::0::0::0::0::0\r4::');
 
+-- --------------------------------------------------------
+
 --
--- Tabellenstruktur f�r Tabelle `tr1_oasen`
+-- Tabellenstruktur für Tabelle `tr1_oasen`
 --
 
 CREATE TABLE `tr1_oasen` (
-  `typ` int(10) unsigned NOT NULL,
+  `typ` int(10) UNSIGNED NOT NULL,
   `bonus` tinytext NOT NULL,
-  `tier_grenze` tinytext NOT NULL,
-  PRIMARY KEY (`typ`)
+  `tier_grenze` tinytext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Daten f�r Tabelle `tr1_oasen`
+-- Daten für Tabelle `tr1_oasen`
 --
 
-INSERT INTO `tr1_oasen` (`typ`, `bonus`, `tier_grenze`) VALUES 
+INSERT INTO `tr1_oasen` (`typ`, `bonus`, `tier_grenze`) VALUES
 (1, '25:0:0:0', '0:0:0:0:29:24:19:0:0:0'),
 (2, '25:0:0:0', '0:0:0:0:23:18:23:0:0:0'),
 (3, '25:0:0:25', '0:0:0:0:50:31:38:0:13:0'),
@@ -531,49 +573,44 @@ INSERT INTO `tr1_oasen` (`typ`, `bonus`, `tier_grenze`) VALUES
 (11, '0:0:0:25', '29:0:26:0:0:0:13:0:11:0'),
 (12, '0:0:0:50', '33:0:30:0:0:0:0:13:8:13');
 
+-- --------------------------------------------------------
+
 --
 -- Tabellenstruktur für Tabelle `tr1_others`
 --
 
 CREATE TABLE `tr1_others` (
-  `keyid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `x` tinyint(4) NOT NULL DEFAULT '0',
-  `y` tinyint(4) NOT NULL DEFAULT '0',
-  `user` tinyint(4) NOT NULL DEFAULT '0',
-  `typ` tinyint(4) NOT NULL DEFAULT '0' COMMENT '1=kaserne,2=stall,3=werkstatt,4=residenz/palast,5=akademie,6=waffen,7=r�stungen,8=rathaus,9=geb abreissen,10=gebbauen,11=fallen,12=hero,13=held wiederbeleben,14=grossekaserne,15=grosserstall',
-  `id` tinyint(4) NOT NULL DEFAULT '0',
-  `zeit` datetime NOT NULL DEFAULT NOW(),
-  `anzahl` smallint(6) NOT NULL DEFAULT '0',
-  `dauer` mediumint(9) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`keyid`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+  `keyid` int(10) UNSIGNED NOT NULL,
+  `x` tinyint(4) NOT NULL DEFAULT 0,
+  `y` tinyint(4) NOT NULL DEFAULT 0,
+  `user` tinyint(4) NOT NULL DEFAULT 0,
+  `typ` tinyint(4) NOT NULL DEFAULT 0 COMMENT '1=kaserne,2=stall,3=werkstatt,4=residenz/palast,5=akademie,6=waffen,7=rüstungen,8=rathaus,9=geb abreissen,10=gebbauen,11=fallen,12=hero,13=held wiederbeleben,14=grossekaserne,15=grosserstall',
+  `id` tinyint(4) NOT NULL DEFAULT 0,
+  `zeit` datetime NOT NULL DEFAULT current_timestamp(),
+  `anzahl` smallint(6) NOT NULL DEFAULT 0,
+  `dauer` mediumint(9) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `tr1_others`
---
-
-INSERT INTO `tr1_others` (`keyid`, `x`, `y`, `user`, `typ`, `id`, `zeit`, `anzahl`, `dauer`) VALUES 
-(16, 5, 1, 0, 8, 1, '2013-12-27 03:38:12', 2400, 0);
+-- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `tr1_todo`
 --
 
 CREATE TABLE `tr1_todo` (
-  `keyid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `keyid` int(10) UNSIGNED NOT NULL,
   `text` text NOT NULL,
   `status` text NOT NULL,
   `erfasst` datetime NOT NULL,
   `fertig` datetime NOT NULL,
-  `implemented_in` tinytext NOT NULL,
-  PRIMARY KEY (`keyid`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+  `implemented_in` tinytext NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Daten für Tabelle `tr1_todo`
 --
 
-INSERT INTO `tr1_todo` (`keyid`, `text`, `status`, `erfasst`, `fertig`, `implemented_in`) VALUES 
+INSERT INTO `tr1_todo` (`keyid`, `text`, `status`, `erfasst`, `fertig`, `implemented_in`) VALUES
 (1, 'Projekt neu gestartet', 'finished', '2012-10-15 00:39:23', '2012-10-15 00:39:30', 'v0.3'),
 (2, 'Alle angezeigten Fehler beheben f', 'finished', '2012-10-15 00:41:33', '2012-10-15 00:42:58', 'v0.3'),
 (4, 'Dorf Umgebung ohne Fehler', 'finished', '2012-10-15 00:43:28', '2012-10-15 00:54:21', 'v0.3'),
@@ -609,146 +646,127 @@ INSERT INTO `tr1_todo` (`keyid`, `text`, `status`, `erfasst`, `fertig`, `impleme
 (38, 'kampfsimulator', '', '2013-11-26 16:31:36', '0000-00-00 00:00:00', ''),
 (39, 'diverse kleine Bugs behoben, DB aktualisiert', 'finished', '2013-11-26 16:36:24', '2013-11-26 16:36:26', 'beta v0.35');
 
+-- --------------------------------------------------------
+
 --
 -- Tabellenstruktur für Tabelle `tr1_truppen`
 --
 
 CREATE TABLE `tr1_truppen` (
-  `x` int(11) NOT NULL DEFAULT '0',
-  `y` int(11) NOT NULL DEFAULT '0',
-  `user` int(11) NOT NULL DEFAULT '0',
+  `x` int(11) NOT NULL DEFAULT 0,
+  `y` int(11) NOT NULL DEFAULT 0,
+  `user` int(11) NOT NULL DEFAULT 0,
   `troops` tinytext NOT NULL,
   `gefangen` tinyint(1) NOT NULL,
   `ursprung_x` int(11) NOT NULL,
-  `ursprung_y` int(11) NOT NULL,
-  PRIMARY KEY (`x`,`y`,`user`)
+  `ursprung_y` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Daten für Tabelle `tr1_truppen`
 --
 
-INSERT INTO `tr1_truppen` (`x`, `y`, `user`, `troops`, `gefangen`, `ursprung_x`, `ursprung_y`) VALUES 
-(1, 1, 0, '59.015879068758:26.222304064048:42.844107910666:48.256855975544:0:7.5022922799886:0:0:0:0:0', 0, 1, 1),
-(1, 3, 0, '0:0:0:0:35.212573582705:29.663409868135:24.075709125824:0:0:0:0', 0, 1, 3),
-(1, 4, 0, '36:0:31.901966820554:0:0:0:21:0:18:0:0', 0, 1, 4),
-(1, 5, 0, '56.925251785231:46.07893671686:67.576379208546:0:25.20931027647:0:0:0:0:0:0', 0, 1, 5),
-(1, 6, 0, '19:0:29:0:0:0:18:16:0:0:0', 0, 1, 6),
-(1, 7, 0, '38:0:31.875661372933:0:0:0:20:0:17:0:0', 0, 1, 7),
-(2, 2, 0, '-0.57811103825399:-0.69777090257401:-0.480862796926:0:-0.319455081584:0:0:0:0:0:0', 0, 2, 2),
-(2, 3, 0, '0:0:0:0:57.746744845594:37.335534664281:45.022300503977:0:17.164316792987:0:0', 0, 2, 3),
-(2, 5, 0, '0:0:0:0:58.007270798363:37.446182159018:45.135843622038:0:17.174697857188:0:0', 0, 2, 5),
-(2, 6, 0, '59.120688148112:26.293375241971:42.806428214233:48.290478476988:0:7.5291306704809:0:0:0:0:0', 0, 2, 6),
-(2, 7, 0, '220.97354323346:136.1992169845:0:91.040185973868:0:0:0:0:0:0:0', 0, 2, 7),
-(3, 1, 1, '0:0:5:165:0:0:0:0:0:0:1', 0, 3, 1),
-(3, 2, 6, '0:0:0:0:0:0:0:0:0:0:0', 0, 3, 2),
-(3, 3, 0, '0:0:0:0:58.066391268931:37.463088573086:45.076509957507:0:17.171438322804:0:0', 0, 3, 3),
-(3, 4, 0, '220.84995020048:136.28426603344:0:91.060277858571:0:0:0:0:0:0:0', 0, 3, 4),
-(3, 5, 0, '0:0:0:0:58.089756587944:37.437665020994:45.102479424395:0:17.156395576287:0:0', 0, 3, 5),
-(3, 7, 0, '39.576635494745:0:36.323788185177:0:0:0:0:18:12:17.180073853756:0', 0, 3, 7),
-(4, 1, 0, '18.347856505425:0:26:0:0:0:21:18:0:0:0', 0, 4, 1),
-(4, 2, 0, '56.933555986677:46.100351209036:67.625699554984:0:25.190567576079:0:0:0:0:0:0', 0, 4, 2),
-(4, 3, 0, '0:0:0:0:35.26532149106:29.668064047074:24.062596278163:0:0:0:0', 0, 4, 3),
-(4, 4, 1, '0:0:1:0:0:0:0:0:0:0:0', 0, 4, 4),
-(4, 5, 0, '0:0:0:0:58.063368927317:37.431939966036:45.119005348896:0:17.138359901787:0:0', 0, 4, 5),
-(4, 6, 0, '103.39894166182:53.724515763159:0:53.699014067554:0:0:0:0:0:0:0', 0, 4, 6),
-(4, 7, 0, '87.820466374638:66.53863582464:20.661964930016:0:41.812345242312:0:0:0:0:0:0', 0, 4, 7),
-(5, 1, 1, '2836:1:0:0:0:0:0:0:0:70:1', 0, 5, 1),
+INSERT INTO `tr1_truppen` (`x`, `y`, `user`, `troops`, `gefangen`, `ursprung_x`, `ursprung_y`) VALUES
+(1, 1, 0, '0:0:0:0:33.944302584599:29.243860810841:23.709062423153:0:0:0:0', 0, 1, 1),
+(3, 4, 0, '17.026296523752:0:22.830393342547:0:0:0:14.944238197847:13.149408632919:0:0:0', 0, 3, 4),
+(4, 3, 0, '0:0:0:0:57.241442174213:36.256231793126:43.641949527248:0:16.763169774444:0:0', 0, 4, 3),
 (5, 2, 0, '20:0:29:0:0:0:17:13.642316458727:0:0:0', 0, 5, 2),
-(5, 3, 0, '0:0:0:0:28.456538802642:22.94693230059:28.552417049698:0:0:0:0', 0, 5, 3),
+(5, 3, 0, '0:0:0:0:28.495741299708:22.94693230059:28.552417049698:0:0:0:0', 0, 5, 3),
 (5, 4, 0, '0:0:0:0:35.125325836106:29.657584712167:24.079265202531:0:0:0:0', 0, 5, 4),
 (5, 5, 0, '0:0:0:0:35.236980089244:29.680916994826:24.058111977934:0:0:0:0', 0, 5, 5),
 (5, 6, 0, '35.141567962025:0:34:0:0:0:20:0:17:0:0', 0, 5, 6),
-(5, 7, 0, '0:0:0:0:58.099046731773:37.445427798995:45.015350282273:0:17.179819905321:0:0', 0, 5, 7),
+(5, 7, 0, '0:0:0:0:58.117956954602:37.445427798995:45.015350282273:0:17.179819905321:0:0', 0, 5, 7),
 (6, 1, 0, '39.632474738335:0:36.370604923031:0:0:0:0:17.187895139038:13:17.18757726197:0', 0, 6, 1),
-(6, 2, 0, '0:0:0:0:28.547201379811:22.955182918771:28.529673103966:0:0:0:0', 0, 6, 2),
+(6, 2, 0, '0:0:0:0:28.547201379811:22.955182918771:28.531734128048:0:0:0:0', 0, 6, 2),
 (6, 3, 0, '22:0:27:0:0:0:20:17:0:0:0', 0, 6, 3),
-(6, 4, 0, '0:0:0:0:57.906488076451:37.368954347347:45.119276462936:0:17.191523597833:0:0', 0, 6, 4),
-(6, 5, 0, '19:0:26:0:0:0:20:13.642245043898:0:0:0', 0, 6, 5),
-(6, 6, 0, '0:0:0:0:57.674455450335:37.384568742943:45.11213674506:0:17.207287486664:0:0', 0, 6, 6),
-(7, 2, 0, '87.801711738042:66.580326484903:20.595788077587:0:41.810978197667:0:0:0:0:0:0', 0, 7, 2),
-(7, 3, 0, '77.303166181995:56.990483443901:0:0:35.190375701902:0:0:13.651567904097:35.219354342892:0:0', 0, 7, 3),
-(7, 4, 0, '0:0:0:0:57.91117188816:37.409317100096:45.131559012669:0:17.147965499403:0:0', 0, 7, 4),
+(6, 4, 0, '0:0:0:0:57.963456933073:37.368954347347:45.130395193614:0:17.191523597833:0:0', 0, 6, 4),
+(6, 5, 0, '19:0:26:0:0:0:20:13.6521142345:0:0:0', 0, 6, 5),
+(6, 6, 0, '0:0:0:0:57.712171372244:37.384568742943:45.11213674506:0:17.207287486664:0:0', 0, 6, 6),
+(7, 2, 0, '87.801711738042:66.580326484903:20.620279642013:0:41.822501284768:0:0:0:0:0:0', 0, 7, 2),
+(7, 3, 0, '77.303166181995:56.990483443901:0:0:35.190375701902:0:0:13.651567904097:35.249227667012:0:0', 0, 7, 3),
+(7, 4, 0, '0:0:0:0:57.91117188816:37.443990298405:45.131559012669:0:17.174742203172:0:0', 0, 7, 4),
 (7, 7, 0, '59.141579298638:26.245043376621:42.878538905438:48.283347820404:0:7.532255510141:0:0:0:0:0', 0, 7, 7);
+
+-- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `tr1_truppen_move`
 --
 
 CREATE TABLE `tr1_truppen_move` (
-  `keyid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user` tinyint(4) NOT NULL DEFAULT '0',
-  `start_x` tinyint(4) NOT NULL DEFAULT '0',
-  `start_y` tinyint(4) NOT NULL DEFAULT '0',
-  `ziel_x` tinyint(4) NOT NULL DEFAULT '0',
-  `ziel_y` tinyint(4) NOT NULL DEFAULT '0',
-  `start_zeit` datetime NOT NULL DEFAULT NOW(),
-  `ziel_zeit` datetime NOT NULL DEFAULT NOW(),
-  `aktion` tinyint(4) NOT NULL DEFAULT '0',
+  `keyid` int(10) UNSIGNED NOT NULL,
+  `user` tinyint(4) NOT NULL DEFAULT 0,
+  `start_x` tinyint(4) NOT NULL DEFAULT 0,
+  `start_y` tinyint(4) NOT NULL DEFAULT 0,
+  `ziel_x` tinyint(4) NOT NULL DEFAULT 0,
+  `ziel_y` tinyint(4) NOT NULL DEFAULT 0,
+  `start_zeit` datetime NOT NULL DEFAULT current_timestamp(),
+  `ziel_zeit` datetime NOT NULL DEFAULT current_timestamp(),
+  `aktion` tinyint(4) NOT NULL DEFAULT 0,
   `truppen` tinytext NOT NULL,
   `ress` tinytext NOT NULL,
-  `msg` tinyint(4) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`keyid`)
+  `msg` tinyint(4) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `tr1_truppen_typen`
 --
 
 CREATE TABLE `tr1_truppen_typen` (
-  `id` tinyint(4) NOT NULL DEFAULT '0',
+  `id` tinyint(4) NOT NULL DEFAULT 0,
   `name` varchar(24) NOT NULL DEFAULT '',
   `mehrzahl` varchar(24) NOT NULL DEFAULT '',
-  `besch` tinytext NOT NULL,
-  `volk` tinyint(4) NOT NULL DEFAULT '0',
-  `typ` tinyint(4) NOT NULL DEFAULT '0',
-  `spio` tinyint(4) NOT NULL DEFAULT '0',
+  `besch` text NOT NULL,
+  `volk` tinyint(4) NOT NULL DEFAULT 0,
+  `typ` tinyint(4) NOT NULL DEFAULT 0,
+  `spio` tinyint(4) NOT NULL DEFAULT 0,
   `baukz` tinytext NOT NULL,
-  `versorgung` float NOT NULL DEFAULT '0',
+  `versorgung` float NOT NULL DEFAULT 0,
   `speed` smallint(6) NOT NULL,
-  `tragen` smallint(6) NOT NULL DEFAULT '0',
+  `tragen` smallint(6) NOT NULL DEFAULT 0,
   `werte` tinytext NOT NULL,
   `needs` tinytext NOT NULL,
   `reskost` tinytext NOT NULL,
-  `forsch` tinytext NOT NULL,
-  PRIMARY KEY (`id`)
+  `forsch` tinytext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Daten für Tabelle `tr1_truppen_typen`
 --
 
-INSERT INTO `tr1_truppen_typen` (`id`, `name`, `mehrzahl`, `besch`, `volk`, `typ`, `spio`, `baukz`, `versorgung`, `speed`, `tragen`, `werte`, `needs`, `reskost`, `forsch`) VALUES 
+INSERT INTO `tr1_truppen_typen` (`id`, `name`, `mehrzahl`, `besch`, `volk`, `typ`, `spio`, `baukz`, `versorgung`, `speed`, `tragen`, `werte`, `needs`, `reskost`, `forsch`) VALUES
 (1, 'Legionär', 'Legionäre', 'Der Legionär ist eine einfache und universell einsetzbare Fußtruppe des römischen Imperiums. Vielseitig ausgebildet, eignet er sich sowohl zum Angriff, als auch sehr gut zur Verteidigung.', 1, 1, 0, '120:100:180:40:2000', 0.25, 6, 40, '40:35:50', '1:19:1', '', '940:800:1460:440:0.8:7800'),
 (2, 'Prätorianer', '', 'Die Prätorianer wurden ursprünglich als Leibgarde des römischen Senats ausgebildet. Durch ihre langwierige Ausbildung in defensiven Kampftechniken hat sich diese Truppe einen legendären Ruf erarbeitet.', 1, 1, 0, '100:130:160:70:2200', 0.3, 5, 20, '30:65:35', '2:22:1:13:1', '700:620:1460:580:8400', '800:1010:1320:650:0.8:8400'),
 (3, 'Imperianer', '', 'Der Imperianer bildet die ultimative Angriffstruppe des römischen Heeres. Schnell und angriffsstark ist er der Schrecken der Verteidiger.', 1, 1, 0, '150:160:210:80:2400', 0.4, 7, 50, '70:40:25', '2:22:5:12:1', '1000:740:1880:640:9000', '1150:1220:1670:720:0.8:8400'),
 (4, 'Equites Legati', '', 'Die Equites Legati sind die Aufklärer der römischen Truppen. Sie sind äußerst schnell. Listig erkunden sie die gegnerischen Einheiten und Ressourcen oder die Verteidigungsanlagen.', 1, 2, 1, '140:160:20:40:1700', 0.7, 16, 0, '0:20:10', '2:20:1:22:5', '940:740:360:400:6900', '540:610:170:220:0.8:6300'),
-(5, 'Equites Imperiatoris', '', 'Dies ist die Standard-Kavallerie der Römer. Nicht ganz so schnell, aber gut bewaffnet und gerüstet ist sie der Schrecken aller unvorbereiteten Feinde. Allerdings sollte man immer im Auge haben, dass die Versorgung von Pferd und Reiter nicht umsonst ', 1, 2, 0, '550:440:320:100:3300', 1.3, 14, 100, '120:65:50', '2:20:5:22:5', '3400:1860:2760:760:11700', '1320:1060:815:285:0.8:11700'),
+(5, 'Equites Imperiatoris', '', 'Dies ist die Standard-Kavallerie der Römer. Nicht ganz so schnell, aber gut bewaffnet und gerüstet ist sie der Schrecken aller unvorbereiteten Feinde. Allerdings sollte man immer im Auge haben, dass die Versorgung von Pferd und Reiter nicht umsonst ist!', 1, 2, 0, '550:440:320:100:3300', 1.3, 14, 100, '120:65:50', '2:20:5:22:5', '3400:1860:2760:760:11700', '1320:1060:815:285:0.8:11700'),
 (6, 'Equites Caesaris', '', 'Dies ist die schwere Reiterei. Sehr schwer gerüstet und auch gut bewaffnet ist sie langsamer als der Imperatoris und kann auch weniger Ressourcen tragen. Auch im Unterhalt sind sie teurer - Leistung hat seinen Preis.', 1, 2, 0, '550:640:800:180:4400', 1.6, 10, 70, '180:80:105', '2:20:10:22:5', '3400:2660:6600:1240:15000', '990:1145:1450:355:0.8:15000'),
 (7, 'Rammbock', 'Rammböcke', 'Die Ramme ist eine schwere Waffe zur Unterstützung der Infantrie und Kavallerie. Ihre Aufgabe ist es, den feindlichen Schutzwall bzw. die Stadtmauer zu durchbrechen und den Angriff der eigenen Truppen zu erleichtern.', 1, 3, 0, '900:360:500:70:4600', 3, 4, 0, '60:30:75', '2:22:10:21:1', '5500:1540:4200:580:15600', '2135:875:1235:215:0.8:15600'),
-(8, 'Feuerkatapult', 'Feuerkatapulte', 'Das Feuerkatapult ist eine exzellente Distanzwaffe zur Zerstörung von Gebäuden und Ressourcenfelder. Allerdings ist es selbst nahezu schutzlos! Daher muss immer Geleitschutz mitgeschickt werden.\r\n\r\nJe weiter der Vesammlungsplatz ausgebaut ist - und ', 1, 3, 0, '950:1350:600:90:9000', 5, 3, 0, '75:60:10', '2:21:10:22:15', '5800:5500:5000:700:28800', '1125:1590:735:130:0.8:28800'),
-(9, 'Senator', 'Senatoren', 'Der Senator ist ein ausgewählter Anführer des Volkes. Er ist ein guter Redner und weiß zu überzeugen. So gelingt es ihm, die Bewohner eines feindlichen Dorfes zu überreden, sich deinem Reich anzuschließen.\r\n\r\nJe häufiger er vor den Ma', 1, 4, 0, '30750:27200:45000:37500:90700', 1, 4, 0, '50:40:30', '2:16:10:22:20', '15880:13800:36400:22660:24475', '0'),
-(10, 'Siedler', '', 'Siedler sind tapfere und wagemutige Bürger deiner Stadt, die sich nach langer Ausbildung auf den Weg machen, in der Fremde ein neues Dorf zu deinen Ehren zu gründen.\r\n\r\nDa die Reise und die Gründung eines Dorfes beschwerlich ist, tun sich immer d', 1, 4, 0, '5800:5300:7200:5500:26900', 1, 5, 3000, '0:80:80', '-1', '0', '0'),
-(11, 'Keulenschwinger', '', 'Der Keulenschwinger ist die preiswerteste Einheit in ganz Travian. Schnell auszubilden, ist er aber nur von mittlerer Angriffskraft und seine Rüstung ist nicht die stärkste. Gerade der Kavallerie kann er in der Verteidigung nichts entgegensetzen und', 2, 1, 0, '95:75:40:40:900', 0.15, 7, 60, '40:20:5', '1:19:1', '0', '765:625:480:440:0.8:4500'),
+(8, 'Feuerkatapult', 'Feuerkatapulte', 'Das Feuerkatapult ist eine exzellente Distanzwaffe zur Zerstörung von Gebäuden und Ressourcenfelder. Allerdings ist es selbst nahezu schutzlos! Daher muss immer Geleitschutz mitgeschickt werden.\r\n\r\nJe weiter der Vesammlungsplatz ausgebaut ist - und die Männer am Katapult damit ausgebildet sind - desto grösser ist die Zielgenauigkeit. Beim Versammlungsplatz Stufe 10 kann jedes Gebäude außer dem Versteck anvisiert werden.', 1, 3, 0, '950:1350:600:90:9000', 5, 3, 0, '75:60:10', '2:21:10:22:15', '5800:5500:5000:700:28800', '1125:1590:735:130:0.8:28800'),
+(9, 'Senator', 'Senatoren', 'Der Senator ist ein ausgewählter Anführer des Volkes. Er ist ein guter Redner und weiß zu überzeugen. So gelingt es ihm, die Bewohner eines feindlichen Dorfes zu überreden, sich deinem Reich anzuschließen.\r\n\r\nJe häufiger er vor den Mauern der Stadt zu den Bewohnern spricht, desto geringer ist die Zustimmung für den gegnerischen Herrscher, bis das Dorf zu deinem Reich gehört.', 1, 4, 0, '30750:27200:45000:37500:90700', 1, 4, 0, '50:40:30', '2:16:10:22:20', '15880:13800:36400:22660:24475', '0'),
+(10, 'Siedler', '', 'Siedler sind tapfere und wagemutige Bürger deiner Stadt, die sich nach langer Ausbildung auf den Weg machen, in der Fremde ein neues Dorf zu deinen Ehren zu gründen.\r\n\r\nDa die Reise und die Gründung eines Dorfes beschwerlich ist, tun sich immer drei Siedler zusammen, um ein Dorf zu gründen. Gleichzeitig benötigen sie einen Grundstock von je 750 Einheiten pro Ressource.', 1, 4, 0, '5800:5300:7200:5500:26900', 1, 5, 3000, '0:80:80', '-1', '0', '0'),
+(11, 'Keulenschwinger', '', 'Der Keulenschwinger ist die preiswerteste Einheit in ganz Travian. Schnell auszubilden, ist er aber nur von mittlerer Angriffskraft und seine Rüstung ist nicht die stärkste. Gerade der Kavallerie kann er in der Verteidigung nichts entgegensetzen und wird förmlich niedergeritten.', 2, 1, 0, '95:75:40:40:900', 0.15, 7, 60, '40:20:5', '1:19:1', '0', '765:625:480:440:0.8:4500'),
 (12, 'Speerkämpfer', '', 'Gerade in der Verteidigung ist der Speerkämpfer eine gute Waffe. Durch die große Reichweite seiner Speere ist er besonders gut gegen Kavallerie einzusetzen.', 2, 1, 0, '145:70:85:40:1400', 0.3, 7, 40, '10:35:60', '1:22:1', '970:380:880:400:6000', '1115:590:795:440:0.8:5700'),
 (13, 'Axtkämpfer', '', 'Dies ist die stärkste Infantrie der Germanen. Mit guter stärke im Angriff und mittleren Werten in der Verteidigung ist sie allerdings etwas langsamer und etwas teurer als die anderen Einheiten.', 2, 1, 0, '130:120:170:70:1500', 0.5, 6, 50, '60:30:30', '2:22:3:12:1', '880:580:1560:580:6300', '1010:940:1390:650:6300'),
-(14, 'Kundschafter', '', 'Der Kundschafter ist den germanischen Truppen oft weit voraus und erkundet die Dörfer des Feindes. Er ist zu Fuß unterwegs und deshalb nicht ganz so schnell. Vorsichtig späht er die gegnerischen Einheiten und Ressourcen oder die Verteidigungsanla', 2, 1, 1, '160:100:50:50:1400', 0.4, 9, 0, '0:10:5', '2:15:5:22:1', '1060:500:600:460:6000', '1220:800:550:510:6000'),
-(15, 'Paladin', 'Paladine', 'Mit starker Rüstung ist der Paladin eine gute Waffe in der Verteidigung. Gerade Infantrie vermag seine Schild kaum zu durchdringen.\r\n\r\nDafür ist seine Stärke in Angriff eher klein und auch die Geschwindigkeit ist für Kavallerie durch die Rü', 2, 2, 0, '370:270:290:75:3000', 1.2, 10, 110, '55:100:40', '2:22:5:20:3', '2320:1180:2520:610:10800', '1345:995:1115:345:0.8:10800'),
-(16, 'Teutonen Reiter', '', 'Der Teutonen Reiter ist ein mächtiger Recke, der seine Gegner beim Angriff in Angst und Schrecken versetzt. In der Verteidigung ist er gerade gegen die feindliche Kavallerie ein guter Kämpfer. Die Kosten für Ausbildung und Unterhalt sind allerdin', 2, 2, 0, '450:515:480:80:3700', 1.7, 9, 80, '150:50:75', '2:22:15:20:10', '2800:2160:4040:640:12900', '1085:1235:1185:240:0.8:12900\r\n'),
-(17, 'Ramme', 'Rammen', 'Die Ramme ist eine schwere Waffe zur Unterstützung der Infantrie und Kavallerie. Ihre Aufgabe ist es, den feindlichen Schutzwall bzw. die Stadtmauer zu durchbrechen und den Angriff der eigenen Truppen zu erleichtern. Selbst ohne Schutz, benötigt sie', 2, 3, 0, '1000:300:350:70:4200', 2.5, 4, 0, '65:30:80', '2:22:10:21:1', '6100:1300:3000:580:14400', '2365:735:885:215:0.8:14400\r\n'),
-(18, 'Katapult', 'Katapulte', 'Das Katapult ist eine exzellente Distanzwaffe zur Zerstörung von Gebäuden und Ressourcenfelder. Allerdings ist es selbst nahezu schutzlos! Daher muss immer Geleitschutz mitgeschickt werden.', 2, 3, 0, '900:1200:600:60:9000', 4.5, 3, 0, '50:60:10', '2:21:10:22:15', '5500:4900:5000:520:28800', '1065:1415:735:95:28800'),
-(19, 'Stammesführer', '', 'Aus ihrer Mitte wählen die Germanen den Stammesführer. Um gewählt zu werden, bedarf es nicht nur Tapferkeit und Kriegskunst, auch Redekunst ist notwendig. Diese verwendet der Stammesführer dann dafür, die Einwohner fremder Dörfer zu ü', 2, 4, 0, '35500:26600:25000:27200:70500', 1, 4, 0, '40:60:40', '2:16:5:22:20', '18250:13500:20400:16480:19425', '0'),
-(20, 'Siedler', '', 'Siedler sind tapfere und wagemutige Bürger deiner Stadt die sich nach langer Ausbildung auf den Weg machen, in der Fremde ein neues Dorf zu deinen Ehren zu gründen.\r\n\r\nDa die Reise und die Gründung eines Dorfes beschwerlich ist, tun sich immer dr', 2, 4, 0, '7200:5500:5800:6500:31000', 1, 5, 3000, '10:80:80', '-1', '0', '0'),
+(14, 'Kundschafter', '', 'Der Kundschafter ist den germanischen Truppen oft weit voraus und erkundet die Dörfer des Feindes. Er ist zu Fuß unterwegs und deshalb nicht ganz so schnell. Vorsichtig späht er die gegnerischen Einheiten und Ressourcen oder die Verteidigungsanlagen aus.', 2, 1, 1, '160:100:50:50:1400', 0.4, 9, 0, '0:10:5', '2:15:5:22:1', '1060:500:600:460:6000', '1220:800:550:510:6000'),
+(15, 'Paladin', 'Paladine', 'Mit starker Rüstung ist der Paladin eine gute Waffe in der Verteidigung. Gerade Infantrie vermag seine Schild kaum zu durchdringen.\r\n\r\nDafür ist seine Stärke beim Angriff eher klein und auch die Geschwindigkeit ist für Kavallerie durch die Rüstung nur Durchschnitt. Die Ausbildung dauert relativ lange und ist kostspielig.', 2, 2, 0, '370:270:290:75:3000', 1.2, 10, 110, '55:100:40', '2:22:5:20:3', '2320:1180:2520:610:10800', '1345:995:1115:345:0.8:10800'),
+(16, 'Teutonen Reiter', '', 'Der Teutonen Reiter ist ein mächtiger Recke, der seine Gegner beim Angriff in Angst und Schrecken versetzt. In der Verteidigung ist er gerade gegen die feindliche Kavallerie ein guter Kämpfer. Die Kosten für Ausbildung und Unterhalt sind allerdings hoch.', 2, 2, 0, '450:515:480:80:3700', 1.7, 9, 80, '150:50:75', '2:22:15:20:10', '2800:2160:4040:640:12900', '1085:1235:1185:240:0.8:12900\r\n'),
+(17, 'Ramme', 'Rammen', 'Die Ramme ist eine schwere Waffe zur Unterstützung der Infantrie und Kavallerie. Ihre Aufgabe ist es, den feindlichen Schutzwall bzw. die Stadtmauer zu durchbrechen und den Angriff der eigenen Truppen zu erleichtern. Selbst ohne Schutz, benötigt sie Geleitschutz um effektiv eingesetzt werden zu können.', 2, 3, 0, '1000:300:350:70:4200', 2.5, 4, 0, '65:30:80', '2:22:10:21:1', '6100:1300:3000:580:14400', '2365:735:885:215:0.8:14400\r\n'),
+(18, 'Katapult', 'Katapulte', 'Das Katapult ist eine exzellente Distanzwaffe zur Zerstörung von Gebäuden und Ressourcenfelder. Allerdings ist es selbst nahezu schutzlos! Daher muss immer Geleitschutz mitgeschickt werden.\r\n\r\nJe weiter der Vesammlungsplatz ausgebaut ist - und die Männer am Katapult damit ausgebildet sind - desto grösser ist die Zielgenauigkeit. Beim Versammlungsplatz Stufe 10 kann jedes Gebäude außer dem Versteck anvisiert werden.', 2, 3, 0, '900:1200:600:60:9000', 4.5, 3, 0, '50:60:10', '2:21:10:22:15', '5500:4900:5000:520:28800', '1065:1415:735:95:28800'),
+(19, 'Stammesführer', '', 'Aus ihrer Mitte wählen die Germanen den Stammesführer. Um gewählt zu werden, bedarf es nicht nur Tapferkeit und Kriegskunst, auch Redekunst ist notwendig. Diese verwendet der Stammesführer dann dafür, die Einwohner fremder Dörfer zu überzeugen den Stamm zu wechseln.\r\n\r\nJe öfter er vor den Mauern der Stadt zu den Bewohnern spricht, desto geringer ist die Zustimmung für den anderen Herrscher, bis das Dorf zu deinem Reich gehört.', 2, 4, 0, '35500:26600:25000:27200:70500', 1, 4, 0, '40:60:40', '2:16:5:22:20', '18250:13500:20400:16480:19425', '0'),
+(20, 'Siedler', '', 'Siedler sind tapfere und wagemutige Bürger deiner Stadt die sich nach langer Ausbildung auf den Weg machen, in der Fremde ein neues Dorf zu deinen Ehren zu gründen.\r\n\r\nDa die Reise und die Gründung eines Dorfes beschwerlich ist, tun sich immer drei Siedler zusammen, um ein Dorf zu gründen. Gleichzeitig benötigen sie einen Grundstock von je 750 Einheiten pro Ressource.', 2, 4, 0, '7200:5500:5800:6500:31000', 1, 5, 3000, '10:80:80', '-1', '0', '0'),
 (21, 'Phalanx', 'Phalanxe', 'Als einfache Fußtruppe ist die Phalanx relativ preiswert und schnell zu produzieren.\r\n\r\nIhr Angriffswert ist allerdings sehr klein. Erst in der Verteidigung zeigen sie ihre Stärken, sowohl gegen Infantrie als auch gegen Kavallerie.', 3, 1, 0, '100:130:55:30:1300', 0.25, 7, 30, '15:40:50', '1:19:1', '0', '800:1010:585:370:0.8:5700'),
 (22, 'Schwertkämpfer', '', 'Die Schwertkämpfer sind teurer als die Phalanx, aber sie stellen bereits eine veritable Angriffstruppe dar.\r\n\r\nIn der Defensive sind sie allerdings relativ schwach, besonders gegen Kavallerie.', 3, 1, 0, '140:150:185:60:1800', 0.3, 6, 45, '65:35:20', '2:22:1:12:1', '940:700:1680:520:7200', '1080:1150:1495:580:0.8:7200'),
 (23, 'Späher', '', 'Der Späher ist die Aufklärungstruppe der Gallier. Sie sind äußerst schnell. Vorsichtig nähern sie sich schnell und gedeckt und erkunden die gegnerischen Einheiten und Ressourcen oder die Verteidigungsanlagen.', 3, 2, 1, '170:150:20:40:1700', 1.3, 17, 0, '0:20:10', '2:22:5:20:1', '1120:700:360:400:3300', '645:575:170:220:0.8:6900'),
 (24, 'Theutates Blitz', 'Theutates Blitze', 'Die Blitze sind eine äußerst schnelle und sehr schlagkräftige Angriffseinheit, die zudem auch noch eine große Menge an Rohstoffen tragen können.\r\n\r\nIn der Verteidigung sind ihre Leistungen dagegen eher mittelmässig.', 3, 2, 0, '350:450:230:60:3100', 1.5, 190, 75, '90:25:40', '2:22:5:20:3', '2200:1900:2040:520:11100', '1275:1625:905:290:0.8:11100'),
 (25, 'Druidenreiter', '', 'Diese mittlere Kavallerieeinheit ist defensiv ausgerichtet. Der Schwerpunkt der Druidenreiter liegt dabei eindeutig in der Verteidigung gegen Infantrie. Sie ist aber in Bau und Unterhalt schon relativ teuer.', 3, 2, 0, '360:330:280:120:3900', 1.4, 16, 35, '45:115:55', '2:22:5:20:5', '2260:1420:2440:880:11400', '1310:1205:1080:500:0.8:11400'),
-(26, 'Haeduaner', '', 'Die Haeduaner sind die ultimative Waffe im Angriff und in der Verteidigung gegen Kavallerie. Kaum jemand kann ihnen in diesen Punkten das Wasser reichen.\r\n\r\nAllerdings ist die Ausbildung und Ausrüstung der Haeduaner auch entsprechend teuer und mit 3 Ei', 3, 2, 0, '500:620:675:170:3900', 1.8, 13, 65, '140:50:165', '2:22:15:20:10', '3100:2580:5600:1180:13500', '1200:1480:1640:450:0.8:13500'),
-(27, 'Rammholz', 'Rammhölzer', 'Das Rammholz ist eine schwere Waffe zur Unterstützung der Infantrie und Kavallerie. Seine Aufgabe ist es, den feindlichen Schutzwall bzw. die Stadtmauer zu durchbrechen und den Angriff der eigenen Truppen zu erleichtern.\r\n\r\nSelbst ohne Schutz, benöt', 3, 3, 0, '950:555:330:75:5000', 2.8, 4, 0, '50:30:105', '2:22:10:21:1', '5800:2320:2840:610:16800', '2250:1330:835:230:0.8:16800'),
-(28, 'Kriegskatapult', 'Kriegskatapulte', 'Das Katapult ist eine exzellente Distanzwaffe zur Zerstörung von Gebäuden und Ressourcenfelder. Allerdings ist es selbst nahezu schutzlos! Daher muss immer Geleitschutz mitgeschickt werden.', 3, 3, 0, '960:1450:630:90:9000', 6, 3, 0, '70:45:10', '2:22:15:21:10', '5860:5900:5240:700:28800', '1135:1710:770:130:0.8:28800'),
-(29, 'Häuptling', 'Häuptlinge', 'Jeder Stamm hat einen altehrwürdigen und erfahrenen Kämpfer dem es gelingt, die Bevölkerung des gegnerischen Dorfes zu überzeugen, dem Stamm beizutreten.\r\n\r\nJe häufiger er vor den Mauern der Stadt zu den Bewohnern spricht, desto geringer is', 3, 4, 0, '30750:45400:31000:37500:90700', 1, 5, 0, '40:50:50', '2:22:20:16:10\r\n', '15880:22900:25200:22600:24475', '0'),
-(30, 'Siedler', '', 'Siedler sind tapfere und wagemutige Bürger deiner Stadt die sich nach langer Ausbildung auf den Weg machen, in der Fremde ein neues Dorf zu deinen Ehren zu gründen.\r\n\r\nDa die Reise und die Gründung eines Dorfes beschwerlich ist, tun sich immer dr', 3, 4, 0, '5500:7000:5300:4900:26900', 1, 5, 3000, '0:80:80', '-1', '0', '0'),
+(26, 'Haeduaner', '', 'Die Haeduaner sind die ultimative Waffe im Angriff und in der Verteidigung gegen Kavallerie. Kaum jemand kann ihnen in diesen Punkten das Wasser reichen.\r\n\r\nAllerdings ist die Ausbildung und Ausrüstung der Haeduaner auch entsprechend teuer und mit 3 Einheiten Getreide/Stunde muss man sich schon genau überlegen, ob man bereit ist, diesen Preis zu bezahlen.', 3, 2, 0, '500:620:675:170:3900', 1.8, 13, 65, '140:50:165', '2:22:15:20:10', '3100:2580:5600:1180:13500', '1200:1480:1640:450:0.8:13500'),
+(27, 'Rammholz', 'Rammhölzer', 'Das Rammholz ist eine schwere Waffe zur Unterstützung der Infantrie und Kavallerie. Seine Aufgabe ist es, den feindlichen Schutzwall bzw. die Stadtmauer zu durchbrechen und den Angriff der eigenen Truppen zu erleichtern.\r\n\r\nSelbst ohne Schutz, benötigt sie Geleitschutz um effektiv eingesetzt werden zu können.', 3, 3, 0, '950:555:330:75:5000', 2.8, 4, 0, '50:30:105', '2:22:10:21:1', '5800:2320:2840:610:16800', '2250:1330:835:230:0.8:16800'),
+(28, 'Kriegskatapult', 'Kriegskatapulte', 'Das Katapult ist eine exzellente Distanzwaffe zur Zerstörung von Gebäuden und Ressourcenfelder. Allerdings ist es selbst nahezu schutzlos! Daher muss immer Geleitschutz mitgeschickt werden.\r\n\r\nJe weiter der Versammlungsplatz ausgebaut ist - und die Männer am Katapult damit ausgebildet sind - desto grösser ist die Zielgenauigkeit. Beim Versammlungsplatz Stufe 10 kann jedes Gebäude außer dem Versteck anvisiert werden.', 3, 3, 0, '960:1450:630:90:9000', 6, 3, 0, '70:45:10', '2:22:15:21:10', '5860:5900:5240:700:28800', '1135:1710:770:130:0.8:28800'),
+(29, 'Häuptling', 'Häuptlinge', 'Jeder Stamm hat einen altehrwürdigen und erfahrenen Kämpfer dem es gelingt, die Bevölkerung des gegnerischen Dorfes zu überzeugen, dem Stamm beizutreten.\r\n\r\nJe häufiger er vor den Mauern der Stadt zu den Bewohnern spricht, desto geringer ist die Zustimmung für den gegnerischen Herrscher, bis das Dorf zu deinem Stamm gehört.', 3, 4, 0, '30750:45400:31000:37500:90700', 1, 5, 0, '40:50:50', '2:22:20:16:10\r\n', '15880:22900:25200:22600:24475', '0'),
+(30, 'Siedler', '', 'Siedler sind tapfere und wagemutige Bürger deiner Stadt die sich nach langer Ausbildung auf den Weg machen, in der Fremde ein neues Dorf zu deinen Ehren zu gründen.\r\n\r\nDa die Reise und die Gründung eines Dorfes beschwerlich ist, tun sich immer drei Siedler zusammen, um ein Dorf zu gründen. Gleichzeitig benötigen sie einen Grundstock von je 750 Einheiten pro Ressource.', 3, 4, 0, '5500:7000:5300:4900:26900', 1, 5, 3000, '0:80:80', '-1', '0', '0'),
 (31, 'Ratte', 'Ratten', '', 4, 1, 0, '', 1, 20, 0, '10:25:20', '', '', ''),
 (32, 'Spinne', 'Spinnen', '', 4, 1, 0, '', 1, 20, 0, '20:35:40', '', '', ''),
 (33, 'Schlange', 'Schlangen', '', 4, 1, 0, '', 1, 20, 0, '60:40:60', '', '', ''),
@@ -760,39 +778,42 @@ INSERT INTO `tr1_truppen_typen` (`id`, `name`, `mehrzahl`, `besch`, `volk`, `typ
 (39, 'Tiger', '', '', 4, 2, 1, '', 3, 20, 50, '200:170:250', '', '', ''),
 (40, 'Elefant', 'Elefanten', '', 4, 3, 0, '', 5, 20, 150, '600:440:520', '', '', '');
 
+-- --------------------------------------------------------
+
 --
 -- Tabellenstruktur für Tabelle `tr1_user`
 --
 
 CREATE TABLE `tr1_user` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(16) NOT NULL DEFAULT '',
   `pw` tinytext NOT NULL,
   `email` varchar(64) NOT NULL DEFAULT '',
-  `einwohner` int(11) NOT NULL DEFAULT '0',
-  `kps` float NOT NULL DEFAULT '0',
-  `volk` tinyint(4) NOT NULL DEFAULT '0',
+  `einwohner` int(11) NOT NULL DEFAULT 0,
+  `kps` float NOT NULL DEFAULT 0,
+  `volk` tinyint(4) NOT NULL DEFAULT 0,
   `besch` tinytext NOT NULL,
   `research` tinytext NOT NULL COMMENT 'welche Einheiten wurden schon erforscht',
   `weapons` tinytext NOT NULL,
   `arms` tinytext NOT NULL,
-  `ally` int(10) unsigned NOT NULL DEFAULT '0',
-  `ally_rang` int(10) unsigned NOT NULL DEFAULT '0',
+  `ally` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `ally_rang` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `konfig` tinytext NOT NULL,
-  `last_update` datetime NOT NULL DEFAULT NOW(),
-  `last_online` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+  `last_update` datetime NOT NULL DEFAULT current_timestamp(),
+  `last_online` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Daten für Tabelle `tr1_user`
 --
 
-INSERT INTO `tr1_user` (`id`, `name`, `pw`, `email`, `einwohner`, `kps`, `volk`, `besch`, `research`, `weapons`, `arms`, `ally`, `ally_rang`, `konfig`, `last_update`, `last_online`) VALUES 
-(1, 'judos', '78a07c87344cf70b814765fd8441a6b3', 'judos@gmx.ch', 744, 4252810, 3, 'Entwickler und oWn€r', '1:1:0:1:0:0:1:0:0:0', '1:0:0:0:0:0:0:0:0:0', '1:1:0:0:0:0:0:0:0:0', 2, 12, '1:1:1:1:1:1:1:1:1:1:1:1:1', '2013-12-26 16:25:35', '2013-12-26 16:37:25'),
-(4, 'test', '098f6bcd4621d373', 'test@gmx.ch', 2, 430.762, 2, '', '1:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:0:0:0', 0, 0, '1:1:1:1:1:1:1:1:1:1:1:1:1', '2013-12-26 16:25:35', '0000-00-00 00:00:00'),
-(5, 'ropeko', '6137708dfbddf039', 'ropeko@yahoo.de', 14, 3000.44, 1, '', '1:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:0:0:0', 2, 0, ':0:1:1:1:1:1:1:1:1:1:1:1', '2013-12-26 16:25:35', '0000-00-00 00:00:00'),
-(6, 'bla', '128ecf542a35ac52', 'bla', 2, 428.96, 3, '', '1:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:0:0:0', 0, 0, '1:1:1:1:1:1:1:1:1:1:1:1:1', '2013-12-26 16:25:35', '0000-00-00 00:00:00');
+INSERT INTO `tr1_user` (`id`, `name`, `pw`, `email`, `einwohner`, `kps`, `volk`, `besch`, `research`, `weapons`, `arms`, `ally`, `ally_rang`, `konfig`, `last_update`, `last_online`) VALUES
+(1, 'judos', '81dc9bdb52d04dc20036dbd8313ed055', 'judos@gmx.ch', 744, 5128980, 3, 'Entwickler und oWn€r', '1:1:0:1:0:0:1:0:0:0', '1:0:0:0:0:0:0:0:0:0', '1:1:0:0:0:0:0:0:0:0', 2, 12, '1:1:1:1:1:1:1:1:1:1:1:1:1', '2020-06-01 14:20:32', '2020-06-01 14:39:24'),
+(4, 'test', '098f6bcd4621d373', 'test@gmx.ch', 2, 2779.63, 2, '', '1:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:0:0:0', 0, 0, '1:1:1:1:1:1:1:1:1:1:1:1:1', '2020-06-01 14:20:32', '0000-00-00 00:00:00'),
+(5, 'ropeko', '6137708dfbddf039', 'ropeko@yahoo.de', 14, 19442.3, 1, '', '1:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:0:0:0', 2, 0, ':0:1:1:1:1:1:1:1:1:1:1:1', '2020-06-01 14:20:32', '0000-00-00 00:00:00'),
+(6, 'bla', '128ecf542a35ac52', 'bla', 2, 2777.83, 3, '', '1:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:0:0:0', '0:0:0:0:0:0:0:0:0:0', 0, 0, '1:1:1:1:1:1:1:1:1:1:1:1:1', '2020-06-01 14:20:32', '0000-00-00 00:00:00');
+
+-- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `tr_rounds`
@@ -807,6 +828,228 @@ CREATE TABLE `tr_rounds` (
 -- Daten für Tabelle `tr_rounds`
 --
 
-INSERT INTO `tr_rounds` (`name`, `info`) VALUES 
+INSERT INTO `tr_rounds` (`name`, `info`) VALUES
 ('1', 'Die Test Runde von Traviatus.\r\nVersion 1');
 
+--
+-- Indizes der exportierten Tabellen
+--
+
+--
+-- Indizes für die Tabelle `tr1_ally`
+--
+ALTER TABLE `tr1_ally`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indizes für die Tabelle `tr1_ally_chat`
+--
+ALTER TABLE `tr1_ally_chat`
+  ADD PRIMARY KEY (`ally_id`,`user_id`,`zeit`);
+
+--
+-- Indizes für die Tabelle `tr1_ally_einladungen`
+--
+ALTER TABLE `tr1_ally_einladungen`
+  ADD PRIMARY KEY (`ally_id`,`user_id`);
+
+--
+-- Indizes für die Tabelle `tr1_ally_kampfe`
+--
+ALTER TABLE `tr1_ally_kampfe`
+  ADD PRIMARY KEY (`keyid`);
+
+--
+-- Indizes für die Tabelle `tr1_ally_news`
+--
+ALTER TABLE `tr1_ally_news`
+  ADD PRIMARY KEY (`ally_id`,`datum`);
+
+--
+-- Indizes für die Tabelle `tr1_ally_range`
+--
+ALTER TABLE `tr1_ally_range`
+  ADD PRIMARY KEY (`rang_id`);
+
+--
+-- Indizes für die Tabelle `tr1_angebote`
+--
+ALTER TABLE `tr1_angebote`
+  ADD PRIMARY KEY (`keyid`);
+
+--
+-- Indizes für die Tabelle `tr1_bugs`
+--
+ALTER TABLE `tr1_bugs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indizes für die Tabelle `tr1_diverses`
+--
+ALTER TABLE `tr1_diverses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indizes für die Tabelle `tr1_dorfer`
+--
+ALTER TABLE `tr1_dorfer`
+  ADD PRIMARY KEY (`x`,`y`);
+
+--
+-- Indizes für die Tabelle `tr1_gebeude`
+--
+ALTER TABLE `tr1_gebeude`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indizes für die Tabelle `tr1_handler`
+--
+ALTER TABLE `tr1_handler`
+  ADD PRIMARY KEY (`keyid`);
+
+--
+-- Indizes für die Tabelle `tr1_hero`
+--
+ALTER TABLE `tr1_hero`
+  ADD PRIMARY KEY (`keyid`);
+
+--
+-- Indizes für die Tabelle `tr1_lander`
+--
+ALTER TABLE `tr1_lander`
+  ADD PRIMARY KEY (`x`,`y`);
+
+--
+-- Indizes für die Tabelle `tr1_land_typen`
+--
+ALTER TABLE `tr1_land_typen`
+  ADD PRIMARY KEY (`typ`);
+
+--
+-- Indizes für die Tabelle `tr1_msg`
+--
+ALTER TABLE `tr1_msg`
+  ADD PRIMARY KEY (`keyid`);
+
+--
+-- Indizes für die Tabelle `tr1_oasen`
+--
+ALTER TABLE `tr1_oasen`
+  ADD PRIMARY KEY (`typ`);
+
+--
+-- Indizes für die Tabelle `tr1_others`
+--
+ALTER TABLE `tr1_others`
+  ADD PRIMARY KEY (`keyid`);
+
+--
+-- Indizes für die Tabelle `tr1_todo`
+--
+ALTER TABLE `tr1_todo`
+  ADD PRIMARY KEY (`keyid`);
+
+--
+-- Indizes für die Tabelle `tr1_truppen`
+--
+ALTER TABLE `tr1_truppen`
+  ADD PRIMARY KEY (`x`,`y`,`user`);
+
+--
+-- Indizes für die Tabelle `tr1_truppen_move`
+--
+ALTER TABLE `tr1_truppen_move`
+  ADD PRIMARY KEY (`keyid`);
+
+--
+-- Indizes für die Tabelle `tr1_truppen_typen`
+--
+ALTER TABLE `tr1_truppen_typen`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indizes für die Tabelle `tr1_user`
+--
+ALTER TABLE `tr1_user`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT für exportierte Tabellen
+--
+
+--
+-- AUTO_INCREMENT für Tabelle `tr1_ally`
+--
+ALTER TABLE `tr1_ally`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT für Tabelle `tr1_ally_kampfe`
+--
+ALTER TABLE `tr1_ally_kampfe`
+  MODIFY `keyid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT für Tabelle `tr1_ally_range`
+--
+ALTER TABLE `tr1_ally_range`
+  MODIFY `rang_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT für Tabelle `tr1_angebote`
+--
+ALTER TABLE `tr1_angebote`
+  MODIFY `keyid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT für Tabelle `tr1_bugs`
+--
+ALTER TABLE `tr1_bugs`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `tr1_handler`
+--
+ALTER TABLE `tr1_handler`
+  MODIFY `keyid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `tr1_hero`
+--
+ALTER TABLE `tr1_hero`
+  MODIFY `keyid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT für Tabelle `tr1_msg`
+--
+ALTER TABLE `tr1_msg`
+  MODIFY `keyid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
+
+--
+-- AUTO_INCREMENT für Tabelle `tr1_others`
+--
+ALTER TABLE `tr1_others`
+  MODIFY `keyid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
+--
+-- AUTO_INCREMENT für Tabelle `tr1_todo`
+--
+ALTER TABLE `tr1_todo`
+  MODIFY `keyid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+
+--
+-- AUTO_INCREMENT für Tabelle `tr1_truppen_move`
+--
+ALTER TABLE `tr1_truppen_move`
+  MODIFY `keyid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `tr1_user`
+--
+ALTER TABLE `tr1_user`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
