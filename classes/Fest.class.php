@@ -10,7 +10,7 @@ class Fest {
 	
 	protected static $objekte;
 	
-	private function Fest($id,$data) {
+	private function __construct($id,$data) {
 		$this->id=$id;
 		$this->data=$data;
 		self::$objekte[$id]=$this;

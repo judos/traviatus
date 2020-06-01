@@ -5,7 +5,7 @@ class HeroSim {
 	
 	protected $name;
 	
-	public function HeroSim($name) {
+	public function __construct($name) {
 		$this->name=$name;
 	}
 	

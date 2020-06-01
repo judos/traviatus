@@ -20,7 +20,7 @@ class Held {
 
 	public static $save=true;
 
-	public function Held($id,$data) {
+	public function __construct($id,$data) {
 		$this->id = $id;
 		$this->data=$data;
 		$this->changed=false;

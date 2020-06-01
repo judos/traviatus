@@ -11,7 +11,7 @@ class SchlachtFeld {
 	protected $attackerLoot;
 	
 	//$off and $deff mustn't be modified!
-	public function SchlachtFeld($offVorher,$deffVorher,$off,$deff) {
+	public function __construct($offVorher,$deffVorher,$off,$deff) {
 		$this->offVorher=$offVorher;
 		$this->deffVorher=$deffVorher;
 		$this->off=$off;

@@ -26,7 +26,7 @@ class TruppeMove extends Soldaten{
 	protected static $db_table='truppen_move';
 
 
-	public function TruppeMove($keyid,$d) {
+	public function __construct($keyid,$d) {
 		$this->keyid=$keyid;
 		$this->data=$d;
 		$this->changed=false;

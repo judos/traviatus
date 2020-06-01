@@ -4,7 +4,7 @@ class KampfDorf extends KampfSim {
 	public static $save = FALSE;
 	protected $dorf;
 
-	public function KampfDorf($dorf) {
+	public function __construct($dorf) {
 		//Dorf merken, damit später Veränderungen gespeichert werden können.
 		$this->dorf=$dorf;
 

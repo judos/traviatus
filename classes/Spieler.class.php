@@ -21,7 +21,7 @@ class Spieler {
 	protected static $anz;
 	protected static $volker;
 
-	protected function Spieler($id,$data) {
+	protected function __construct($id,$data) {
 		$this->id = $id;
 		$this->data=$data;
 		$this->changed=false;

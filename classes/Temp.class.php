@@ -8,7 +8,7 @@ class Temp {
 	public static $save=false;
 	private static $db_table='temp';
 	
-	public function Temp($var1='',$var2='',$var3='',$var4='',
+	public function __construct($var1='',$var2='',$var3='',$var4='',
 											 $id=0,$insert=true) {
 		$this->var1=$var1;
 		$this->var2=$var2;

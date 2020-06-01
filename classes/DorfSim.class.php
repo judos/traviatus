@@ -5,7 +5,7 @@ class DorfSim {
 	
 	protected $name;
 	
-	public function DorfSim($name) {
+	public function __construct($name) {
 		$this->name=$name;
 	}
 	

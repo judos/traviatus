@@ -10,7 +10,7 @@ class AllianzBericht extends InfoMessage {
 	protected $allyId;
 	protected $data;
 	
-	protected function AllianzBericht($data) {
+	protected function __construct($data) {
 		$this->id=$data['keyid'];
 		$this->allyId=$data['ally_id'];
 		$this->data=$data;

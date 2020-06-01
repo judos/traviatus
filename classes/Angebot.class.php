@@ -15,7 +15,7 @@ class Angebot {
 
 	public static $save=false;
 
-	public function Angebot($id,$data) {
+	public function __construct($id,$data) {
 		$this->id = $id;
 		$this->data=$data;
 		$x=$data['ursprung_x'];

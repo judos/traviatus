@@ -11,7 +11,7 @@ class GebeudeTyp {
 	protected static $db_table='gebeude';
 	public static $anz=40;
 
-	public function GebeudeTyp($id,$data) {
+	public function __construct($id,$data) {
 		$this->id = $id;
 		$this->data=$data;
 	}

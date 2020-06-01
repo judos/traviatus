@@ -20,7 +20,7 @@ class Dorf extends DorfSim {
 
 	protected static $all_koords;
 
-	public function Dorf($x,$y,$data) {
+	public function __construct($x,$y,$data) {
 		$this->x=$x;
 		$this->y=$y;
 		$this->data=$data;

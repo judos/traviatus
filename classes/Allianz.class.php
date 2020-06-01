@@ -23,7 +23,7 @@ class Allianz {
 
 	public static $save=true;
 
-	public function Allianz($id,$data) {
+	public function __construct($id,$data) {
 		$this->id = $id;
 		$this->data=$data;
 		$this->changed=false;

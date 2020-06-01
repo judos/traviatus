@@ -16,7 +16,7 @@ class Bericht extends InfoMessage {
 	protected $id;
 	protected $data;
 	
-	protected function Bericht($id,$data) {
+	protected function __construct($id,$data) {
 		$this->id=$id;
 		$this->data=$data;
 		if (isset(self::$objekte[$id]))

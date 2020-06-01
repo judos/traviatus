@@ -15,7 +15,7 @@ class AllianzRang {
 	
 	public static $save=true;
 	
-	public function AllianzRang($ally,$id,$data) {
+	public function __construct($ally,$id,$data) {
 		$this->id=$id;
 		$this->ally=$ally;
 		$this->data=$data;

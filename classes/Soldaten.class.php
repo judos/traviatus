@@ -19,7 +19,7 @@ class Soldaten {
 	//$volk: int(1-4)
 	//$arr: array($id => $anz, 'hero'=>$anz)
 	//$held: object (? extends Held)
-	protected function Soldaten($volk,$arr,$held) {
+	protected function __construct($volk,$arr,$held) {
 		$this->herkunft=null;
 		$this->user=null;
 		

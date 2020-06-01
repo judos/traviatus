@@ -29,7 +29,7 @@ class Land {
 		return array(self::$sizeX,self::$sizeY);
 	}
 
-	public function Land($x,$y,$data) {
+	public function __construct($x,$y,$data) {
 		$this->x=$x;
 		$this->y=$y;
 		$this->data=$data;

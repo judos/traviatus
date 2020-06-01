@@ -10,7 +10,7 @@ class Auftrag {
 	protected static $objekte=array();	// [$x][$y][$index]
 	protected static $db_table='others';
 
-	public function Auftrag($x,$y,$data) {
+	public function __construct($x,$y,$data) {
 		$this->x=$x;
 		$this->y=$y;
 		$this->data=$data;

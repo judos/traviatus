@@ -23,7 +23,7 @@ class KampfSim {
 	protected $deffWipe;		// Deff Truppen Verluste in %
 	protected $offWipe;			// Off Truppen Verluste in %
 
-	public function KampfSim($palace,$wall,$fallen,$deffTruppen) {
+	public function __construct($palace,$wall,$fallen,$deffTruppen) {
 		$this->palace=$palace;
 		$this->wall=$wall;
 		$this->fallen=$fallen;

@@ -20,7 +20,7 @@ class Truppe extends Soldaten {
 	protected static $db_table='truppen';
 
 
-	protected function Truppe($x,$y,$userid,$gefangen,$data) {
+	protected function __construct($x,$y,$userid,$gefangen,$data) {
 		$this->x = $x;
 		$this->y = $y;
 		$this->userid = $userid;

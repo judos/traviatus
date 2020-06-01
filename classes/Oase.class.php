@@ -10,7 +10,7 @@ class Oase {
 	
 	public static $save=TRUE;
 
-	protected function Oase($id,$data) {
+	protected function __construct($id,$data) {
 		$this->id=$id;
 		$this->data=$data;
 		$this->changed=false;

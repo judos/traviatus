@@ -14,7 +14,7 @@ class Nachricht {
 
 	protected static $all_loaded=false;
 
-	public function Nachricht($id,$t,$data) {
+	public function __construct($id,$t,$data) {
 		$this->id=$id;
 		$this->t=$t;
 		$this->data=$data;

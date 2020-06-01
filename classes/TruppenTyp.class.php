@@ -12,7 +12,7 @@ class TruppenTyp {
 
 	public static $save=false;
 
-	public function TruppenTyp($id,$data) {
+	public function __construct($id,$data) {
 		$this->id = $id;
 		$this->data=$data;
 	}
