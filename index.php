@@ -10,6 +10,7 @@ $path=str_repeat('../',$anz);
 
 //Includes
 include "includes/functions.php";
+include "includes/mysqli-adapter.php";
 include "includes/arrays.func.php";
 include "includes/debug.func.php";
 include "includes/arrayobjects.func.php";
@@ -20,7 +21,6 @@ include "includes/vector4.php";
 include "includes/configs.php";
 include "includes/links.php";
 include "includes/classes.php";
-include "includes/backup_db.php";
 connect();
 
 //Die Funktion handleError verwenden um Fehler etc. abzufangen.

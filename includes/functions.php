@@ -127,8 +127,6 @@ function zeit_dauer($stamp) {
 	if ($m<10) $m='0'.$m;
 	if ($s<10) $s='0'.$s;
 	return $h.':'.$m.':'.$s;
-
-	//return date('H:i:s',$stamp);
 }
 
 function serverzeit($load_time) {
@@ -145,29 +143,12 @@ function serverzeit($load_time) {
 
 
 function connect() {
-	$co='req';
-	//zur Datenbank verbinden
-	if ($co=='online') {
-		$host='however.ch:3306';
-		$user='web375';
-		$pw='';
-		$db='usr_web375_7';
+	global $mysqli;
+	require('db_config.php');
+	$mysqli = new mysqli($host,$user,$pw,$db);
+	if ($mysqli->connect_errno) {
+			die("Verbindung fehlgeschlagen: " . $mysqli->connect_error);
 	}
-	elseif ($co=='local'){
-		$host='localhost';
-		$user='root';
-		$pw='localsqlpw';
-		$db='traviatus';
-	}
-	elseif ($co=='req'){
-		require('db_config.php');
-	}
-	$link = mysql_connect($host,$user,$pw);
-	if (!$link)
-		die('Verbindung nicht möglich : ' . mysql_error());
-	if(!mysql_select_db($db))
-		die("Fehler Datenbank '$db' konnte nicht ausgewählt werden.");
-		
 }
 
 function global_actions() {
